@@ -21,12 +21,8 @@ const Canvas = (boxProps: BoxProps) => {
         if (mode === 'add-point') {
           const rect = e.currentTarget.getBoundingClientRect()
           const x = e.clientX - rect.left
-          const y = canvas.height - (e.clientY - rect.top)
-          addPoint({
-            id: createId(),
-            x: Math.round(x / canvas.zoomLevel),
-            y: Math.round(y / canvas.zoomLevel),
-          })
+          const y = rect.height - (e.clientY - rect.top)
+          addPoint({ id: createId(), x: x / canvas.zoomLevel, y: y / canvas.zoomLevel })
         }
       }}
       w={canvas.width * canvas.zoomLevel}

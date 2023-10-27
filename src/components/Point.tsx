@@ -11,8 +11,8 @@ const Point = ({ id, x, y }: TPoint) => {
   return (
     <Box
       pos="absolute"
-      bottom={y}
-      left={x}
+      bottom={`${y}px`}
+      left={`${x}px`}
       transform="translate(-50%, 50%)"
       rounded="999px"
       boxSize="24px"

@@ -4,7 +4,7 @@ import { DeleteIcon, DownArrowIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 import { Point } from '#/lib/types'
 
-const PanePoint = ({ id, x, y }: Point) => {
+const PanePoint = ({ id, name, x, y }: Point) => {
   const selectedPointId = useStore(s => s.selectedPointId)
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const moveDownPoint = useStore(s => s.moveDownPoint)
@@ -16,13 +16,17 @@ const PanePoint = ({ id, x, y }: Point) => {
     <Flex
       border={isSelected ? '1px solid red' : '1px solid transparent'}
       rounded="md"
-      onClick={() => setSelectedPointId(id)}
+      onClick={() => setSelectedPointId(isSelected ? undefined : id)}
       cursor="pointer"
       px={3}
       py={1}
+      userSelect="none"
     >
       <Box>
-        x: {x}, y: {y}
+        <Box>
+          x: {x}, y: {y}
+        </Box>
+        <Box>{name ?? `ID: ${id}}`}</Box>
       </Box>
       <Spacer />
       <HStack spacing={0}>
