@@ -21,49 +21,49 @@ const PanePoint = ({ id, name, x, y }: Point) => {
       px={3}
       py={1}
       userSelect="none"
+      bg="#333"
     >
       <Box>
-        <Box>
-          x: {x}, y: {y}
-        </Box>
-        <Box>{name ?? `ID: ${id}}`}</Box>
+        <Box>{name ?? `${x}, ${y}`}</Box>
       </Box>
       <Spacer />
-      <HStack spacing={0}>
-        <IconButton
-          icon={<Icon as={DownArrowIcon} />}
-          aria-label="Move point down"
-          variant="ghost"
-          size="sm"
-          onClick={e => {
-            e.stopPropagation()
-            moveDownPoint(id)
-          }}
-        />
-        <IconButton
-          icon={<Icon as={UpArrowIcon} />}
-          aria-label="Move point up"
-          variant="ghost"
-          size="sm"
-          onClick={e => {
-            e.stopPropagation()
-            moveUpPoint(id)
-          }}
-        />
-        <IconButton
-          icon={<Icon as={DeleteIcon} />}
-          aria-label="Delete point"
-          variant="ghost"
-          size="sm"
-          onClick={e => {
-            e.stopPropagation()
-            if (isSelected) {
-              setSelectedPointId()
-            }
-            removePoint(id)
-          }}
-        />
-      </HStack>
+      {isSelected && (
+        <HStack spacing={0}>
+          <IconButton
+            icon={<Icon as={DownArrowIcon} />}
+            aria-label="Move point down"
+            variant="ghost"
+            size="sm"
+            onClick={e => {
+              e.stopPropagation()
+              moveDownPoint(id)
+            }}
+          />
+          <IconButton
+            icon={<Icon as={UpArrowIcon} />}
+            aria-label="Move point up"
+            variant="ghost"
+            size="sm"
+            onClick={e => {
+              e.stopPropagation()
+              moveUpPoint(id)
+            }}
+          />
+          <IconButton
+            icon={<Icon as={DeleteIcon} />}
+            aria-label="Delete point"
+            variant="ghost"
+            size="sm"
+            onClick={e => {
+              e.stopPropagation()
+              if (isSelected) {
+                setSelectedPointId()
+              }
+              removePoint(id)
+            }}
+          />
+        </HStack>
+      )}
     </Flex>
   )
 }

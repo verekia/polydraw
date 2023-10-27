@@ -1,9 +1,10 @@
-import { Box, BoxProps, Button, Flex, Heading, SimpleGrid, Spacer } from '@chakra-ui/react'
+import { Box, BoxProps, Button, Heading, SimpleGrid, Stack } from '@chakra-ui/react'
 import fileDownload from 'js-file-download'
 
 import PanePoint from '#/components/PanePoint'
 import PanePolygon from '#/components/PanePolygon'
 import PanePolygonGroup from '#/components/PanePolygonGroup'
+import { createId } from '#/lib/nanoid'
 import { useStore } from '#/lib/store'
 
 const Pane = (boxProps: BoxProps) => {
@@ -11,7 +12,15 @@ const Pane = (boxProps: BoxProps) => {
   const polygons = useStore(s => s.polygons)
   const polygonGroups = useStore(s => s.polygonGroups)
   const clearPoints = useStore(s => s.clearPoints)
-  const exportContent = { points, polygons, polygonGroups }
+  const setSelectedPolygonId = useStore(s => s.setSelectedPolygonId)
+  const addPolygonGroup = useStore(s => s.addPolygonGroup)
+  const setSelectedPolygonGroupId = useStore(s => s.setSelectedPolygonGroupId)
+  const addPolygon = useStore(s => s.addPolygon)
+  const exportContent = {
+    points,
+    ...(polygons.length > 0 ? { polygons } : {}),
+    ...(polygonGroups.length > 0 ? { polygonGroups } : {}),
+  }
 
   return (
     <Box bg="#262626" p={5} {...boxProps}>
@@ -20,28 +29,58 @@ const Pane = (boxProps: BoxProps) => {
       </Heading>
       <SimpleGrid gap={5} columns={3}>
         <Box>
-          <Heading as="h2" size="md">
+          <Heading as="h2" size="md" mb={5}>
             Points
           </Heading>
-          {points.map(p => (
-            <PanePoint key={p.id} {...p} />
-          ))}
+          <Stack>
+            {points.map(p => (
+              <PanePoint key={p.id} {...p} />
+            ))}
+          </Stack>
         </Box>
         <Box>
-          <Heading as="h2" size="md">
+          <Heading as="h2" size="md" mb={5}>
             Polygons
           </Heading>
-          {polygons.map(p => (
-            <PanePolygon key={p.id} {...p} />
-          ))}
+          <Stack>
+            {polygons.map(p => (
+              <PanePolygon key={p.id} {...p} />
+            ))}
+            <Button
+              onClick={() => {
+                const name = prompt('Polygon name')
+                if (name === null) {
+                  return
+                }
+                const id = createId()
+                addPolygon({ id, pointIds: [], name })
+                setSelectedPolygonId(id)
+              }}
+            >
+              Add polygon
+            </Button>
+          </Stack>
         </Box>
         <Box>
-          <Heading as="h2" size="md">
+          <Heading as="h2" size="md" mb={5}>
             Polygon Groups
           </Heading>
           {polygonGroups.map(p => (
             <PanePolygonGroup key={p.id} {...p} />
           ))}
+          <Button
+            onClick={() => {
+              const name = prompt('Polygon group name')
+              if (name === null) {
+                return
+              }
+              const id = createId()
+              addPolygonGroup({ id, polygonIds: [], name })
+              setSelectedPolygonGroupId(id)
+            }}
+          >
+            Add polygon group
+          </Button>
         </Box>
       </SimpleGrid>
       <Button

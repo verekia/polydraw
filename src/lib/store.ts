@@ -35,6 +35,10 @@ interface Store {
   setSelectedPolygonGroupId: (id?: PolygonGroupId) => void
   mode?: 'add-point'
   setMode: (mode?: 'add-point') => void
+  autoAddPoints: boolean
+  setAutoAddPoints: (autoAddPoints: boolean) => void
+  autoAddPolygons: boolean
+  setAutoAddPolygons: (autoAddPolygons: boolean) => void
 }
 
 export const useStore = create<Store>()(
@@ -55,7 +59,18 @@ export const useStore = create<Store>()(
         setSelectedPointId: (id?: PointId) => set({ selectedPointId: id }),
         points: [],
         setPoints: points => set({ points }),
-        addPoint: point => set({ points: [...get().points, point] }),
+        addPoint: point => {
+          set({ points: [...get().points, point] })
+          if (get().autoAddPoints && get().selectedPolygonId) {
+            set({
+              polygons: get().polygons.map(p =>
+                p.id === get().selectedPolygonId
+                  ? { ...p, pointIds: [...p.pointIds, point.id] }
+                  : p,
+              ),
+            })
+          }
+        },
         removePoint: id => set({ points: get().points.filter(p => p.id !== id) }),
         moveDownPoint: id => {
           const points = [...get().points]
@@ -95,7 +110,18 @@ export const useStore = create<Store>()(
         clearPolygonGroups: () => set({ polygonGroups: [] }),
         polygons: [],
         setPolygons: polygons => set({ polygons }),
-        addPolygon: polygon => set({ polygons: [...get().polygons, polygon] }),
+        addPolygon: polygon => {
+          set({ polygons: [...get().polygons, polygon] })
+          if (get().autoAddPolygons && get().selectedPolygonGroupId) {
+            set({
+              polygonGroups: get().polygonGroups.map(p =>
+                p.id === get().selectedPolygonGroupId
+                  ? { ...p, polygonIds: [...p.polygonIds, polygon.id] }
+                  : p,
+              ),
+            })
+          }
+        },
         removePolygon: id => set({ polygons: get().polygons.filter(p => p.id !== id) }),
         moveDownPolygon: id => {
           const polygons = [...get().polygons]
@@ -113,11 +139,16 @@ export const useStore = create<Store>()(
         },
         clearPolygons: () => set({ polygons: [] }),
         selectedPolygonId: undefined,
-        setSelectedPolygonId: (id?: PolygonId) => set({ selectedPolygonId: id }),
+        setSelectedPolygonId: (id?: PolygonId) =>
+          set({ selectedPolygonId: id, autoAddPoints: Boolean(id) }),
         selectedPolygonGroupId: undefined,
         setSelectedPolygonGroupId: (id?: PolygonGroupId) => set({ selectedPolygonGroupId: id }),
         mode: 'add-point',
         setMode: mode => set({ mode }),
+        autoAddPoints: true,
+        setAutoAddPoints: autoAddPoints => set({ autoAddPoints }),
+        autoAddPolygons: true,
+        setAutoAddPolygons: autoAddPolygons => set({ autoAddPolygons }),
       }),
       {
         name: 'polydraw',
