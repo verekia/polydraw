@@ -2,17 +2,18 @@
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@chakra-ui/next-js": "2.1.5",
     "@chakra-ui/react": "2.8.1",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
+    "eslint": "8.52.0",
+    "eslint-config-next": "14.0.0",
     "framer-motion": "10.16.4",
     "js-file-download": "0.4.12",
-    "miniplex": "2.0.0",
-    "miniplex-react": "2.0.1",
     "nanoid": "5.0.2",
     "next": "14.0.0",
     "react": "18.2.0",

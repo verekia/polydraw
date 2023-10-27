@@ -1,49 +1,39 @@
-import { Box, BoxProps, Button, Center, Heading } from '@chakra-ui/react'
+import { Box, BoxProps, Button, Heading } from '@chakra-ui/react'
 import fileDownload from 'js-file-download'
 
 import PanePoint from '#/components/PanePoint'
-import { createPoint, PointEntities, points } from '#/lib/ecs'
 import { useStore } from '#/lib/store'
 
 const Pane = (boxProps: BoxProps) => {
-  const canvas = useStore(s => s.canvas)
+  const points = useStore(s => s.points)
+  const addPoint = useStore(s => s.addPoint)
+  const clearPoints = useStore(s => s.clearPoints)
+  const exportContent = { points }
 
   return (
     <Box bg="#262626" py={5} {...boxProps}>
       <Heading as="h1" textAlign="center" size="lg">
         PolyDraw
       </Heading>
-      <Center>
-        <Button
-          onClick={() => {
-            createPoint({
-              x: Math.round(Math.random() * canvas.width),
-              y: Math.round(Math.random() * canvas.height),
-            })
-          }}
-        >
-          Create Point
-        </Button>
-      </Center>
       <Heading as="h2" size="md">
         Points
       </Heading>
-      <PointEntities children={PanePoint} />
+      {points.map(p => (
+        <PanePoint key={p.id} {...p} />
+      ))}
       <Button
         onClick={() => {
-          const content = points.entities.map(p => ({ x: p.point.x, y: p.point.y }))
-          console.log(content)
-          fileDownload(JSON.stringify(content), 'points.json')
+          if (confirm('Are you sure you want to delete all points?')) {
+            clearPoints()
+          }
         }}
       >
+        Clear points
+      </Button>
+      <Button onClick={() => fileDownload(JSON.stringify(exportContent), 'polydraw.json')}>
         Download JSON
       </Button>
-      <Button
-        onClick={() => {
-          const content = points.entities.map(p => ({ x: p.point.x, y: p.point.y }))
-          navigator.clipboard.writeText(JSON.stringify(content))
-        }}
-      >
+      <Button onClick={() => navigator.clipboard.writeText(JSON.stringify(exportContent))}>
         Copy JSON
       </Button>
     </Box>

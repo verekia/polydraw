@@ -1,9 +1,9 @@
 import { Box } from '@chakra-ui/react'
 
-import { Point as TPoint } from '#/lib/ecs'
 import { useStore } from '#/lib/store'
+import { Point as TPoint } from '#/lib/types'
 
-const Point = ({ id, point }: TPoint) => {
+const Point = ({ id, x, y }: TPoint) => {
   const selectedPointId = useStore(s => s.selectedPointId)
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const isSelected = selectedPointId === id
@@ -11,13 +11,16 @@ const Point = ({ id, point }: TPoint) => {
   return (
     <Box
       pos="absolute"
-      bottom={point.y}
-      left={point.x}
+      bottom={y}
+      left={x}
       transform="translate(-50%, 50%)"
       rounded="999px"
       boxSize="24px"
-      cursor="move"
-      onClick={() => setSelectedPointId(id)}
+      cursor="pointer"
+      onClick={e => {
+        e.stopPropagation()
+        setSelectedPointId(id)
+      }}
       border={isSelected ? '1px solid red' : 'none'}
       _hover={{ bg: 'rgba(255, 255, 255, 0.4)' }}
     >
