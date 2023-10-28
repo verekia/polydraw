@@ -73,8 +73,11 @@ const Pane = (boxProps: BoxProps) => {
 
   return (
     <Box bg="#262626" p={5} {...boxProps}>
-      <Heading as="h1" textAlign="center" size="lg" mb={8}>
-        PolyDraw
+      <Heading as="h1" textAlign="center" size="xl" mb={8}>
+        <Box as="span" color="#f44">
+          poly
+        </Box>
+        <Box as="span">draw</Box>
       </Heading>
       <Flex mb={5}>
         <FormControl>
@@ -121,7 +124,7 @@ const Pane = (boxProps: BoxProps) => {
                 <>
                   <b>Points</b> are the most basic building block. They are defined by a position.
                   They exist on their own and are not necessarily attached to polygons or point
-                  groups. A single point can also be attached to multiple polygons and point groups.
+                  groups. A single point can be attached to multiple polygons and point groups.
                 </>
               }
             >
