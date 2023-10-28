@@ -12,6 +12,7 @@ const Canvas = (boxProps: BoxProps) => {
   const addPoint = useStore(s => s.addPoint)
   const isDragging = useStore(s => s.isDragging)
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
+  const backgroundImageSrc = useStore(s => s.backgroundImageSrc)
 
   return (
     <Box
@@ -37,6 +38,10 @@ const Canvas = (boxProps: BoxProps) => {
       }}
       w={scale.width * zoom}
       h={scale.height * zoom}
+      bg={`url(${backgroundImageSrc})`}
+      bgSize="contain"
+      bgRepeat="no-repeat"
+      bgPosition="center"
       {...boxProps}
     >
       {points.map(p => (

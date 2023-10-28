@@ -47,6 +47,7 @@ const Pane = (boxProps: BoxProps) => {
   const setSelectedPolygonId = useStore(s => s.setSelectedPolygonId)
   const addPolygonGroup = useStore(s => s.addPolygonGroup)
   const setSelectedPolygonGroupId = useStore(s => s.setSelectedPolygonGroupId)
+  const setBackgroundImageSrc = useStore(s => s.setBackgroundImageSrc)
   const addPolygon = useStore(s => s.addPolygon)
   const pointsWithTruncatedDecimals = points.map(p => ({
     ...p,
@@ -60,12 +61,22 @@ const Pane = (boxProps: BoxProps) => {
     polygonGroups,
   }
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) {
+      return
+    }
+    const reader = new FileReader()
+    reader.onloadend = () => setBackgroundImageSrc(reader.result as string)
+    reader.readAsDataURL(file)
+  }
+
   return (
     <Box bg="#262626" p={5} {...boxProps}>
       <Heading as="h1" textAlign="center" size="lg" mb={8}>
         PolyDraw
       </Heading>
-      <Flex mb={10}>
+      <Flex mb={5}>
         <FormControl>
           <FormLabel>Scale width</FormLabel>
           <Input
@@ -97,6 +108,10 @@ const Pane = (boxProps: BoxProps) => {
           />
         </FormControl>
       </Flex>
+      <FormControl mb={10}>
+        <FormLabel>Background image</FormLabel>
+        <Input type="file" onChange={handleImageUpload} />
+      </FormControl>
       <SimpleGrid gap={5} columns={3}>
         <Box>
           <Heading as="h2" size="md" mb={5}>

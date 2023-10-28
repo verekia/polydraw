@@ -60,6 +60,8 @@ interface Store {
   setSelectedPointGroupId: (id?: PointGroupId) => void
   mode?: 'add-point'
   setMode: (mode?: 'add-point') => void
+  backgroundImageSrc?: string
+  setBackgroundImageSrc: (src?: string) => void
 }
 
 export const useStore = create<Store>()(
@@ -203,6 +205,8 @@ export const useStore = create<Store>()(
           }),
         mode: 'add-point',
         setMode: mode => set({ mode }),
+        backgroundImageSrc: undefined,
+        setBackgroundImageSrc: src => set({ backgroundImageSrc: src }),
       }),
       {
         name: 'polydraw',
