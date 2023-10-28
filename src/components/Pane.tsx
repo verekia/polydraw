@@ -6,20 +6,25 @@ import {
   FormControl,
   FormLabel,
   Heading,
+  Icon,
   Input,
   ListItem,
   SimpleGrid,
   Stack,
   Text,
+  Tooltip,
   UnorderedList,
 } from '@chakra-ui/react'
 import fileDownload from 'js-file-download'
 
 import PanePoint from '#/components/PanePoint'
+import PanePointGroup from '#/components/PanePointGroup'
 import PanePolygon from '#/components/PanePolygon'
 import PanePolygonGroup from '#/components/PanePolygonGroup'
+import { HelpIcon } from '#/lib/icons'
 import { createId } from '#/lib/nanoid'
 import { useStore } from '#/lib/store'
+import { truncateDecimals } from '#/lib/util'
 
 const Pane = (boxProps: BoxProps) => {
   const zoom = useStore(s => s.zoom)
@@ -31,15 +36,28 @@ const Pane = (boxProps: BoxProps) => {
   const points = useStore(s => s.points)
   const polygons = useStore(s => s.polygons)
   const polygonGroups = useStore(s => s.polygonGroups)
+  const pointGroups = useStore(s => s.pointGroups)
+  const addPointGroup = useStore(s => s.addPointGroup)
+  const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
+  const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const clearPoints = useStore(s => s.clearPoints)
+  const clearPolygons = useStore(s => s.clearPolygons)
+  const clearPolygonGroups = useStore(s => s.clearPolygonGroups)
+  const clearPointGroups = useStore(s => s.clearPointGroups)
   const setSelectedPolygonId = useStore(s => s.setSelectedPolygonId)
   const addPolygonGroup = useStore(s => s.addPolygonGroup)
   const setSelectedPolygonGroupId = useStore(s => s.setSelectedPolygonGroupId)
   const addPolygon = useStore(s => s.addPolygon)
+  const pointsWithTruncatedDecimals = points.map(p => ({
+    ...p,
+    x: truncateDecimals(p.x, decimals),
+    y: truncateDecimals(p.y, decimals),
+  }))
   const exportContent = {
-    points,
-    ...(polygons.length > 0 ? { polygons } : {}),
-    ...(polygonGroups.length > 0 ? { polygonGroups } : {}),
+    points: pointsWithTruncatedDecimals,
+    pointGroups,
+    polygons,
+    polygonGroups,
   }
 
   return (
@@ -72,6 +90,8 @@ const Pane = (boxProps: BoxProps) => {
           <FormLabel>Max decimals</FormLabel>
           <Input
             type="number"
+            min={0}
+            max={5}
             value={decimals}
             onChange={e => setDecimals(Number(e.target.value))}
           />
@@ -81,6 +101,19 @@ const Pane = (boxProps: BoxProps) => {
         <Box>
           <Heading as="h2" size="md" mb={5}>
             Points
+            <Tooltip
+              label={
+                <>
+                  <b>Points</b> are the most basic building block. They are defined by a position.
+                  They exist on their own and are not necessarily attached to polygons or point
+                  groups. A single point can also be attached to multiple polygons and point groups.
+                </>
+              }
+            >
+              <Box display="inline-block" verticalAlign="middle" ml={2} cursor="help">
+                <Icon as={HelpIcon} />
+              </Box>
+            </Tooltip>
           </Heading>
           <Stack>
             {points.map(p => (
@@ -90,7 +123,62 @@ const Pane = (boxProps: BoxProps) => {
         </Box>
         <Box>
           <Heading as="h2" size="md" mb={5}>
+            Point Groups
+            <Tooltip
+              label={
+                <>
+                  Use <b>Point Groups</b> to define a set of points that are related to each other,
+                  but 🛑 <b>do not define a shape</b>. For example, enemies on a map. If you want to
+                  define a shape, use <b>Polygons</b> instead.
+                  <br />
+                  <br />
+                  If a point group is <b>selected</b>, new points will be automatically added to it.
+                </>
+              }
+            >
+              <Box display="inline-block" verticalAlign="middle" ml={2} cursor="help">
+                <Icon as={HelpIcon} />
+              </Box>
+            </Tooltip>
+          </Heading>
+          <Stack>
+            {pointGroups.map(p => (
+              <PanePointGroup key={p.id} {...p} />
+            ))}
+            <Button
+              onClick={() => {
+                const name = prompt('Point group name')
+                if (name === null) {
+                  return
+                }
+                const id = createId()
+                addPointGroup({ id, pointIds: [], name })
+                setSelectedPointGroupId(id)
+              }}
+            >
+              Add point group
+            </Button>
+          </Stack>
+        </Box>
+        <Box>
+          <Heading as="h2" size="md" mb={5}>
             Polygons
+            <Tooltip
+              label={
+                <>
+                  Use <b>Polygons</b> to define shapes from a list of points. The order of the
+                  points matters! Each polygon defines its own order of points so feel free to
+                  reorder them as you wish.
+                  <br />
+                  <br />
+                  If a polygon is <b>selected</b>, new points will be automatically added to it.
+                </>
+              }
+            >
+              <Box display="inline-block" verticalAlign="middle" ml={2} cursor="help">
+                <Icon as={HelpIcon} />
+              </Box>
+            </Tooltip>
           </Heading>
           <Stack>
             {polygons.map(p => (
@@ -114,6 +202,24 @@ const Pane = (boxProps: BoxProps) => {
         <Box>
           <Heading as="h2" size="md" mb={5}>
             Polygon Groups
+            <Tooltip
+              label={
+                <>
+                  Use <b>Polygon Groups</b> to define a set of polygons that are related to each
+                  other. For example, you can have a &quot;forests&quot; group, which contains all
+                  the polygons that represent forests, and color them all in green for visualization
+                  purposes.
+                  <br />
+                  <br />
+                  If a polygon group is <b>selected</b>, new polygons will be automatically added to
+                  it.
+                </>
+              }
+            >
+              <Box display="inline-block" verticalAlign="middle" ml={2} cursor="help">
+                <Icon as={HelpIcon} />
+              </Box>
+            </Tooltip>
           </Heading>
           {polygonGroups.map(p => (
             <PanePolygonGroup key={p.id} {...p} />
@@ -133,21 +239,31 @@ const Pane = (boxProps: BoxProps) => {
           </Button>
         </Box>
       </SimpleGrid>
-      <Button
-        onClick={() => {
-          if (confirm('Are you sure you want to delete all points?')) {
-            clearPoints()
-          }
-        }}
-      >
-        Clear points
-      </Button>
-      <Button onClick={() => fileDownload(JSON.stringify(exportContent), 'polydraw.json')}>
-        Download JSON
-      </Button>
-      <Button onClick={() => navigator.clipboard.writeText(JSON.stringify(exportContent))}>
-        Copy JSON
-      </Button>
+      <Box my={10}>
+        <Button
+          onClick={() => {
+            if (confirm('Are you sure you want to delete all points, polygons, and groups?')) {
+              clearPoints()
+              clearPolygons()
+              clearPolygonGroups()
+              clearPointGroups()
+              setSelectedPointGroupId()
+              setSelectedPolygonGroupId()
+              setSelectedPolygonId()
+              setSelectedPointId()
+            }
+          }}
+        >
+          Reset all
+        </Button>
+        <Button onClick={() => fileDownload(JSON.stringify(exportContent), 'polydraw.json')}>
+          Download JSON
+        </Button>
+        <Button onClick={() => navigator.clipboard.writeText(JSON.stringify(exportContent))}>
+          Copy JSON
+        </Button>
+        <Button onClick={() => navigator.clipboard.writeText('TODO')}>Copy join logic</Button>
+      </Box>
       <Box mt={10}>
         <Heading as="h3" size="md" mb={5}>
           Instructions

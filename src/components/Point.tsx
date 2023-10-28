@@ -1,11 +1,14 @@
 import { Box } from '@chakra-ui/react'
 
 import { useStore } from '#/lib/store'
-import { Point as TPoint } from '#/lib/types'
+import { truncateDecimals } from '#/lib/util'
 
-const Point = ({ id, x, y }: TPoint) => {
+import type { RawPoint } from '#/lib/types'
+
+const Point = ({ id, x, y }: RawPoint) => {
   const scale = useStore(s => s.scale)
   const zoom = useStore(s => s.zoom)
+  const decimals = useStore(s => s.decimals)
   const selectedPointId = useStore(s => s.selectedPointId)
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const updatePoint = useStore(s => s.updatePoint)
@@ -38,7 +41,10 @@ const Point = ({ id, x, y }: TPoint) => {
         e.stopPropagation()
 
         if (isDragging && e.buttons === 1) {
-          updatePoint(id, { x: x + e.movementX, y: y - e.movementY })
+          updatePoint(id, {
+            x: truncateDecimals(x + e.movementX / (scale.width * zoom), decimals),
+            y: truncateDecimals(y - e.movementY / (scale.height * zoom), decimals),
+          })
         }
       }}
       onPointerUp={e => {

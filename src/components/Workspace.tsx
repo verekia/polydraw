@@ -10,10 +10,14 @@ const Workspace = (centerProps: CenterProps) => {
   const selectedPointId = useStore(s => s.selectedPointId)
   const selectedPolygonId = useStore(s => s.selectedPolygonId)
   const selectedPolygonGroupId = useStore(s => s.selectedPolygonGroupId)
+  const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
+  const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
 
   const deselectCascade = () => {
     if (selectedPointId) {
       setSelectedPointId()
+    } else if (selectedPointGroupId) {
+      setSelectedPointGroupId()
     } else if (selectedPolygonId) {
       setSelectedPolygonId()
     } else if (selectedPolygonGroupId) {

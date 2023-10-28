@@ -1,19 +1,17 @@
-import { Box, Checkbox, Flex, HStack, Icon, IconButton, Spacer } from '@chakra-ui/react'
+import { Box, Flex, HStack, Icon, IconButton, Spacer } from '@chakra-ui/react'
 
 import { DeleteIcon, DownArrowIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 
-import type { PolygonGroup } from '#/lib/types'
+import type { RawPolygonGroup } from '#/lib/types'
 
-const PanePolygonGroup = ({ id, name, polygonIds }: PolygonGroup) => {
+const PanePolygonGroup = ({ id, name, polygonIds }: RawPolygonGroup) => {
   const selectedPolygonGroupId = useStore(s => s.selectedPolygonGroupId)
   const setSelectedPolygonGroupId = useStore(s => s.setSelectedPolygonGroupId)
   const moveDownPolygonGroup = useStore(s => s.moveDownPolygonGroup)
   const moveUpPolygonGroup = useStore(s => s.moveUpPolygonGroup)
   const removePolygonGroup = useStore(s => s.removePolygonGroup)
   const polygons = useStore(s => s.polygons)
-  const autoAddPolygons = useStore(s => s.autoAddPolygons)
-  const setAutoAddPolygons = useStore(s => s.setAutoAddPolygons)
   const isSelected = selectedPolygonGroupId === id
 
   return (
@@ -76,23 +74,6 @@ const PanePolygonGroup = ({ id, name, polygonIds }: PolygonGroup) => {
       </Flex>
       {isSelected && (
         <Box>
-          <Box
-            onClick={e => {
-              e.preventDefault()
-              e.stopPropagation()
-              setAutoAddPolygons(!autoAddPolygons)
-            }}
-          >
-            <Checkbox
-              isChecked={autoAddPolygons}
-              isDisabled={!Boolean(selectedPolygonGroupId)}
-              // Prevents the parent click handler from being called twice
-              // https://github.com/chakra-ui/chakra-ui/issues/2854
-              pointerEvents="none"
-            >
-              Automatically add new polygons
-            </Checkbox>
-          </Box>
           <Box>Polygons:</Box>
           {polygonIds.map(pid => {
             const foundPolygon = polygons.find(p => p.id === pid)

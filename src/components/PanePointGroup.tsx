@@ -3,24 +3,24 @@ import { Box, Flex, HStack, Icon, IconButton, Spacer } from '@chakra-ui/react'
 import { DeleteIcon, DownArrowIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 
-import type { RawPolygon } from '#/lib/types'
+import type { RawPointGroup } from '#/lib/types'
 
-const PanePolygon = ({ id, name, pointIds }: RawPolygon) => {
-  const selectedPolygonId = useStore(s => s.selectedPolygonId)
-  const setSelectedPolygonId = useStore(s => s.setSelectedPolygonId)
-  const moveDownPolygon = useStore(s => s.moveDownPolygon)
-  const moveUpPolygon = useStore(s => s.moveUpPolygon)
-  const removePolygon = useStore(s => s.removePolygon)
+const PanePointGroup = ({ id, name, pointIds }: RawPointGroup) => {
+  const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
+  const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
+  const moveDownPointGroup = useStore(s => s.moveDownPointGroup)
+  const moveUpPointGroup = useStore(s => s.moveUpPointGroup)
+  const removePointGroup = useStore(s => s.removePointGroup)
   const selectedPointId = useStore(s => s.selectedPointId)
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const points = useStore(s => s.points)
-  const isSelected = selectedPolygonId === id
+  const isSelected = selectedPointGroupId === id
 
   return (
     <Box
       border={isSelected ? '1px solid red' : '1px solid transparent'}
       rounded="md"
-      onClick={() => setSelectedPolygonId(isSelected ? undefined : id)}
+      onClick={() => setSelectedPointGroupId(isSelected ? undefined : id)}
       cursor="pointer"
       px={3}
       py={1}
@@ -34,22 +34,22 @@ const PanePolygon = ({ id, name, pointIds }: RawPolygon) => {
           <HStack spacing={0}>
             <IconButton
               icon={<Icon as={DownArrowIcon} />}
-              aria-label="Move polygon down"
+              aria-label="Move point group down"
               variant="ghost"
               size="sm"
               onClick={e => {
                 e.stopPropagation()
-                moveDownPolygon(id)
+                moveDownPointGroup(id)
               }}
             />
             <IconButton
               icon={<Icon as={UpArrowIcon} />}
-              aria-label="Move polygon up"
+              aria-label="Move point group up"
               variant="ghost"
               size="sm"
               onClick={e => {
                 e.stopPropagation()
-                moveUpPolygon(id)
+                moveUpPointGroup(id)
               }}
             />
             <IconButton
@@ -60,14 +60,14 @@ const PanePolygon = ({ id, name, pointIds }: RawPolygon) => {
               onClick={e => {
                 e.stopPropagation()
                 if (isSelected) {
-                  setSelectedPolygonId()
+                  setSelectedPointGroupId()
                 }
                 if (
                   confirm(
-                    'Are you sure you want to delete this polygon? The points it references will not be deleted.',
+                    'Are you sure you want to delete this point group? The points it references will not be deleted.',
                   )
                 ) {
-                  removePolygon(id)
+                  removePointGroup(id)
                 }
               }}
             />
@@ -102,4 +102,4 @@ const PanePolygon = ({ id, name, pointIds }: RawPolygon) => {
   )
 }
 
-export default PanePolygon
+export default PanePointGroup

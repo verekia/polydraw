@@ -11,9 +11,11 @@ const IndexPage = () => {
   const selectedPointId = useStore(s => s.selectedPointId)
   const selectedPolygonId = useStore(s => s.selectedPolygonId)
   const selectedPolygonGroupId = useStore(s => s.selectedPolygonGroupId)
+  const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const setSelectedPolygonId = useStore(s => s.setSelectedPolygonId)
   const setSelectedPolygonGroupId = useStore(s => s.setSelectedPolygonGroupId)
+  const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
   const removePoint = useStore(s => s.removePoint)
 
   useEffect(() => {
@@ -21,6 +23,8 @@ const IndexPage = () => {
       if (e.key === 'Escape') {
         if (selectedPointId) {
           setSelectedPointId()
+        } else if (selectedPointGroupId) {
+          setSelectedPointGroupId()
         } else if (selectedPolygonId) {
           setSelectedPolygonId()
         } else if (selectedPolygonGroupId) {
@@ -51,6 +55,8 @@ const IndexPage = () => {
     setSelectedPolygonId,
     removePoint,
     points,
+    setSelectedPointGroupId,
+    selectedPointGroupId,
   ])
 
   return (

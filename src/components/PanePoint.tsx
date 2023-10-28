@@ -2,14 +2,17 @@ import { Box, Flex, HStack, Icon, IconButton, Spacer } from '@chakra-ui/react'
 
 import { DeleteIcon, DownArrowIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
-import { Point } from '#/lib/types'
+import { truncateDecimals } from '#/lib/util'
 
-const PanePoint = ({ id, name, x, y }: Point) => {
+import type { RawPoint } from '#/lib/types'
+
+const PanePoint = ({ id, name, x, y }: RawPoint) => {
   const selectedPointId = useStore(s => s.selectedPointId)
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const moveDownPoint = useStore(s => s.moveDownPoint)
   const moveUpPoint = useStore(s => s.moveUpPoint)
   const removePoint = useStore(s => s.removePoint)
+  const decimals = useStore(s => s.decimals)
   const isSelected = selectedPointId === id
 
   return (
@@ -24,7 +27,7 @@ const PanePoint = ({ id, name, x, y }: Point) => {
       bg="#333"
     >
       <Box>
-        <Box>{name ?? `${x}, ${y}`}</Box>
+        <Box>{name ?? `${truncateDecimals(x, decimals)}, ${truncateDecimals(y, decimals)}`}</Box>
       </Box>
       <Spacer />
       {isSelected && (

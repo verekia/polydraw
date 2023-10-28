@@ -3,11 +3,9 @@ import { Box, BoxProps } from '@chakra-ui/react'
 import Point from '#/components/Point'
 import { createId } from '#/lib/nanoid'
 import { useStore } from '#/lib/store'
-import { truncateDecimals } from '#/lib/util'
 
 const Canvas = (boxProps: BoxProps) => {
   const zoom = useStore(s => s.zoom)
-  const decimals = useStore(s => s.decimals)
   const scale = useStore(s => s.scale)
   const points = useStore(s => s.points)
   const mode = useStore(s => s.mode)
@@ -33,11 +31,7 @@ const Canvas = (boxProps: BoxProps) => {
           const x = e.clientX - rect.left
           const y = rect.height - (e.clientY - rect.top)
           const id = createId()
-          addPoint({
-            id,
-            x: truncateDecimals(x / zoom, decimals),
-            y: truncateDecimals(y / zoom, decimals),
-          })
+          addPoint({ id, x: x / zoom, y: y / zoom })
           setSelectedPointId(id)
         }
       }}
