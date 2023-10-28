@@ -128,11 +128,18 @@ const Pane = (boxProps: BoxProps) => {
               label={
                 <>
                   Use <b>Point Groups</b> to define a set of points that are related to each other,
-                  but 🛑 <b>do not define a shape</b>. For example, enemies on a map. If you want to
-                  define a shape, use <b>Polygons</b> instead.
+                  but 🛑 <b>do not define a shape</b>. If you want to define a shape, use{' '}
+                  <b>Polygons</b> instead.
                   <br />
                   <br />
-                  If a point group is <b>selected</b>, new points will be automatically added to it.
+                  <b>Example</b>: Enemies on a map.
+                  <br />
+                  <br />
+                  If a point group is{' '}
+                  <Box as="b" border="1px solid red" display="inline-block" px="3px" rounded="md">
+                    selected
+                  </Box>
+                  , new <b>points</b> will be automatically added to it.
                 </>
               }
             >
@@ -171,7 +178,14 @@ const Pane = (boxProps: BoxProps) => {
                   reorder them as you wish.
                   <br />
                   <br />
-                  If a polygon is <b>selected</b>, new points will be automatically added to it.
+                  <b>Example</b>: The shape of a forest on a map.
+                  <br />
+                  <br />
+                  If a polygon is{' '}
+                  <Box as="b" border="1px solid red" display="inline-block" px="3px" rounded="md">
+                    selected
+                  </Box>
+                  , new <b>points</b> will be automatically added to it.
                 </>
               }
             >
@@ -206,13 +220,18 @@ const Pane = (boxProps: BoxProps) => {
               label={
                 <>
                   Use <b>Polygon Groups</b> to define a set of polygons that are related to each
-                  other. For example, you can have a &quot;forests&quot; group, which contains all
-                  the polygons that represent forests, and color them all in green for visualization
-                  purposes.
+                  other.
                   <br />
                   <br />
-                  If a polygon group is <b>selected</b>, new polygons will be automatically added to
-                  it.
+                  <b>Example</b>: Multiple forest polygons that are colored in green for
+                  visualization purposes.
+                  <br />
+                  <br />
+                  If a polygon group is{' '}
+                  <Box as="b" border="1px solid red" display="inline-block" px="3px" rounded="md">
+                    selected
+                  </Box>
+                  , new <b>polygons</b> will be automatically added to it.
                 </>
               }
             >
