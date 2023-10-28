@@ -8,10 +8,13 @@ interface Store {
   setCanvas: ({ width, height }: { width: number; height: number; zoomLevel: number }) => void
   selectedPointId?: PointId
   setSelectedPointId: (id?: PointId) => void
+  isDragging: boolean
+  setIsDragging: (isDragging: boolean) => void
   points: Point[]
   setPoints: (points: Point[]) => void
   addPoint: (point: Point) => void
   removePoint: (id: PointId) => void
+  updatePoint: (id: PointId, point: Partial<Point>) => void
   moveDownPoint: (id: PointId) => void
   moveUpPoint: (id: PointId) => void
   clearPoints: () => void
@@ -57,6 +60,8 @@ export const useStore = create<Store>()(
         }) => set({ canvas: { width, height, zoomLevel } }),
         selectedPointId: undefined,
         setSelectedPointId: (id?: PointId) => set({ selectedPointId: id }),
+        isDragging: false,
+        setIsDragging: isDragging => set({ isDragging }),
         points: [],
         setPoints: points => set({ points }),
         addPoint: point => {
@@ -71,6 +76,8 @@ export const useStore = create<Store>()(
             })
           }
         },
+        updatePoint: (id, point) =>
+          set({ points: get().points.map(p => (p.id === id ? { ...p, ...point } : p)) }),
         removePoint: id => set({ points: get().points.filter(p => p.id !== id) }),
         moveDownPoint: id => {
           const points = [...get().points]

@@ -9,6 +9,8 @@ const Canvas = (boxProps: BoxProps) => {
   const points = useStore(s => s.points)
   const mode = useStore(s => s.mode)
   const addPoint = useStore(s => s.addPoint)
+  const isDragging = useStore(s => s.isDragging)
+  const setSelectedPointId = useStore(s => s.setSelectedPointId)
 
   return (
     <Box
@@ -18,11 +20,18 @@ const Canvas = (boxProps: BoxProps) => {
       pos="relative"
       cursor={mode === 'add-point' ? 'crosshair' : 'default'}
       onClick={e => {
+        e.stopPropagation()
+
+        if (isDragging) {
+          return
+        }
         if (mode === 'add-point') {
           const rect = e.currentTarget.getBoundingClientRect()
           const x = e.clientX - rect.left
           const y = rect.height - (e.clientY - rect.top)
-          addPoint({ id: createId(), x: x / canvas.zoomLevel, y: y / canvas.zoomLevel })
+          const id = createId()
+          addPoint({ id, x: x / canvas.zoomLevel, y: y / canvas.zoomLevel })
+          setSelectedPointId(id)
         }
       }}
       w={canvas.width * canvas.zoomLevel}
