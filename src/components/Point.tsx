@@ -4,6 +4,8 @@ import { useStore } from '#/lib/store'
 import { Point as TPoint } from '#/lib/types'
 
 const Point = ({ id, x, y }: TPoint) => {
+  const scale = useStore(s => s.scale)
+  const zoom = useStore(s => s.zoom)
   const selectedPointId = useStore(s => s.selectedPointId)
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const updatePoint = useStore(s => s.updatePoint)
@@ -14,8 +16,8 @@ const Point = ({ id, x, y }: TPoint) => {
   return (
     <Box
       pos="absolute"
-      bottom={`${y}px`}
-      left={`${x}px`}
+      bottom={`${(y / scale.height) * zoom * scale.height}px`}
+      left={`${(x / scale.width) * zoom * scale.width}px`}
       transform="translate(-50%, 50%)"
       rounded="999px"
       boxSize="24px"

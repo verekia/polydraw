@@ -4,8 +4,12 @@ import { devtools, persist } from 'zustand/middleware'
 import { Point, PointId, Polygon, PolygonGroup, PolygonGroupId, PolygonId } from '#/lib/types'
 
 interface Store {
-  canvas: { width: number; height: number; zoomLevel: number }
-  setCanvas: ({ width, height }: { width: number; height: number; zoomLevel: number }) => void
+  zoom: number
+  setZoom: (zoom: number) => void
+  scale: { width: number; height: number }
+  setScale: ({ width, height }: { width: number; height: number }) => void
+  decimals: number
+  setDecimals: (decimals: number) => void
   selectedPointId?: PointId
   setSelectedPointId: (id?: PointId) => void
   isDragging: boolean
@@ -48,16 +52,13 @@ export const useStore = create<Store>()(
   devtools(
     persist(
       (set, get) => ({
-        canvas: { width: 500, height: 300, zoomLevel: 1 },
-        setCanvas: ({
-          width,
-          height,
-          zoomLevel,
-        }: {
-          width: number
-          height: number
-          zoomLevel: number
-        }) => set({ canvas: { width, height, zoomLevel } }),
+        zoom: 5,
+        setZoom: zoom => set({ zoom }),
+        scale: { width: 100, height: 100 },
+        setScale: ({ width, height }: { width: number; height: number }) =>
+          set({ scale: { width, height } }),
+        decimals: 2,
+        setDecimals: decimals => set({ decimals }),
         selectedPointId: undefined,
         setSelectedPointId: (id?: PointId) => set({ selectedPointId: id }),
         isDragging: false,

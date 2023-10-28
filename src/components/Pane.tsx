@@ -2,7 +2,11 @@ import {
   Box,
   BoxProps,
   Button,
+  Flex,
+  FormControl,
+  FormLabel,
   Heading,
+  Input,
   ListItem,
   SimpleGrid,
   Stack,
@@ -18,6 +22,12 @@ import { createId } from '#/lib/nanoid'
 import { useStore } from '#/lib/store'
 
 const Pane = (boxProps: BoxProps) => {
+  const zoom = useStore(s => s.zoom)
+  const setZoom = useStore(s => s.setZoom)
+  const decimals = useStore(s => s.decimals)
+  const setDecimals = useStore(s => s.setDecimals)
+  const scale = useStore(s => s.scale)
+  const setScale = useStore(s => s.setScale)
   const points = useStore(s => s.points)
   const polygons = useStore(s => s.polygons)
   const polygonGroups = useStore(s => s.polygonGroups)
@@ -37,6 +47,36 @@ const Pane = (boxProps: BoxProps) => {
       <Heading as="h1" textAlign="center" size="lg" mb={8}>
         PolyDraw
       </Heading>
+      <Flex mb={10}>
+        <FormControl>
+          <FormLabel>Scale width</FormLabel>
+          <Input
+            type="number"
+            value={scale.width}
+            onChange={e => setScale({ ...scale, width: Number(e.target.value) })}
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Scale height</FormLabel>
+          <Input
+            type="number"
+            value={scale.height}
+            onChange={e => setScale({ ...scale, height: Number(e.target.value) })}
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Zoom</FormLabel>
+          <Input type="number" value={zoom} onChange={e => setZoom(Number(e.target.value))} />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Max decimals</FormLabel>
+          <Input
+            type="number"
+            value={decimals}
+            onChange={e => setDecimals(Number(e.target.value))}
+          />
+        </FormControl>
+      </Flex>
       <SimpleGrid gap={5} columns={3}>
         <Box>
           <Heading as="h2" size="md" mb={5}>
@@ -115,7 +155,7 @@ const Pane = (boxProps: BoxProps) => {
         <Text>This is an app to create points and polygons, and retrieve their coordinates.</Text>
         <UnorderedList mt={5}>
           <ListItem>
-            Set the <b>canvas size</b> and <b>custom scale</b> you want.
+            Set the <b>custom scale</b> and <b>zoom</b> level you want to work comfortably.
           </ListItem>
           <ListItem>
             You can optionally set a <b>background image</b> to draw on top of.
