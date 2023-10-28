@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { Flex } from '@chakra-ui/react'
+import Head from 'next/head'
 
 import Pane from '#/components/Pane'
 import Workspace from '#/components/Workspace'
@@ -60,10 +61,15 @@ const IndexPage = () => {
   ])
 
   return (
-    <Flex boxSize="full" justifyContent="center">
-      <Workspace flexGrow={1} />
-      <Pane h="full" w="full" maxW="700px" minW="200px" overflowY="scroll" />
-    </Flex>
+    <>
+      <Flex boxSize="full" justifyContent="center">
+        <Workspace flexGrow={1} />
+        <Pane h="full" w="full" maxW="700px" minW="200px" overflowY="scroll" />
+      </Flex>
+      <Head>
+        <title>PolyDraw | Draw Polygons, Export Coordinates</title>
+      </Head>
+    </>
   )
 }
 
