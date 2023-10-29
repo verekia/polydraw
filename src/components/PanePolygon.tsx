@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Icon, IconButton, Spacer } from '@chakra-ui/react'
+import { Box, Flex, HStack, Icon, IconButton, Spacer, Stack } from '@chakra-ui/react'
 
 import { DeleteIcon, DownArrowIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
@@ -13,6 +13,8 @@ const PanePolygon = ({ id, name, pointIds }: RawPolygon) => {
   const removePolygon = useStore(s => s.removePolygon)
   const selectedPointId = useStore(s => s.selectedPointId)
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
+  const moveDownPointInPolygon = useStore(s => s.moveDownPointInPolygon)
+  const moveUpPointInPolygon = useStore(s => s.moveUpPointInPolygon)
   const points = useStore(s => s.points)
   const isSelected = selectedPolygonId === id
 
@@ -75,27 +77,55 @@ const PanePolygon = ({ id, name, pointIds }: RawPolygon) => {
         )}
       </Flex>
       {isSelected && (
-        <Box>
+        <Box onClick={e => e.stopPropagation()}>
           <Box>Points:</Box>
-          {pointIds.map(pid => {
-            const foundPoint = points.find(p => p.id === pid)
-            if (!foundPoint) {
-              return null
-            }
-            return (
-              <Box
-                key={pid}
-                onClick={e => {
-                  e.stopPropagation()
-                  setSelectedPointId(pid)
-                }}
-                bg={selectedPointId === pid ? '#444' : 'transparent'}
-                _hover={{ bg: '#444' }}
-              >
-                {foundPoint.name ?? `${foundPoint.x}, ${foundPoint.y}`}
-              </Box>
-            )
-          })}
+          <Stack>
+            {pointIds.map(pid => {
+              const foundPoint = points.find(p => p.id === pid)
+              if (!foundPoint) {
+                return null
+              }
+              return (
+                <Box
+                  key={pid}
+                  onClick={e => {
+                    e.stopPropagation()
+                    setSelectedPointId(pid)
+                  }}
+                  bg={selectedPointId === pid ? '#444' : 'transparent'}
+                  shadow={selectedPointId === pid ? '0 0 0 2px white' : undefined}
+                  px={2}
+                  rounded="md"
+                  _hover={{ bg: '#444' }}
+                >
+                  <Flex>
+                    <Box>{foundPoint.name ?? `${foundPoint.x}, ${foundPoint.y}`}</Box>
+                    <Spacer />
+                    <IconButton
+                      icon={<Icon as={DownArrowIcon} />}
+                      aria-label="Move point down in polygon"
+                      variant="ghost"
+                      size="sm"
+                      onClick={e => {
+                        e.stopPropagation()
+                        moveDownPointInPolygon(id, pid)
+                      }}
+                    />
+                    <IconButton
+                      icon={<Icon as={UpArrowIcon} />}
+                      aria-label="Move point up in polygon"
+                      variant="ghost"
+                      size="sm"
+                      onClick={e => {
+                        e.stopPropagation()
+                        moveUpPointInPolygon(id, pid)
+                      }}
+                    />
+                  </Flex>
+                </Box>
+              )
+            })}
+          </Stack>
         </Box>
       )}
     </Box>

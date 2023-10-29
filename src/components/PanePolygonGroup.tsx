@@ -73,7 +73,7 @@ const PanePolygonGroup = ({ id, name, polygonIds }: RawPolygonGroup) => {
         )}
       </Flex>
       {isSelected && (
-        <Box>
+        <Box onClick={e => e.stopPropagation()}>
           <Box>Polygons:</Box>
           {polygonIds.map(pid => {
             const foundPolygon = polygons.find(p => p.id === pid)

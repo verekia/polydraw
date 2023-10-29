@@ -13,6 +13,8 @@ const PanePointGroup = ({ id, name, pointIds }: RawPointGroup) => {
   const removePointGroup = useStore(s => s.removePointGroup)
   const selectedPointId = useStore(s => s.selectedPointId)
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
+  const moveDownPointInPointGroup = useStore(s => s.moveDownPointInPointGroup)
+  const moveUpPointInPointGroup = useStore(s => s.moveUpPointInPointGroup)
   const points = useStore(s => s.points)
   const isSelected = selectedPointGroupId === id
 
@@ -75,7 +77,7 @@ const PanePointGroup = ({ id, name, pointIds }: RawPointGroup) => {
         )}
       </Flex>
       {isSelected && (
-        <Box>
+        <Box onClick={e => e.stopPropagation()}>
           <Box mb={2}>Points:</Box>
           <Stack>
             {pointIds.map(pid => {
@@ -95,7 +97,30 @@ const PanePointGroup = ({ id, name, pointIds }: RawPointGroup) => {
                   rounded="md"
                   _hover={{ bg: '#444' }}
                 >
-                  {foundPoint.name ?? `${foundPoint.x}, ${foundPoint.y}`}
+                  <Flex>
+                    <Box>{foundPoint.name ?? `${foundPoint.x}, ${foundPoint.y}`}</Box>
+                    <Spacer />
+                    <IconButton
+                      icon={<Icon as={DownArrowIcon} />}
+                      aria-label="Move point down in group"
+                      variant="ghost"
+                      size="sm"
+                      onClick={e => {
+                        e.stopPropagation()
+                        moveDownPointInPointGroup(id, pid)
+                      }}
+                    />
+                    <IconButton
+                      icon={<Icon as={UpArrowIcon} />}
+                      aria-label="Move point up in group"
+                      variant="ghost"
+                      size="sm"
+                      onClick={e => {
+                        e.stopPropagation()
+                        moveUpPointInPointGroup(id, pid)
+                      }}
+                    />
+                  </Flex>
                 </Box>
               )
             })}

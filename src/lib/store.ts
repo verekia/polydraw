@@ -33,6 +33,10 @@ interface Store {
   moveDownPoint: (id: PointId) => void
   moveUpPoint: (id: PointId) => void
   clearPoints: () => void
+  moveDownPointInPointGroup: (pointGroupId: PointGroupId, pointId: PointId) => void
+  moveUpPointInPointGroup: (pointGroupId: PointGroupId, pointId: PointId) => void
+  moveDownPointInPolygon: (polygonId: PolygonId, pointId: PointId) => void
+  moveUpPointInPolygon: (polygonId: PolygonId, pointId: PointId) => void
   pointGroups: RawPointGroup[]
   setPointGroups: (pointGroups: RawPointGroup[]) => void
   addPointGroup: (pointGroup: RawPointGroup) => void
@@ -139,6 +143,46 @@ export const useStore = create<Store>()(
           set({ points })
         },
         clearPoints: () => set({ points: [], selectedPointId: undefined }),
+        moveDownPointInPointGroup: (pointGroupId, pointId) => {
+          const pointGroups = [...get().pointGroups]
+          const index = pointGroups.findIndex(p => p.id === pointGroupId)
+          const pointGroup = pointGroups[index]
+          const pointIndex = pointGroup.pointIds.findIndex(id => id === pointId)
+          const point = pointGroup.pointIds.splice(pointIndex, 1)[0]
+          pointGroup.pointIds.splice(pointIndex + 1, 0, point)
+          pointGroups.splice(index, 1, pointGroup)
+          set({ pointGroups })
+        },
+        moveUpPointInPointGroup: (pointGroupId, pointId) => {
+          const pointGroups = [...get().pointGroups]
+          const index = pointGroups.findIndex(p => p.id === pointGroupId)
+          const pointGroup = pointGroups[index]
+          const pointIndex = pointGroup.pointIds.findIndex(id => id === pointId)
+          const point = pointGroup.pointIds.splice(pointIndex, 1)[0]
+          pointGroup.pointIds.splice(pointIndex - 1, 0, point)
+          pointGroups.splice(index, 1, pointGroup)
+          set({ pointGroups })
+        },
+        moveDownPointInPolygon: (polygonId, pointId) => {
+          const polygons = [...get().polygons]
+          const index = polygons.findIndex(p => p.id === polygonId)
+          const polygon = polygons[index]
+          const pointIndex = polygon.pointIds.findIndex(id => id === pointId)
+          const point = polygon.pointIds.splice(pointIndex, 1)[0]
+          polygon.pointIds.splice(pointIndex + 1, 0, point)
+          polygons.splice(index, 1, polygon)
+          set({ polygons })
+        },
+        moveUpPointInPolygon: (polygonId, pointId) => {
+          const polygons = [...get().polygons]
+          const index = polygons.findIndex(p => p.id === polygonId)
+          const polygon = polygons[index]
+          const pointIndex = polygon.pointIds.findIndex(id => id === pointId)
+          const point = polygon.pointIds.splice(pointIndex, 1)[0]
+          polygon.pointIds.splice(pointIndex - 1, 0, point)
+          polygons.splice(index, 1, polygon)
+          set({ polygons })
+        },
         pointGroups: [],
         setPointGroups: pointGroups => set({ pointGroups }),
         addPointGroup: pointGroup => set({ pointGroups: [...get().pointGroups, pointGroup] }),
