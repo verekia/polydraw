@@ -1,7 +1,6 @@
-export type PolygonGroupId = string
-export type PolygonId = string
-export type PointGroupId = string
 export type PointId = string
+export type PointGroupId = string
+export type SuperGroupId = string
 
 export type RawPoint = {
   id: PointId
@@ -12,6 +11,11 @@ export type RawPoint = {
   z?: number
   rotZ?: number
 }
-export type RawPointGroup = { id: PointGroupId; name?: string; pointIds: PointId[] }
-export type RawPolygon = { id: PolygonId; name?: string; pointIds: PointId[] }
-export type RawPolygonGroup = { id: PolygonGroupId; name?: string; polygonIds: PolygonId[] }
+export type RawPointGroup = {
+  id: PointGroupId
+  isPolygon: boolean
+  name?: string
+  color?: string
+  pointIds: PointId[]
+}
+export type RawSuperGroup = { id: SuperGroupId; name?: string; pointGroupIds: PointGroupId[] }

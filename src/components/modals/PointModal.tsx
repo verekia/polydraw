@@ -26,7 +26,6 @@ const PointModal = () => {
   const points = useStore(s => s.points)
   const point = points.find(p => p.id === selectedPointId)
   const updatePoint = useStore(s => s.updatePoint)
-  const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const removePoint = useStore(s => s.removePoint)
   const onClose = () => setModalShown()
 

@@ -1,6 +1,6 @@
 import { Box, Flex, HStack, Icon, IconButton, Spacer, Stack } from '@chakra-ui/react'
 
-import { DeleteIcon, DownArrowIcon, UpArrowIcon } from '#/lib/icons'
+import { DeleteIcon, DownArrowIcon, EditIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 
 import type { RawPointGroup } from '#/lib/types'
@@ -15,6 +15,7 @@ const PanePointGroup = ({ id, name, pointIds }: RawPointGroup) => {
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const moveDownPointInPointGroup = useStore(s => s.moveDownPointInPointGroup)
   const moveUpPointInPointGroup = useStore(s => s.moveUpPointInPointGroup)
+  const setModalShown = useStore(s => s.setModalShown)
   const points = useStore(s => s.points)
   const isSelected = selectedPointGroupId === id
 
@@ -29,11 +30,21 @@ const PanePointGroup = ({ id, name, pointIds }: RawPointGroup) => {
       userSelect="none"
       bg="#333"
     >
+      <Box>{name ?? `ID: ${id}`}</Box>
       <Flex>
-        <Box>{name ?? `ID: ${id}`}</Box>
         <Spacer />
         {isSelected && (
           <HStack spacing={0}>
+            <IconButton
+              icon={<Icon as={EditIcon} />}
+              aria-label="Edit"
+              variant="ghost"
+              size="sm"
+              onClick={e => {
+                e.stopPropagation()
+                setModalShown('point-group')
+              }}
+            />
             <IconButton
               icon={<Icon as={DownArrowIcon} />}
               aria-label="Move point group down"

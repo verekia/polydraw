@@ -1,4 +1,9 @@
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
   BoxProps,
   Button,
@@ -9,6 +14,7 @@ import {
   FormLabel,
   Heading,
   Icon,
+  Image,
   Input,
   ListItem,
   NumberDecrementStepper,
@@ -25,9 +31,8 @@ import fileDownload from 'js-file-download'
 
 import PanePoint from '#/components/PanePoint'
 import PanePointGroup from '#/components/PanePointGroup'
-import PanePolygon from '#/components/PanePolygon'
-import PanePolygonGroup from '#/components/PanePolygonGroup'
-import { HelpIcon } from '#/lib/icons'
+import PaneSuperGroup from '#/components/PaneSuperGroup'
+import { AddIcon, HelpIcon } from '#/lib/icons'
 import { createId } from '#/lib/nanoid'
 import { useStore } from '#/lib/store'
 import { truncateDecimals } from '#/lib/util'
@@ -40,24 +45,19 @@ const Pane = (boxProps: BoxProps) => {
   const scale = useStore(s => s.scale)
   const setScale = useStore(s => s.setScale)
   const points = useStore(s => s.points)
-  const polygons = useStore(s => s.polygons)
-  const polygonGroups = useStore(s => s.polygonGroups)
+  const superGroups = useStore(s => s.superGroups)
   const pointGroups = useStore(s => s.pointGroups)
   const addPointGroup = useStore(s => s.addPointGroup)
   const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
   const clearPoints = useStore(s => s.clearPoints)
-  const clearPolygons = useStore(s => s.clearPolygons)
-  const clearPolygonGroups = useStore(s => s.clearPolygonGroups)
+  const clearSuperGroups = useStore(s => s.clearSuperGroups)
   const clearPointGroups = useStore(s => s.clearPointGroups)
-  const setSelectedPolygonId = useStore(s => s.setSelectedPolygonId)
-  const addPolygonGroup = useStore(s => s.addPolygonGroup)
-  const setSelectedPolygonGroupId = useStore(s => s.setSelectedPolygonGroupId)
+  const addSuperGroup = useStore(s => s.addSuperGroup)
+  const setSelectedSuperGroupId = useStore(s => s.setSelectedSuperGroupId)
   const setBackgroundImageSrc = useStore(s => s.setBackgroundImageSrc)
   const setPoints = useStore(s => s.setPoints)
-  const setPolygons = useStore(s => s.setPolygons)
-  const setPolygonGroups = useStore(s => s.setPolygonGroups)
+  const setSuperGroups = useStore(s => s.setSuperGroups)
   const setPointGroups = useStore(s => s.setPointGroups)
-  const addPolygon = useStore(s => s.addPolygon)
   const showSinglePoints = useStore(s => s.showSinglePoints)
   const setShowSinglePoints = useStore(s => s.setShowSinglePoints)
   const pointsWithTruncatedDecimals = points.map(p => ({
@@ -68,8 +68,7 @@ const Pane = (boxProps: BoxProps) => {
   const exportContent = {
     points: pointsWithTruncatedDecimals,
     pointGroups,
-    polygons,
-    polygonGroups,
+    superGroups,
   }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,12 +90,10 @@ const Pane = (boxProps: BoxProps) => {
     reader.onloadend = () => {
       const data = JSON.parse(reader.result as string)
       clearPoints()
-      clearPolygons()
-      clearPolygonGroups()
+      clearSuperGroups()
       clearPointGroups()
       setPoints(data.points)
-      setPolygons(data.polygons)
-      setPolygonGroups(data.polygonGroups)
+      setSuperGroups(data.polygonGroups)
       setPointGroups(data.pointGroups)
     }
     reader.readAsText(file)
@@ -106,101 +103,126 @@ const Pane = (boxProps: BoxProps) => {
     <Box bg="#262626" p={5} {...boxProps}>
       <Flex alignItems="center" mb={5} justifyContent="center" direction="column" gap={2}>
         <Heading as="h1" textAlign="center" size="xl">
+          <Image
+            alt="PolyDraw Logo"
+            src="/icon-192.png"
+            boxSize={8}
+            verticalAlign="middle"
+            display="inline-block"
+            mr={2}
+          />
           <Box as="span" color="#f44">
             poly
           </Box>
           <Box as="span">draw</Box>
         </Heading>
-        <Heading as="h2" size="md" color="#999" fontWeight="semibold">
+        <Heading as="h2" size="md" color="#aaa" fontWeight="semibold">
           Draw Polygons, Export Coordinates
         </Heading>
       </Flex>
-      <Flex mb={5} gap={5}>
-        <FormControl>
-          <FormLabel>Width</FormLabel>
-          <NumberInput
-            min={1}
-            value={scale.width}
-            onChange={e => setScale({ ...scale, width: Number(e) })}
-          >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </FormControl>
-        <FormControl>
-          <FormLabel>Height</FormLabel>
-          <NumberInput
-            min={1}
-            value={scale.height}
-            onChange={e => setScale({ ...scale, height: Number(e) })}
-          >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </FormControl>
-        <FormControl>
-          <FormLabel>Zoom</FormLabel>
-          <NumberInput value={zoom} onChange={e => setZoom(Number(e))}>
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </FormControl>
-        <FormControl>
-          <FormLabel>Max decimals</FormLabel>
-          <NumberInput min={0} max={5} value={decimals} onChange={e => setDecimals(Number(e))}>
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </FormControl>
-      </Flex>
-      <Box mb={4}>
-        <Box as="span" textDecor="underline">
-          First
-        </Box>
-        , set your desired <b>Width</b> and <b>Height</b> and{' '}
-        <Box as="span" textDecor="underline">
-          do not change it later
-        </Box>
-        .<br />
-        Then, adjust the <b>Zoom</b> to work comfortably.
-      </Box>
-      <Flex gap={5}>
-        <FormControl>
-          <FormLabel>Background image</FormLabel>
-          <Input type="file" onChange={handleImageUpload} p={1} />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Import JSON</FormLabel>
-          <Input type="file" onChange={handleJSONImport} p={1} />
-        </FormControl>
-      </Flex>
-      <Divider my={8} />
-      <SimpleGrid gap={5} columns={3}>
+      <Accordion defaultIndex={0} allowToggle>
+        <AccordionItem>
+          <AccordionButton>
+            <Box as="span" flex="1" textAlign="left">
+              Workspace configuration
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+          <AccordionPanel pb={8}>
+            <Flex mb={5} gap={5}>
+              <FormControl>
+                <FormLabel>Width</FormLabel>
+                <NumberInput
+                  min={1}
+                  value={scale.width}
+                  onChange={e => setScale({ ...scale, width: Number(e) })}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </FormControl>
+              <FormControl>
+                <FormLabel>Height</FormLabel>
+                <NumberInput
+                  min={1}
+                  value={scale.height}
+                  onChange={e => setScale({ ...scale, height: Number(e) })}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </FormControl>
+              <FormControl>
+                <FormLabel>Zoom</FormLabel>
+                <NumberInput value={zoom} onChange={e => setZoom(Number(e))}>
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </FormControl>
+              <FormControl>
+                <FormLabel>Max decimals</FormLabel>
+                <NumberInput
+                  min={0}
+                  max={5}
+                  value={decimals}
+                  onChange={e => setDecimals(Number(e))}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </FormControl>
+            </Flex>
+            <Box mb={4}>
+              <Box as="span" textDecor="underline">
+                First
+              </Box>
+              , set your desired <b>Width</b> and <b>Height</b> and{' '}
+              <Box as="span" textDecor="underline">
+                do not change it later
+              </Box>
+              .<br />
+              Then, adjust the <b>Zoom</b> to work comfortably.
+            </Box>
+            <Flex gap={5}>
+              <FormControl>
+                <FormLabel>Background image</FormLabel>
+                <Input type="file" onChange={handleImageUpload} p={1} />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Load Existing Project</FormLabel>
+                <Input type="file" onChange={handleJSONImport} accept=".polydraw" p={1} />
+              </FormControl>
+            </Flex>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
+      {/* <Divider my={8} /> */}
+      <SimpleGrid gap={5} columns={3} mt={10}>
         <Box>
-          <Heading as="h2" size="md" mb={5}>
+          <Heading as="h2" size="md" mb={5} display="flex" alignItems="center" gap={2}>
+            <Image src="/point.webp" alt="" boxSize={6} />
             Points
             <Tooltip
               label={
                 <>
-                  <b>Points</b> are the most basic building block. They are defined by a position.
-                  They exist on their own and are not necessarily attached to polygons or point
-                  groups. A single point can be attached to multiple polygons and point groups.
+                  <b>Points</b> are defined by a position and can optionally be attached to point
+                  groups.
                 </>
               }
             >
-              <Box display="inline-block" verticalAlign="middle" ml={2} cursor="help">
+              <Box cursor="help" lineHeight={0}>
                 <Icon as={HelpIcon} />
               </Box>
             </Tooltip>
@@ -211,29 +233,38 @@ const Pane = (boxProps: BoxProps) => {
                 isChecked={showSinglePoints}
                 onChange={e => setShowSinglePoints(e.target.checked)}
               >
-                Hide points that are in a point group or polygon
+                Hide points that are in a point group
               </Checkbox>
             </Box>
           )}
-          <Stack>
+          <Stack maxH="300px" overflowY="auto" p={1}>
             {points.map(p => (
               <PanePoint key={p.id} {...p} />
             ))}
           </Stack>
-          {points.length === 0 && <Box>Click on the canvas to add points.</Box>}
+          {points.length === 0 && (
+            <Box textAlign="center">
+              Click on the canvas to{' '}
+              <Box as="span" whiteSpace="nowrap">
+                add points
+              </Box>
+              .
+            </Box>
+          )}
         </Box>
         <Box>
-          <Heading as="h2" size="md" mb={5}>
-            Point Groups
+          <Heading as="h2" size="md" mb={5} display="flex" alignItems="center" gap={2}>
+            <Image src="/group.webp" alt="" boxSize={6} /> Point Groups
             <Tooltip
               label={
                 <>
-                  Use <b>Point Groups</b> to define a set of points that are related to each other,
-                  but 🛑 <b>do not define a shape</b>. If you want to define a shape, use{' '}
-                  <b>Polygons</b> instead.
+                  Use <b>Point Groups</b> to define polygons or sets of points that are related to
+                  each other but do not defining a shape.
                   <br />
                   <br />
-                  <b>Example</b>: Enemies on a map.
+                  <b>Polygon Example</b>: A forest shape.
+                  <br />
+                  <b>Disconnected points example</b>: Enemies.
                   <br />
                   <br />
                   If a point group is{' '}
@@ -251,7 +282,7 @@ const Pane = (boxProps: BoxProps) => {
                 </>
               }
             >
-              <Box display="inline-block" verticalAlign="middle" ml={2} cursor="help">
+              <Box cursor="help" lineHeight={0}>
                 <Icon as={HelpIcon} />
               </Box>
             </Tooltip>
@@ -261,13 +292,16 @@ const Pane = (boxProps: BoxProps) => {
               <PanePointGroup key={p.id} {...p} />
             ))}
             <Button
+              variant="ghost"
+              size="sm"
+              leftIcon={<Icon as={AddIcon} />}
               onClick={() => {
                 const name = prompt('Point group name')
                 if (name === null) {
                   return
                 }
                 const id = createId()
-                addPointGroup({ id, pointIds: [], name })
+                addPointGroup({ id, pointIds: [], name, isPolygon: true })
                 setSelectedPointGroupId(id)
               }}
             >
@@ -276,65 +310,12 @@ const Pane = (boxProps: BoxProps) => {
           </Stack>
         </Box>
         <Box>
-          <Heading as="h2" size="md" mb={5}>
-            Polygons
+          <Heading as="h2" size="md" mb={5} display="flex" alignItems="center" gap={2}>
+            <Image src="/super.webp" alt="" boxSize={6} /> Super Groups
             <Tooltip
               label={
                 <>
-                  Use <b>Polygons</b> to define shapes from a list of points. The order of the
-                  points matters! Each polygon defines its own order of points so feel free to
-                  reorder them as you wish.
-                  <br />
-                  <br />
-                  <b>Example</b>: The shape of a forest on a map.
-                  <br />
-                  <br />
-                  If a polygon is{' '}
-                  <Box
-                    as="b"
-                    shadow="inset 0 0 0 2px white, 0 0 0 1px black"
-                    px="4px"
-                    py="1px"
-                    display="inline-block"
-                    rounded="md"
-                  >
-                    selected
-                  </Box>
-                  , new <b>points</b> will be automatically added to it.
-                </>
-              }
-            >
-              <Box display="inline-block" verticalAlign="middle" ml={2} cursor="help">
-                <Icon as={HelpIcon} />
-              </Box>
-            </Tooltip>
-          </Heading>
-          <Stack>
-            {polygons.map(p => (
-              <PanePolygon key={p.id} {...p} />
-            ))}
-            <Button
-              onClick={() => {
-                const name = prompt('Polygon name')
-                if (name === null) {
-                  return
-                }
-                const id = createId()
-                addPolygon({ id, pointIds: [], name })
-                setSelectedPolygonId(id)
-              }}
-            >
-              Add polygon
-            </Button>
-          </Stack>
-        </Box>
-        <Box>
-          <Heading as="h2" size="md" mb={5}>
-            Polygon Groups
-            <Tooltip
-              label={
-                <>
-                  Use <b>Polygon Groups</b> to define a set of polygons that are related to each
+                  Use <b>Super Groups</b> to define a set of point groups that are related to each
                   other.
                   <br />
                   <br />
@@ -342,7 +323,7 @@ const Pane = (boxProps: BoxProps) => {
                   visualization purposes.
                   <br />
                   <br />
-                  If a polygon group is{' '}
+                  If a super group is{' '}
                   <Box
                     as="b"
                     shadow="inset 0 0 0 2px white, 0 0 0 1px black"
@@ -353,41 +334,45 @@ const Pane = (boxProps: BoxProps) => {
                   >
                     selected
                   </Box>
-                  , new <b>polygons</b> will be automatically added to it.
+                  , new <b>point groups</b> will be automatically added to it.
                 </>
               }
             >
-              <Box display="inline-block" verticalAlign="middle" ml={2} cursor="help">
+              <Box lineHeight={0} cursor="help">
                 <Icon as={HelpIcon} />
               </Box>
             </Tooltip>
           </Heading>
-          {polygonGroups.map(p => (
-            <PanePolygonGroup key={p.id} {...p} />
-          ))}
-          <Button
-            onClick={() => {
-              const name = prompt('Polygon group name')
-              if (name === null) {
-                return
-              }
-              const id = createId()
-              addPolygonGroup({ id, polygonIds: [], name })
-              setSelectedPolygonGroupId(id)
-            }}
-          >
-            Add polygon group
-          </Button>
+          <Stack>
+            {superGroups.map(sg => (
+              <PaneSuperGroup key={sg.id} {...sg} />
+            ))}
+            <Button
+              variant="ghost"
+              size="sm"
+              leftIcon={<Icon as={AddIcon} />}
+              onClick={() => {
+                const name = prompt('Super group name')
+                if (name === null) {
+                  return
+                }
+                const id = createId()
+                addSuperGroup({ id, pointGroupIds: [], name })
+                setSelectedSuperGroupId(id)
+              }}
+            >
+              Add super group
+            </Button>
+          </Stack>
         </Box>
       </SimpleGrid>
-      <Box my={10}>
+      <Stack direction="row" my={10} gap={2}>
         <Button
           onClick={() => {
             if (confirm('Are you sure you want to delete all points, polygons, and groups?')) {
               clearPoints()
-              clearPolygons()
-              clearPolygonGroups()
               clearPointGroups()
+              clearSuperGroups()
             }
           }}
         >
@@ -400,47 +385,49 @@ const Pane = (boxProps: BoxProps) => {
           Copy JSON
         </Button>
         <Button onClick={() => navigator.clipboard.writeText('TODO')}>Copy join logic</Button>
-      </Box>
-      <Box mt={10}>
-        <Heading as="h3" size="md" mb={5}>
-          Instructions
-        </Heading>
-        <UnorderedList mt={5}>
-          <ListItem>
-            For a <b>single shape</b>, you can simply click on the canvas to create points.
-          </ListItem>
-          <ListItem>
-            You can <b>drag a selected point</b> to adjust its position.
-          </ListItem>
-          <ListItem>
-            When you are done, <b>Download</b> or <b>Copy</b> the JSON data to use in your app.
-          </ListItem>
-        </UnorderedList>
-        <UnorderedList mt={5}>
-          <ListItem>
-            If points order matters for your app, you can <b>move points up and down</b> in the list
-            using the arrow buttons.
-          </ListItem>
-          <ListItem>
-            If you need to organize your points as <b>polygons</b>, create the polygon first, then
-            newly created points will be automatically added to it.
-          </ListItem>
-          <ListItem>
-            <b>Polygon groups</b> are useful for organizing multiple polygons. For example, you can
-            have a &quot;forests&quot; group, which contains all the polygons that represent
-            forests, and color them all in green.
-          </ListItem>
-        </UnorderedList>
-        <UnorderedList mt={5}>
-          <ListItem>
-            Press <b>Esc</b> or <b>click outside of the canvas</b> to deselect points, polygons, and
-            polygon groups.
-          </ListItem>
-          <ListItem>
-            <b>Cmd/Ctrl</b> + <b>Backspace</b> to delete the selected point.
-          </ListItem>
-        </UnorderedList>
-      </Box>
+      </Stack>
+      <Accordion allowToggle>
+        <AccordionItem>
+          <AccordionButton>
+            <Box as="span" flex="1" textAlign="left">
+              Instructions
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+          <AccordionPanel pb={8}>
+            <UnorderedList>
+              <ListItem>
+                For a <b>single shape</b>, you can simply click on the canvas to create points.
+              </ListItem>
+              <ListItem>
+                You can <b>drag a selected point</b> to adjust its position.
+              </ListItem>
+              <ListItem>
+                When you are done, <b>Download</b> or <b>Copy</b> the JSON data to use in your app.
+              </ListItem>
+            </UnorderedList>
+            <UnorderedList mt={5}>
+              <ListItem>
+                If points order matters for your app, you can <b>move points up and down</b> in the
+                list using the arrow buttons.
+              </ListItem>
+              <ListItem>
+                If you need to organize your points as <b>point groups</b> (or polygons), create the
+                point group first, then newly created points will be automatically added to it.
+              </ListItem>
+            </UnorderedList>
+            <UnorderedList mt={5}>
+              <ListItem>
+                Press <b>Esc</b> or <b>click outside of the canvas</b> to deselect points, point
+                groups, and super groups.
+              </ListItem>
+              <ListItem>
+                <b>Cmd/Ctrl</b> + <b>Backspace</b> to delete the currently selected point.
+              </ListItem>
+            </UnorderedList>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
     </Box>
   )
 }

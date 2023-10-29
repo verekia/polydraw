@@ -15,18 +15,13 @@ const PanePoint = ({ id, name, x, y }: RawPoint) => {
   const setModalShown = useStore(s => s.setModalShown)
   const isSelected = selectedPointId === id
   const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
-  const selectedPolygonId = useStore(s => s.selectedPolygonId)
   const pointGroups = useStore(s => s.pointGroups)
-  const polygons = useStore(s => s.polygons)
   const addPointToPointGroup = useStore(s => s.addPointToPointGroup)
-  const addPointToPolygon = useStore(s => s.addPointToPolygon)
   const showSinglePoints = useStore(s => s.showSinglePoints)
 
   const selectedPointGroup = pointGroups.find(pg => pg.id === selectedPointGroupId)
-  const selectedPolygon = polygons.find(p => p.id === selectedPolygonId)
 
-  const isInAnyPointGroupOrPolygon =
-    pointGroups.some(pg => pg.pointIds.includes(id)) || polygons.some(p => p.pointIds.includes(id))
+  const isInAnyPointGroupOrPolygon = pointGroups.some(pg => pg.pointIds.includes(id))
 
   if (showSinglePoints && isInAnyPointGroupOrPolygon) {
     return null
@@ -89,28 +84,20 @@ const PanePoint = ({ id, name, x, y }: RawPoint) => {
                         Add to <b>{selectedPointGroup.name}</b> point group
                       </>
                     ) ?? 'selected point group'
-                  : selectedPolygon
-                  ? (
-                      <>
-                        Add to <b>{selectedPolygon.name}</b> polygon
-                      </>
-                    ) ?? 'selected polygon'
-                  : 'Select a point group or polygon to add this point to.'}
+                  : 'Select a point group to add this point to.'}
               </>
             }
           >
             <IconButton
               icon={<Icon as={AddListIcon} />}
-              isDisabled={!selectedPointGroup && !selectedPolygon}
-              aria-label="Add to selected group or polygon"
+              isDisabled={!selectedPointGroup}
+              aria-label="Add to selected point group"
               variant="ghost"
               size="sm"
               onClick={e => {
                 e.stopPropagation()
                 if (selectedPointGroup) {
                   addPointToPointGroup(selectedPointGroup.id, id)
-                } else if (selectedPolygon) {
-                  addPointToPolygon(selectedPolygon.id, id)
                 }
               }}
             />

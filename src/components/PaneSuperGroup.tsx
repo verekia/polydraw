@@ -3,16 +3,16 @@ import { Box, Flex, HStack, Icon, IconButton, Spacer } from '@chakra-ui/react'
 import { DeleteIcon, DownArrowIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 
-import type { RawPolygonGroup } from '#/lib/types'
+import type { RawSuperGroup } from '#/lib/types'
 
-const PanePolygonGroup = ({ id, name, polygonIds }: RawPolygonGroup) => {
-  const selectedPolygonGroupId = useStore(s => s.selectedPolygonGroupId)
-  const setSelectedPolygonGroupId = useStore(s => s.setSelectedPolygonGroupId)
-  const moveDownPolygonGroup = useStore(s => s.moveDownPolygonGroup)
-  const moveUpPolygonGroup = useStore(s => s.moveUpPolygonGroup)
-  const removePolygonGroup = useStore(s => s.removePolygonGroup)
-  const polygons = useStore(s => s.polygons)
-  const isSelected = selectedPolygonGroupId === id
+const PaneSuperGroup = ({ id, name, pointGroupIds }: RawSuperGroup) => {
+  const selectedSuperGroupId = useStore(s => s.selectedSuperGroupId)
+  const setSelectedSuperGroupId = useStore(s => s.setSelectedSuperGroupId)
+  const moveDownSuperGroup = useStore(s => s.moveDownSuperGroup)
+  const moveUpSuperGroup = useStore(s => s.moveUpSuperGroup)
+  const removeSuperGroup = useStore(s => s.removeSuperGroup)
+  const pointGroups = useStore(s => s.pointGroups)
+  const isSelected = selectedSuperGroupId === id
 
   return (
     <Box
@@ -20,7 +20,7 @@ const PanePolygonGroup = ({ id, name, polygonIds }: RawPolygonGroup) => {
       py={1}
       shadow={isSelected ? '0 0 0 2px white' : undefined}
       rounded="md"
-      onClick={() => setSelectedPolygonGroupId(isSelected ? undefined : id)}
+      onClick={() => setSelectedSuperGroupId(isSelected ? undefined : id)}
       cursor="pointer"
       userSelect="none"
       bg="#333"
@@ -37,7 +37,7 @@ const PanePolygonGroup = ({ id, name, polygonIds }: RawPolygonGroup) => {
               size="sm"
               onClick={e => {
                 e.stopPropagation()
-                moveDownPolygonGroup(id)
+                moveDownSuperGroup(id)
               }}
             />
             <IconButton
@@ -47,7 +47,7 @@ const PanePolygonGroup = ({ id, name, polygonIds }: RawPolygonGroup) => {
               size="sm"
               onClick={e => {
                 e.stopPropagation()
-                moveUpPolygonGroup(id)
+                moveUpSuperGroup(id)
               }}
             />
             <IconButton
@@ -58,14 +58,14 @@ const PanePolygonGroup = ({ id, name, polygonIds }: RawPolygonGroup) => {
               onClick={e => {
                 e.stopPropagation()
                 if (isSelected) {
-                  setSelectedPolygonGroupId()
+                  setSelectedSuperGroupId()
                 }
                 if (
                   confirm(
                     'Are you sure you want to delete this polygon group? The polygons it references will not be deleted.',
                   )
                 ) {
-                  removePolygonGroup(id)
+                  removeSuperGroup(id)
                 }
               }}
             />
@@ -74,10 +74,10 @@ const PanePolygonGroup = ({ id, name, polygonIds }: RawPolygonGroup) => {
       </Flex>
       {isSelected && (
         <Box onClick={e => e.stopPropagation()}>
-          <Box>Polygons:</Box>
-          {polygonIds.map(pid => {
-            const foundPolygon = polygons.find(p => p.id === pid)
-            return <Box key={pid}>{foundPolygon?.name ?? `ID: ${foundPolygon?.id}`}</Box>
+          <Box>Point groups:</Box>
+          {pointGroupIds.map(pgid => {
+            const foundPointGroup = pointGroups.find(p => p.id === pgid)
+            return <Box key={pgid}>{foundPointGroup?.name ?? `ID: ${foundPointGroup?.id}`}</Box>
           })}
         </Box>
       )}
@@ -85,4 +85,4 @@ const PanePolygonGroup = ({ id, name, polygonIds }: RawPolygonGroup) => {
   )
 }
 
-export default PanePolygonGroup
+export default PaneSuperGroup

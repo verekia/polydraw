@@ -7,7 +7,7 @@ const theme = extendTheme({
   },
   styles: {
     global: {
-      html: { h: 'full', WebkitTapHighlightColor: 'transparent' },
+      html: { h: 'full', WebkitTapHighlightColor: 'transparent', overflowX: 'hidden' },
       body: { h: 'full', bg: '#1e1e1e', color: 'white' },
       '#__next': { h: 'full' },
       '.chakra-slide': { bg: '#333 !important' },

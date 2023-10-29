@@ -5,11 +5,9 @@ import { useStore } from '#/lib/store'
 
 const Workspace = (centerProps: CenterProps) => {
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
-  const setSelectedPolygonId = useStore(s => s.setSelectedPolygonId)
-  const setSelectedPolygonGroupId = useStore(s => s.setSelectedPolygonGroupId)
+  const setSelectedSuperGroupId = useStore(s => s.setSelectedSuperGroupId)
   const selectedPointId = useStore(s => s.selectedPointId)
-  const selectedPolygonId = useStore(s => s.selectedPolygonId)
-  const selectedPolygonGroupId = useStore(s => s.selectedPolygonGroupId)
+  const selectedSuperGroupId = useStore(s => s.selectedSuperGroupId)
   const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
   const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
 
@@ -18,10 +16,8 @@ const Workspace = (centerProps: CenterProps) => {
       setSelectedPointId()
     } else if (selectedPointGroupId) {
       setSelectedPointGroupId()
-    } else if (selectedPolygonId) {
-      setSelectedPolygonId()
-    } else if (selectedPolygonGroupId) {
-      setSelectedPolygonGroupId()
+    } else if (selectedSuperGroupId) {
+      setSelectedSuperGroupId()
     }
   }
 

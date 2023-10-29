@@ -1,15 +1,13 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
-import {
+import type {
   PointGroupId,
   PointId,
-  PolygonGroupId,
-  PolygonId,
   RawPoint,
   RawPointGroup,
-  RawPolygon,
-  RawPolygonGroup,
+  RawSuperGroup,
+  SuperGroupId,
 } from '#/lib/types'
 
 interface Store {
@@ -19,57 +17,51 @@ interface Store {
   setScale: ({ width, height }: { width: number; height: number }) => void
   decimals: number
   setDecimals: (decimals: number) => void
-  selectedPointId?: PointId
-  setSelectedPointId: (id?: PointId) => void
   isDragging: boolean
   setIsDragging: (isDragging: boolean) => void
+
   points: RawPoint[]
   setPoints: (points: RawPoint[]) => void
   addPoint: (point: RawPoint) => void
   addPointToPointGroup: (pointGroupId: PointGroupId, pointId: PointId) => void
-  addPointToPolygon: (polygonId: PolygonId, pointId: PointId) => void
   removePoint: (id: PointId) => void
   updatePoint: (id: PointId, point: Partial<RawPoint>) => void
   moveDownPoint: (id: PointId) => void
   moveUpPoint: (id: PointId) => void
   clearPoints: () => void
+  selectedPointId?: PointId
+  setSelectedPointId: (id?: PointId) => void
+
   moveDownPointInPointGroup: (pointGroupId: PointGroupId, pointId: PointId) => void
   moveUpPointInPointGroup: (pointGroupId: PointGroupId, pointId: PointId) => void
-  moveDownPointInPolygon: (polygonId: PolygonId, pointId: PointId) => void
-  moveUpPointInPolygon: (polygonId: PolygonId, pointId: PointId) => void
+
   pointGroups: RawPointGroup[]
   setPointGroups: (pointGroups: RawPointGroup[]) => void
   addPointGroup: (pointGroup: RawPointGroup) => void
+  updatePointGroup: (id: PointGroupId, pointGroup: Partial<RawPointGroup>) => void
   removePointGroup: (id: PointGroupId) => void
   moveDownPointGroup: (id: PointGroupId) => void
   moveUpPointGroup: (id: PointGroupId) => void
   clearPointGroups: () => void
-  polygonGroups: RawPolygonGroup[]
-  setPolygonGroups: (polygonGroups: RawPolygonGroup[]) => void
-  addPolygonGroup: (polygonGroup: RawPolygonGroup) => void
-  removePolygonGroup: (id: PolygonGroupId) => void
-  moveDownPolygonGroup: (id: PolygonGroupId) => void
-  moveUpPolygonGroup: (id: PolygonGroupId) => void
-  clearPolygonGroups: () => void
-  polygons: RawPolygon[]
-  setPolygons: (polygons: RawPolygon[]) => void
-  addPolygon: (polygon: RawPolygon) => void
-  removePolygon: (id: PolygonId) => void
-  moveDownPolygon: (id: PolygonId) => void
-  moveUpPolygon: (id: PolygonId) => void
-  clearPolygons: () => void
-  selectedPolygonId?: PolygonId
-  setSelectedPolygonId: (id?: PolygonId) => void
-  selectedPolygonGroupId?: PolygonGroupId
-  setSelectedPolygonGroupId: (id?: PolygonGroupId) => void
   selectedPointGroupId?: PointGroupId
   setSelectedPointGroupId: (id?: PointGroupId) => void
+
+  superGroups: RawSuperGroup[]
+  setSuperGroups: (superGroups: RawSuperGroup[]) => void
+  addSuperGroup: (superGroup: RawSuperGroup) => void
+  removeSuperGroup: (id: SuperGroupId) => void
+  moveDownSuperGroup: (id: SuperGroupId) => void
+  moveUpSuperGroup: (id: SuperGroupId) => void
+  clearSuperGroups: () => void
+  selectedSuperGroupId?: SuperGroupId
+  setSelectedSuperGroupId: (id?: SuperGroupId) => void
+
   mode?: 'add-point'
   setMode: (mode?: 'add-point') => void
   backgroundImageSrc?: string
   setBackgroundImageSrc: (src?: string) => void
-  modalShown?: 'point' | 'point-group' | 'polygon' | 'polygon-group'
-  setModalShown: (modalShown?: 'point' | 'point-group' | 'polygon' | 'polygon-group') => void
+  modalShown?: 'point' | 'point-group' | 'super-group'
+  setModalShown: (modalShown?: 'point' | 'point-group' | 'super-group') => void
   showSinglePoints: boolean
   setShowSinglePoints: (showSinglePoints: boolean) => void
 }
@@ -93,15 +85,6 @@ export const useStore = create<Store>()(
         setPoints: points => set({ points }),
         addPoint: point => {
           set({ points: [...get().points, point] })
-          if (get().selectedPolygonId) {
-            set({
-              polygons: get().polygons.map(p =>
-                p.id === get().selectedPolygonId
-                  ? { ...p, pointIds: [...p.pointIds, point.id] }
-                  : p,
-              ),
-            })
-          }
           if (get().selectedPointGroupId) {
             set({
               pointGroups: get().pointGroups.map(p =>
@@ -116,12 +99,6 @@ export const useStore = create<Store>()(
           set({
             pointGroups: get().pointGroups.map(p =>
               p.id === pointGroupId ? { ...p, pointIds: [...p.pointIds, pointId] } : p,
-            ),
-          }),
-        addPointToPolygon: (polygonId, pointId) =>
-          set({
-            polygons: get().polygons.map(p =>
-              p.id === polygonId ? { ...p, pointIds: [...p.pointIds, pointId] } : p,
             ),
           }),
         updatePoint: (id, point) =>
@@ -163,29 +140,24 @@ export const useStore = create<Store>()(
           pointGroups.splice(index, 1, pointGroup)
           set({ pointGroups })
         },
-        moveDownPointInPolygon: (polygonId, pointId) => {
-          const polygons = [...get().polygons]
-          const index = polygons.findIndex(p => p.id === polygonId)
-          const polygon = polygons[index]
-          const pointIndex = polygon.pointIds.findIndex(id => id === pointId)
-          const point = polygon.pointIds.splice(pointIndex, 1)[0]
-          polygon.pointIds.splice(pointIndex + 1, 0, point)
-          polygons.splice(index, 1, polygon)
-          set({ polygons })
-        },
-        moveUpPointInPolygon: (polygonId, pointId) => {
-          const polygons = [...get().polygons]
-          const index = polygons.findIndex(p => p.id === polygonId)
-          const polygon = polygons[index]
-          const pointIndex = polygon.pointIds.findIndex(id => id === pointId)
-          const point = polygon.pointIds.splice(pointIndex, 1)[0]
-          polygon.pointIds.splice(pointIndex - 1, 0, point)
-          polygons.splice(index, 1, polygon)
-          set({ polygons })
-        },
         pointGroups: [],
         setPointGroups: pointGroups => set({ pointGroups }),
-        addPointGroup: pointGroup => set({ pointGroups: [...get().pointGroups, pointGroup] }),
+        addPointGroup: pointGroup => {
+          set({ pointGroups: [...get().pointGroups, pointGroup] })
+          if (get().selectedSuperGroupId) {
+            set({
+              superGroups: get().superGroups.map(sg =>
+                sg.id === get().selectedSuperGroupId
+                  ? { ...sg, pointGroupIds: [...sg.pointGroupIds, pointGroup.id] }
+                  : sg,
+              ),
+            })
+          }
+        },
+        updatePointGroup: (id, pointGroup) =>
+          set({
+            pointGroups: get().pointGroups.map(p => (p.id === id ? { ...p, ...pointGroup } : p)),
+          }),
         removePointGroup: id =>
           set({
             pointGroups: get().pointGroups.filter(p => p.id !== id),
@@ -206,74 +178,37 @@ export const useStore = create<Store>()(
           set({ pointGroups })
         },
         clearPointGroups: () => set({ pointGroups: [], selectedPointGroupId: undefined }),
-        polygonGroups: [],
-        setPolygonGroups: polygonGroups => set({ polygonGroups }),
-        addPolygonGroup: polygonGroup =>
-          set({ polygonGroups: [...get().polygonGroups, polygonGroup] }),
-        removePolygonGroup: id =>
+
+        superGroups: [],
+        setSuperGroups: superGroups => set({ superGroups }),
+        addSuperGroup: superGroup => set({ superGroups: [...get().superGroups, superGroup] }),
+        removeSuperGroup: id =>
           set({
-            polygonGroups: get().polygonGroups.filter(p => p.id !== id),
-            selectedPolygonGroupId: undefined,
+            superGroups: get().superGroups.filter(sg => sg.id !== id),
+            selectedSuperGroupId: undefined,
           }),
-        moveDownPolygonGroup: id => {
-          const polygonGroups = [...get().polygonGroups]
-          const index = polygonGroups.findIndex(p => p.id === id)
-          const polygonGroup = polygonGroups.splice(index, 1)[0]
-          polygonGroups.splice(index + 1, 0, polygonGroup)
-          set({ polygonGroups })
+        moveDownSuperGroup: id => {
+          const superGroups = [...get().superGroups]
+          const index = superGroups.findIndex(p => p.id === id)
+          const superGroup = superGroups.splice(index, 1)[0]
+          superGroups.splice(index + 1, 0, superGroup)
+          set({ superGroups })
         },
-        moveUpPolygonGroup: id => {
-          const polygonGroups = [...get().polygonGroups]
-          const index = polygonGroups.findIndex(p => p.id === id)
-          const polygonGroup = polygonGroups.splice(index, 1)[0]
-          polygonGroups.splice(index - 1, 0, polygonGroup)
-          set({ polygonGroups })
+        moveUpSuperGroup: id => {
+          const superGroups = [...get().superGroups]
+          const index = superGroups.findIndex(p => p.id === id)
+          const superGroup = superGroups.splice(index, 1)[0]
+          superGroups.splice(index - 1, 0, superGroup)
+          set({ superGroups })
         },
-        clearPolygonGroups: () => set({ polygonGroups: [], selectedPolygonGroupId: undefined }),
-        polygons: [],
-        setPolygons: polygons => set({ polygons }),
-        addPolygon: polygon => {
-          set({ polygons: [...get().polygons, polygon] })
-          if (get().selectedPolygonGroupId) {
-            set({
-              polygonGroups: get().polygonGroups.map(p =>
-                p.id === get().selectedPolygonGroupId
-                  ? { ...p, polygonIds: [...p.polygonIds, polygon.id] }
-                  : p,
-              ),
-            })
-          }
-        },
-        removePolygon: id =>
-          set({ polygons: get().polygons.filter(p => p.id !== id), selectedPolygonId: undefined }),
-        moveDownPolygon: id => {
-          const polygons = [...get().polygons]
-          const index = polygons.findIndex(p => p.id === id)
-          const polygon = polygons.splice(index, 1)[0]
-          polygons.splice(index + 1, 0, polygon)
-          set({ polygons })
-        },
-        moveUpPolygon: id => {
-          const polygons = [...get().polygons]
-          const index = polygons.findIndex(p => p.id === id)
-          const polygon = polygons.splice(index, 1)[0]
-          polygons.splice(index - 1, 0, polygon)
-          set({ polygons })
-        },
-        clearPolygons: () => set({ polygons: [], selectedPolygonId: undefined }),
-        selectedPolygonId: undefined,
-        setSelectedPolygonId: (id?: PolygonId) =>
-          set({ selectedPolygonId: id, selectedPointGroupId: undefined }),
-        selectedPolygonGroupId: undefined,
-        setSelectedPolygonGroupId: (id?: PolygonGroupId) =>
-          set({ selectedPolygonGroupId: id, selectedPointGroupId: undefined }),
+        clearSuperGroups: () => set({ superGroups: [], selectedSuperGroupId: undefined }),
+
+        selectedSuperGroupId: undefined,
+        setSelectedSuperGroupId: (id?: SuperGroupId) =>
+          set({ selectedSuperGroupId: id, selectedPointGroupId: undefined }),
         selectedPointGroupId: undefined,
-        setSelectedPointGroupId: (id?: PointGroupId) =>
-          set({
-            selectedPointGroupId: id,
-            selectedPolygonId: undefined,
-            selectedPolygonGroupId: undefined,
-          }),
+        setSelectedPointGroupId: (id?: SuperGroupId) => set({ selectedPointGroupId: id }),
+
         mode: 'add-point',
         setMode: mode => set({ mode }),
         backgroundImageSrc: undefined,
