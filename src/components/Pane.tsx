@@ -207,6 +207,7 @@ const Pane = (boxProps: BoxProps) => {
               <PanePoint key={p.id} {...p} />
             ))}
           </Stack>
+          {points.length === 0 && <Box>Click on the canvas to add points.</Box>}
         </Box>
         <Box>
           <Heading as="h2" size="md" mb={5}>

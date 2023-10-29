@@ -1,6 +1,6 @@
-import { Box, Flex, HStack, Icon, IconButton, Spacer } from '@chakra-ui/react'
+import { Box, Flex, HStack, Icon, IconButton, Spacer, Tooltip } from '@chakra-ui/react'
 
-import { DeleteIcon, DownArrowIcon, EditIcon, UpArrowIcon } from '#/lib/icons'
+import { AddListIcon, DownArrowIcon, EditIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 import { truncateDecimals } from '#/lib/util'
 
@@ -14,6 +14,15 @@ const PanePoint = ({ id, name, x, y }: RawPoint) => {
   const decimals = useStore(s => s.decimals)
   const setModalShown = useStore(s => s.setModalShown)
   const isSelected = selectedPointId === id
+  const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
+  const selectedPolygonId = useStore(s => s.selectedPolygonId)
+  const pointGroups = useStore(s => s.pointGroups)
+  const polygons = useStore(s => s.polygons)
+  const addPointToPointGroup = useStore(s => s.addPointToPointGroup)
+  const addPointToPolygon = useStore(s => s.addPointToPolygon)
+
+  const selectedPointGroup = pointGroups.find(pg => pg.id === selectedPointGroupId)
+  const selectedPolygon = polygons.find(p => p.id === selectedPolygonId)
 
   return (
     <Flex
@@ -63,6 +72,41 @@ const PanePoint = ({ id, name, x, y }: RawPoint) => {
               moveUpPoint(id)
             }}
           />
+          <Tooltip
+            label={
+              <>
+                {selectedPointGroup
+                  ? (
+                      <>
+                        Add to <b>{selectedPointGroup.name}</b> point group
+                      </>
+                    ) ?? 'selected point group'
+                  : selectedPolygon
+                  ? (
+                      <>
+                        Add to <b>{selectedPolygon.name}</b> polygon
+                      </>
+                    ) ?? 'selected polygon'
+                  : 'Select a point group or polygon to add this point to.'}
+              </>
+            }
+          >
+            <IconButton
+              icon={<Icon as={AddListIcon} />}
+              isDisabled={!selectedPointGroup && !selectedPolygon}
+              aria-label="Add to selected group or polygon"
+              variant="ghost"
+              size="sm"
+              onClick={e => {
+                e.stopPropagation()
+                if (selectedPointGroup) {
+                  addPointToPointGroup(selectedPointGroup.id, id)
+                } else if (selectedPolygon) {
+                  addPointToPolygon(selectedPolygon.id, id)
+                }
+              }}
+            />
+          </Tooltip>
         </HStack>
       )}
     </Flex>

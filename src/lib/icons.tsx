@@ -48,3 +48,10 @@ export const EditIcon = (props: SVGProps<SVGSVGElement>) => (
     <path d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83a.996.996 0 000-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z" />
   </svg>
 )
+
+// RiPlayListAddFill
+export const AddListIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg fill="currentColor" strokeWidth="0" viewBox="0 0 24 24" {...defaultProps} {...props}>
+    <path d="M2 18H12V20H2V18ZM2 11H22V13H2V11ZM2 4H22V6H2V4ZM18 18V15H20V18H23V20H20V23H18V20H15V18H18Z"></path>
+  </svg>
+)

@@ -26,6 +26,8 @@ interface Store {
   points: RawPoint[]
   setPoints: (points: RawPoint[]) => void
   addPoint: (point: RawPoint) => void
+  addPointToPointGroup: (pointGroupId: PointGroupId, pointId: PointId) => void
+  addPointToPolygon: (polygonId: PolygonId, pointId: PointId) => void
   removePoint: (id: PointId) => void
   updatePoint: (id: PointId, point: Partial<RawPoint>) => void
   moveDownPoint: (id: PointId) => void
@@ -104,6 +106,18 @@ export const useStore = create<Store>()(
             })
           }
         },
+        addPointToPointGroup: (pointGroupId, pointId) =>
+          set({
+            pointGroups: get().pointGroups.map(p =>
+              p.id === pointGroupId ? { ...p, pointIds: [...p.pointIds, pointId] } : p,
+            ),
+          }),
+        addPointToPolygon: (polygonId, pointId) =>
+          set({
+            polygons: get().polygons.map(p =>
+              p.id === polygonId ? { ...p, pointIds: [...p.pointIds, pointId] } : p,
+            ),
+          }),
         updatePoint: (id, point) =>
           set({ points: get().points.map(p => (p.id === id ? { ...p, ...point } : p)) }),
         removePoint: id =>
