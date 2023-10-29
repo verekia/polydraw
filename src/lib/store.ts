@@ -62,6 +62,8 @@ interface Store {
   setMode: (mode?: 'add-point') => void
   backgroundImageSrc?: string
   setBackgroundImageSrc: (src?: string) => void
+  modalShown?: 'point' | 'point-group' | 'polygon' | 'polygon-group'
+  setModalShown: (modalShown?: 'point' | 'point-group' | 'polygon' | 'polygon-group') => void
 }
 
 export const useStore = create<Store>()(
@@ -104,7 +106,8 @@ export const useStore = create<Store>()(
         },
         updatePoint: (id, point) =>
           set({ points: get().points.map(p => (p.id === id ? { ...p, ...point } : p)) }),
-        removePoint: id => set({ points: get().points.filter(p => p.id !== id) }),
+        removePoint: id =>
+          set({ points: get().points.filter(p => p.id !== id), selectedPointId: undefined }),
         moveDownPoint: id => {
           const points = [...get().points]
           const index = points.findIndex(p => p.id === id)
@@ -123,7 +126,11 @@ export const useStore = create<Store>()(
         pointGroups: [],
         setPointGroups: pointGroups => set({ pointGroups }),
         addPointGroup: pointGroup => set({ pointGroups: [...get().pointGroups, pointGroup] }),
-        removePointGroup: id => set({ pointGroups: get().pointGroups.filter(p => p.id !== id) }),
+        removePointGroup: id =>
+          set({
+            pointGroups: get().pointGroups.filter(p => p.id !== id),
+            selectedPointGroupId: undefined,
+          }),
         moveDownPointGroup: id => {
           const pointGroups = [...get().pointGroups]
           const index = pointGroups.findIndex(p => p.id === id)
@@ -144,7 +151,10 @@ export const useStore = create<Store>()(
         addPolygonGroup: polygonGroup =>
           set({ polygonGroups: [...get().polygonGroups, polygonGroup] }),
         removePolygonGroup: id =>
-          set({ polygonGroups: get().polygonGroups.filter(p => p.id !== id) }),
+          set({
+            polygonGroups: get().polygonGroups.filter(p => p.id !== id),
+            selectedPolygonGroupId: undefined,
+          }),
         moveDownPolygonGroup: id => {
           const polygonGroups = [...get().polygonGroups]
           const index = polygonGroups.findIndex(p => p.id === id)
@@ -174,7 +184,8 @@ export const useStore = create<Store>()(
             })
           }
         },
-        removePolygon: id => set({ polygons: get().polygons.filter(p => p.id !== id) }),
+        removePolygon: id =>
+          set({ polygons: get().polygons.filter(p => p.id !== id), selectedPolygonId: undefined }),
         moveDownPolygon: id => {
           const polygons = [...get().polygons]
           const index = polygons.findIndex(p => p.id === id)
@@ -207,6 +218,8 @@ export const useStore = create<Store>()(
         setMode: mode => set({ mode }),
         backgroundImageSrc: undefined,
         setBackgroundImageSrc: src => set({ backgroundImageSrc: src }),
+        modalShown: undefined,
+        setModalShown: modalShown => set({ modalShown }),
       }),
       {
         name: 'polydraw',

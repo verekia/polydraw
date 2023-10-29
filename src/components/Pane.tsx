@@ -11,7 +11,6 @@ import {
   ListItem,
   SimpleGrid,
   Stack,
-  Text,
   Tooltip,
   UnorderedList,
 } from '@chakra-ui/react'
@@ -73,15 +72,20 @@ const Pane = (boxProps: BoxProps) => {
 
   return (
     <Box bg="#262626" p={5} {...boxProps}>
-      <Heading as="h1" textAlign="center" size="xl" mb={8}>
-        <Box as="span" color="#f44">
-          poly
-        </Box>
-        <Box as="span">draw</Box>
-      </Heading>
+      <Flex alignItems="center" mb={8} justifyContent="center" direction="column" gap={2}>
+        <Heading as="h1" textAlign="center" size="xl">
+          <Box as="span" color="#f44">
+            poly
+          </Box>
+          <Box as="span">draw</Box>
+        </Heading>
+        <Heading as="h2" size="md" color="#999" fontWeight="semibold">
+          Draw Polygons, Export Coordinates
+        </Heading>
+      </Flex>
       <Flex mb={5}>
         <FormControl>
-          <FormLabel>Scale width</FormLabel>
+          <FormLabel>Width</FormLabel>
           <Input
             type="number"
             value={scale.width}
@@ -89,7 +93,7 @@ const Pane = (boxProps: BoxProps) => {
           />
         </FormControl>
         <FormControl>
-          <FormLabel>Scale height</FormLabel>
+          <FormLabel>Height</FormLabel>
           <Input
             type="number"
             value={scale.height}
@@ -305,13 +309,14 @@ const Pane = (boxProps: BoxProps) => {
         <Heading as="h3" size="md" mb={5}>
           Instructions
         </Heading>
-        <Text>This is an app to create points and polygons, and retrieve their coordinates.</Text>
         <UnorderedList mt={5}>
           <ListItem>
-            Set the <b>custom scale</b> and <b>zoom</b> level you want to work comfortably.
-          </ListItem>
-          <ListItem>
-            You can optionally set a <b>background image</b> to draw on top of.
+            <Box as="b" textDecor="underline">
+              FIRST
+            </Box>
+            , set the <b>Width</b> and <b>Height</b> you want for your desired output. Changing it
+            later on will mess up your coordinates. Then, adjust the <b>Zoom</b> to work
+            comfortably.
           </ListItem>
           <ListItem>
             For a <b>single shape</b>, you can simply click on the canvas to create points.
@@ -344,7 +349,7 @@ const Pane = (boxProps: BoxProps) => {
             polygon groups.
           </ListItem>
           <ListItem>
-            <b>Backspace</b> to delete the selected point.
+            <b>Cmd/Ctrl</b> + <b>Backspace</b> to delete the selected point.
           </ListItem>
         </UnorderedList>
       </Box>

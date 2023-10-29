@@ -10,6 +10,7 @@ const theme = extendTheme({
       html: { h: 'full', WebkitTapHighlightColor: 'transparent' },
       body: { h: 'full', bg: '#1e1e1e', color: 'white' },
       '#__next': { h: 'full' },
+      '.chakra-slide': { bg: '#333 !important' },
     },
   },
 })

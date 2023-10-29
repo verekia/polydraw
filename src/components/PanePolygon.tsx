@@ -18,7 +18,7 @@ const PanePolygon = ({ id, name, pointIds }: RawPolygon) => {
 
   return (
     <Box
-      border={isSelected ? '1px solid red' : '1px solid transparent'}
+      shadow={isSelected ? '0 0 0 2px white' : undefined}
       rounded="md"
       onClick={() => setSelectedPolygonId(isSelected ? undefined : id)}
       cursor="pointer"

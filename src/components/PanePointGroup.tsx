@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Icon, IconButton, Spacer } from '@chakra-ui/react'
+import { Box, Flex, HStack, Icon, IconButton, Spacer, Stack } from '@chakra-ui/react'
 
 import { DeleteIcon, DownArrowIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
@@ -18,12 +18,12 @@ const PanePointGroup = ({ id, name, pointIds }: RawPointGroup) => {
 
   return (
     <Box
-      border={isSelected ? '1px solid red' : '1px solid transparent'}
+      shadow={isSelected ? '0 0 0 2px white' : undefined}
       rounded="md"
       onClick={() => setSelectedPointGroupId(isSelected ? undefined : id)}
       cursor="pointer"
       px={3}
-      py={1}
+      py={2}
       userSelect="none"
       bg="#333"
     >
@@ -76,26 +76,30 @@ const PanePointGroup = ({ id, name, pointIds }: RawPointGroup) => {
       </Flex>
       {isSelected && (
         <Box>
-          <Box>Points:</Box>
-          {pointIds.map(pid => {
-            const foundPoint = points.find(p => p.id === pid)
-            if (!foundPoint) {
-              return null
-            }
-            return (
-              <Box
-                key={pid}
-                onClick={e => {
-                  e.stopPropagation()
-                  setSelectedPointId(pid)
-                }}
-                bg={selectedPointId === pid ? '#444' : 'transparent'}
-                _hover={{ bg: '#444' }}
-              >
-                {foundPoint.name ?? `${foundPoint.x}, ${foundPoint.y}`}
-              </Box>
-            )
-          })}
+          <Box mb={2}>Points:</Box>
+          <Stack>
+            {pointIds.map(pid => {
+              const foundPoint = points.find(p => p.id === pid)
+              if (!foundPoint) {
+                return null
+              }
+              return (
+                <Box
+                  key={pid}
+                  onClick={e => {
+                    e.stopPropagation()
+                    setSelectedPointId(pid)
+                  }}
+                  shadow={selectedPointId === pid ? '0 0 0 2px white' : undefined}
+                  px={2}
+                  rounded="md"
+                  _hover={{ bg: '#444' }}
+                >
+                  {foundPoint.name ?? `${foundPoint.x}, ${foundPoint.y}`}
+                </Box>
+              )
+            })}
+          </Stack>
         </Box>
       )}
     </Box>

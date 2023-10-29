@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { Flex } from '@chakra-ui/react'
 import Head from 'next/head'
 
+import Modals from '#/components/Modals'
 import Pane from '#/components/Pane'
 import Workspace from '#/components/Workspace'
 import { useStore } from '#/lib/store'
@@ -33,7 +34,7 @@ const IndexPage = () => {
         }
       }
 
-      if (e.key === 'Backspace') {
+      if (e.key === 'Backspace' && (e.ctrlKey || e.metaKey)) {
         if (selectedPointId) {
           const indexToRemove = points.findIndex(p => p.id === selectedPointId)
           removePoint(selectedPointId)
@@ -66,6 +67,7 @@ const IndexPage = () => {
         <Workspace flexGrow={1} />
         <Pane h="full" w="full" maxW="700px" minW="200px" overflowY="scroll" />
       </Flex>
+      <Modals />
       <Head>
         <title>PolyDraw | Draw Polygons, Export Coordinates</title>
       </Head>

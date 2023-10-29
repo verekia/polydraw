@@ -5,7 +5,7 @@ import { truncateDecimals } from '#/lib/util'
 
 import type { RawPoint } from '#/lib/types'
 
-const Point = ({ id, x, y }: RawPoint) => {
+const Point = ({ id, x, y, color }: RawPoint) => {
   const scale = useStore(s => s.scale)
   const zoom = useStore(s => s.zoom)
   const decimals = useStore(s => s.decimals)
@@ -32,7 +32,7 @@ const Point = ({ id, x, y }: RawPoint) => {
         }
         setSelectedPointId(id)
       }}
-      border={isSelected ? '1px solid red' : 'none'}
+      shadow={isSelected ? '0 0 0 2px white, 0 0 0 4px black' : undefined}
       _hover={{ bg: 'rgba(255, 255, 255, 0.4)' }}
       onClick={e => {
         e.stopPropagation()
@@ -56,7 +56,7 @@ const Point = ({ id, x, y }: RawPoint) => {
         pos="absolute"
         rounded="999px"
         boxSize="10px"
-        bg="white"
+        bg={color ?? 'white'}
         left="50%"
         bottom="50%"
         border="1px solid black"

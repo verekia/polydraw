@@ -18,7 +18,7 @@ const PanePolygonGroup = ({ id, name, polygonIds }: RawPolygonGroup) => {
     <Box
       px={3}
       py={1}
-      border={isSelected ? '1px solid red' : '1px solid transparent'}
+      shadow={isSelected ? '0 0 0 2px white' : undefined}
       rounded="md"
       onClick={() => setSelectedPolygonGroupId(isSelected ? undefined : id)}
       cursor="pointer"

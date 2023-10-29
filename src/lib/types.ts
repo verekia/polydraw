@@ -6,6 +6,7 @@ export type PointId = string
 export type RawPoint = {
   id: PointId
   name?: string
+  color?: string
   x: number
   y: number
   z?: number

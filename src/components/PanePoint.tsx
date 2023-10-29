@@ -1,6 +1,6 @@
 import { Box, Flex, HStack, Icon, IconButton, Spacer } from '@chakra-ui/react'
 
-import { DeleteIcon, DownArrowIcon, UpArrowIcon } from '#/lib/icons'
+import { DeleteIcon, DownArrowIcon, EditIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 import { truncateDecimals } from '#/lib/util'
 
@@ -11,13 +11,13 @@ const PanePoint = ({ id, name, x, y }: RawPoint) => {
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const moveDownPoint = useStore(s => s.moveDownPoint)
   const moveUpPoint = useStore(s => s.moveUpPoint)
-  const removePoint = useStore(s => s.removePoint)
   const decimals = useStore(s => s.decimals)
+  const setModalShown = useStore(s => s.setModalShown)
   const isSelected = selectedPointId === id
 
   return (
     <Flex
-      border={isSelected ? '1px solid red' : '1px solid transparent'}
+      shadow={isSelected ? '0 0 0 2px white' : undefined}
       rounded="md"
       onClick={() => setSelectedPointId(isSelected ? undefined : id)}
       cursor="pointer"
@@ -25,13 +25,24 @@ const PanePoint = ({ id, name, x, y }: RawPoint) => {
       py={1}
       userSelect="none"
       bg="#333"
+      direction="column"
     >
       <Box>
         <Box>{name ?? `${truncateDecimals(x, decimals)}, ${truncateDecimals(y, decimals)}`}</Box>
       </Box>
       <Spacer />
       {isSelected && (
-        <HStack spacing={0}>
+        <HStack spacing={0} justifyContent="right">
+          <IconButton
+            icon={<Icon as={EditIcon} />}
+            aria-label="Edit"
+            variant="ghost"
+            size="sm"
+            onClick={e => {
+              e.stopPropagation()
+              setModalShown('point')
+            }}
+          />
           <IconButton
             icon={<Icon as={DownArrowIcon} />}
             aria-label="Move point down"
@@ -50,19 +61,6 @@ const PanePoint = ({ id, name, x, y }: RawPoint) => {
             onClick={e => {
               e.stopPropagation()
               moveUpPoint(id)
-            }}
-          />
-          <IconButton
-            icon={<Icon as={DeleteIcon} />}
-            aria-label="Delete point"
-            variant="ghost"
-            size="sm"
-            onClick={e => {
-              e.stopPropagation()
-              if (isSelected) {
-                setSelectedPointId()
-              }
-              removePoint(id)
             }}
           />
         </HStack>
