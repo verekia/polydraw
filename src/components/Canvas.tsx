@@ -13,6 +13,7 @@ const Canvas = (boxProps: BoxProps) => {
   const isDragging = useStore(s => s.isDragging)
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const backgroundImageSrc = useStore(s => s.backgroundImageSrc)
+  const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
   const pointGroups = useStore(s => s.pointGroups)
   const superGroups = useStore(s => s.superGroups)
   const resolvedPointGroups = pointGroups.map(pg => ({
@@ -67,7 +68,7 @@ const Canvas = (boxProps: BoxProps) => {
               as="polygon"
               points={pg.points.map(p => `${p.x * zoom},${(scale.height - p.y) * zoom}`).join(' ')}
               fill={pg.color ?? firstFoundSuperGroup?.color ?? '#fff'}
-              opacity={0.5}
+              opacity={selectedPointGroupId === pg.id ? 0.8 : 0.5}
             />
           )
         })}

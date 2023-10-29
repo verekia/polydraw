@@ -54,8 +54,8 @@ const Point = ({ id, x, y, color }: RawPoint) => {
 
         if (isDragging && e.buttons === 1) {
           updatePoint(id, {
-            x: truncateDecimals(x + e.movementX / (scale.width * zoom), decimals),
-            y: truncateDecimals(y - e.movementY / (scale.height * zoom), decimals),
+            x: truncateDecimals(x + e.movementX / zoom, decimals),
+            y: truncateDecimals(y - e.movementY / zoom, decimals),
           })
         }
       }}
