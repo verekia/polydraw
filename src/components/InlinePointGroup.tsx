@@ -1,6 +1,6 @@
 import { Box, Flex, Icon, IconButton, Spacer } from '@chakra-ui/react'
 
-import { DownArrowIcon, UpArrowIcon } from '#/lib/icons'
+import { DownArrowIcon, EditIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 
 import type { RawPointGroup } from '#/lib/types'
@@ -10,6 +10,7 @@ const InlinePointGroup = ({ id, name, superGroupId }: RawPointGroup & { superGro
   const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
   const moveDownPointGroupInSuperGroup = useStore(s => s.moveDownPointGroupInSuperGroup)
   const moveUpPointGroupInSuperGroup = useStore(s => s.moveUpPointGroupInSuperGroup)
+  const setModalShown = useStore(s => s.setModalShown)
 
   return (
     <Flex
@@ -26,6 +27,16 @@ const InlinePointGroup = ({ id, name, superGroupId }: RawPointGroup & { superGro
     >
       <Box>{name ?? id}</Box>
       <Spacer />
+      <IconButton
+        icon={<Icon as={EditIcon} />}
+        aria-label="Edit"
+        variant="ghost"
+        size="sm"
+        onClick={e => {
+          e.stopPropagation()
+          setModalShown('point-group')
+        }}
+      />
       <IconButton
         icon={<Icon as={DownArrowIcon} />}
         aria-label="Move point group down in super group"

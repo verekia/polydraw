@@ -17,10 +17,16 @@ const Point = ({ id, x, y, color }: RawPoint) => {
   const isSelected = selectedPointId === id
   const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
   const pointGroups = useStore(s => s.pointGroups)
+  const superGroups = useStore(s => s.superGroups)
+
   const selectedAndBelongedToPointGroup = pointGroups.find(
     p => p.id === selectedPointGroupId && p.pointIds.includes(id),
   )
   const firstFoundBelongedToPointGroup = pointGroups.find(p => p.pointIds.includes(id))
+
+  const firstFoundBelongedToSuperGroup = superGroups.find(sg =>
+    sg.pointGroupIds.some(pgId => pgId === firstFoundBelongedToPointGroup?.id),
+  )
 
   return (
     <Box
@@ -66,6 +72,7 @@ const Point = ({ id, x, y, color }: RawPoint) => {
           color ??
           selectedAndBelongedToPointGroup?.color ??
           firstFoundBelongedToPointGroup?.color ??
+          firstFoundBelongedToSuperGroup?.color ??
           'white'
         }
         left="50%"
