@@ -15,6 +15,12 @@ const Point = ({ id, x, y, color }: RawPoint) => {
   const isDragging = useStore(s => s.isDragging)
   const setIsDragging = useStore(s => s.setIsDragging)
   const isSelected = selectedPointId === id
+  const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
+  const pointGroups = useStore(s => s.pointGroups)
+  const selectedAndBelongedToPointGroup = pointGroups.find(
+    p => p.id === selectedPointGroupId && p.pointIds.includes(id),
+  )
+  const firstFoundBelongedToPointGroup = pointGroups.find(p => p.pointIds.includes(id))
 
   return (
     <Box
@@ -56,7 +62,12 @@ const Point = ({ id, x, y, color }: RawPoint) => {
         pos="absolute"
         rounded="999px"
         boxSize="10px"
-        bg={color ?? 'white'}
+        bg={
+          color ??
+          selectedAndBelongedToPointGroup?.color ??
+          firstFoundBelongedToPointGroup?.color ??
+          'white'
+        }
         left="50%"
         bottom="50%"
         border="1px solid black"

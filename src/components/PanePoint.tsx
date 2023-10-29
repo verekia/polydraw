@@ -6,7 +6,7 @@ import { truncateDecimals } from '#/lib/util'
 
 import type { RawPoint } from '#/lib/types'
 
-const PanePoint = ({ id, name, x, y }: RawPoint) => {
+const PanePoint = ({ id, name, x, y, color }: RawPoint) => {
   const selectedPointId = useStore(s => s.selectedPointId)
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const moveDownPoint = useStore(s => s.moveDownPoint)
@@ -40,7 +40,21 @@ const PanePoint = ({ id, name, x, y }: RawPoint) => {
       direction="column"
     >
       <Box>
-        <Box>{name ?? `${truncateDecimals(x, decimals)}, ${truncateDecimals(y, decimals)}`}</Box>
+        {color && (
+          <Box
+            as="span"
+            display="inline-block"
+            verticalAlign="middle"
+            pos="relative"
+            border="1px solid white"
+            top="-1px"
+            mr={2}
+            boxSize={3}
+            onClick={() => setModalShown('point-group')}
+            bg={color}
+          />
+        )}
+        {name ?? `${truncateDecimals(x, decimals)}, ${truncateDecimals(y, decimals)}`}
       </Box>
       <Spacer />
       {isSelected && (

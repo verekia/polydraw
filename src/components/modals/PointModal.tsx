@@ -80,7 +80,7 @@ const PointModal = () => {
               />
               <Input
                 type="color"
-                value={point.color}
+                value={point.color ?? '#000000'}
                 onChange={e => updatePoint(point.id, { color: e.target.value || undefined })}
               />
             </FormControl>

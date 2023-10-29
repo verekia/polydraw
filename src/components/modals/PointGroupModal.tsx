@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import {
+  Box,
   Button,
   Drawer,
   DrawerBody,
@@ -12,10 +13,13 @@ import {
   FormLabel,
   Icon,
   Input,
+  Radio,
+  RadioGroup,
   Spacer,
   Stack,
 } from '@chakra-ui/react'
 
+import InlinePoint from '#/components/InlinePoint'
 import { DeleteIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 
@@ -27,6 +31,7 @@ const PointGroupModal = () => {
   const pointGroup = pointGroups.find(p => p.id === selectedPointGroupId)
   const updatePointGroup = useStore(s => s.updatePointGroup)
   const removePointGroup = useStore(s => s.removePointGroup)
+  const points = useStore(s => s.points)
   const onClose = () => setModalShown()
 
   useEffect(() => {
@@ -47,6 +52,15 @@ const PointGroupModal = () => {
 
         <DrawerBody>
           <Stack>
+            <RadioGroup
+              onChange={e => updatePointGroup(pointGroup.id, { isPolygon: e === 'true' })}
+              value={String(pointGroup.isPolygon)}
+            >
+              <Stack direction="row">
+                <Radio value="true">Polygon</Radio>
+                <Radio value="false">Disconnected points</Radio>
+              </Stack>
+            </RadioGroup>
             <FormControl>
               <FormLabel>Name</FormLabel>
               <Input
@@ -68,13 +82,25 @@ const PointGroupModal = () => {
               />
               <Input
                 type="color"
-                value={pointGroup.color}
+                value={pointGroup.color ?? '#000000'}
                 onChange={e =>
                   updatePointGroup(pointGroup.id, { color: e.target.value || undefined })
                 }
               />
             </FormControl>
           </Stack>
+          <Box mt={5}>
+            <FormLabel mb={2}>Points</FormLabel>
+            <Stack>
+              {pointGroup.pointIds.map(pid => {
+                const foundPoint = points.find(p => p.id === pid)
+                if (!foundPoint) {
+                  return null
+                }
+                return <InlinePoint key={pid} {...foundPoint} pointGroupId={pointGroup.id} />
+              })}
+            </Stack>
+          </Box>
         </DrawerBody>
 
         <DrawerFooter>

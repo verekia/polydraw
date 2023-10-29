@@ -1,20 +1,17 @@
 import { Box, Flex, HStack, Icon, IconButton, Spacer, Stack } from '@chakra-ui/react'
 
+import InlinePoint from '#/components/InlinePoint'
 import { DeleteIcon, DownArrowIcon, EditIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 
 import type { RawPointGroup } from '#/lib/types'
 
-const PanePointGroup = ({ id, name, pointIds }: RawPointGroup) => {
+const PanePointGroup = ({ id, name, color, pointIds }: RawPointGroup) => {
   const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
   const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
   const moveDownPointGroup = useStore(s => s.moveDownPointGroup)
   const moveUpPointGroup = useStore(s => s.moveUpPointGroup)
   const removePointGroup = useStore(s => s.removePointGroup)
-  const selectedPointId = useStore(s => s.selectedPointId)
-  const setSelectedPointId = useStore(s => s.setSelectedPointId)
-  const moveDownPointInPointGroup = useStore(s => s.moveDownPointInPointGroup)
-  const moveUpPointInPointGroup = useStore(s => s.moveUpPointInPointGroup)
   const setModalShown = useStore(s => s.setModalShown)
   const points = useStore(s => s.points)
   const isSelected = selectedPointGroupId === id
@@ -30,7 +27,23 @@ const PanePointGroup = ({ id, name, pointIds }: RawPointGroup) => {
       userSelect="none"
       bg="#333"
     >
-      <Box>{name ?? `ID: ${id}`}</Box>
+      <Box>
+        {color && (
+          <Box
+            as="span"
+            display="inline-block"
+            verticalAlign="middle"
+            pos="relative"
+            border="1px solid white"
+            top="-1px"
+            mr={2}
+            boxSize={3}
+            onClick={() => setModalShown('point-group')}
+            bg={color}
+          />
+        )}
+        {name ?? `ID: ${id}`}
+      </Box>
       <Flex>
         <Spacer />
         {isSelected && (
@@ -96,44 +109,7 @@ const PanePointGroup = ({ id, name, pointIds }: RawPointGroup) => {
               if (!foundPoint) {
                 return null
               }
-              return (
-                <Box
-                  key={pid}
-                  onClick={e => {
-                    e.stopPropagation()
-                    setSelectedPointId(pid)
-                  }}
-                  shadow={selectedPointId === pid ? '0 0 0 2px white' : undefined}
-                  px={2}
-                  rounded="md"
-                  _hover={{ bg: '#444' }}
-                >
-                  <Flex>
-                    <Box>{foundPoint.name ?? `${foundPoint.x}, ${foundPoint.y}`}</Box>
-                    <Spacer />
-                    <IconButton
-                      icon={<Icon as={DownArrowIcon} />}
-                      aria-label="Move point down in group"
-                      variant="ghost"
-                      size="sm"
-                      onClick={e => {
-                        e.stopPropagation()
-                        moveDownPointInPointGroup(id, pid)
-                      }}
-                    />
-                    <IconButton
-                      icon={<Icon as={UpArrowIcon} />}
-                      aria-label="Move point up in group"
-                      variant="ghost"
-                      size="sm"
-                      onClick={e => {
-                        e.stopPropagation()
-                        moveUpPointInPointGroup(id, pid)
-                      }}
-                    />
-                  </Flex>
-                </Box>
-              )
+              return <InlinePoint key={pid} {...foundPoint} pointGroupId={id} />
             })}
           </Stack>
         </Box>
