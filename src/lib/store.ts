@@ -34,6 +34,7 @@ interface Store {
 
   moveDownPointInPointGroup: (pointGroupId: PointGroupId, pointId: PointId) => void
   moveUpPointInPointGroup: (pointGroupId: PointGroupId, pointId: PointId) => void
+  removePointFromPointGroup: (pointGroupId: PointGroupId, pointId: PointId) => void
 
   pointGroups: RawPointGroup[]
   setPointGroups: (pointGroups: RawPointGroup[]) => void
@@ -49,6 +50,7 @@ interface Store {
 
   moveDownPointGroupInSuperGroup: (superGroupId: SuperGroupId, pointGroupId: PointGroupId) => void
   moveUpPointGroupInSuperGroup: (superGroupId: SuperGroupId, pointGroupId: PointGroupId) => void
+  removePointGroupFromSuperGroup: (superGroupId: SuperGroupId, pointGroupId: PointGroupId) => void
 
   superGroups: RawSuperGroup[]
   setSuperGroups: (superGroups: RawSuperGroup[]) => void
@@ -147,6 +149,15 @@ export const useStore = create<Store>()(
           pointGroups.splice(index, 1, pointGroup)
           set({ pointGroups })
         },
+        removePointFromPointGroup: (pointGroupId, pointId) => {
+          const pointGroups = [...get().pointGroups]
+          const index = pointGroups.findIndex(p => p.id === pointGroupId)
+          const pointGroup = pointGroups[index]
+          const pointIndex = pointGroup.pointIds.findIndex(id => id === pointId)
+          pointGroup.pointIds.splice(pointIndex, 1)
+          pointGroups.splice(index, 1, pointGroup)
+          set({ pointGroups })
+        },
         pointGroups: [],
         setPointGroups: pointGroups => set({ pointGroups }),
         addPointGroup: pointGroup => {
@@ -214,7 +225,15 @@ export const useStore = create<Store>()(
           superGroups.splice(index, 1, superGroup)
           set({ superGroups })
         },
-
+        removePointGroupFromSuperGroup: (superGroupId, pointGroupId) => {
+          const superGroups = [...get().superGroups]
+          const index = superGroups.findIndex(p => p.id === superGroupId)
+          const superGroup = superGroups[index]
+          const pointIndex = superGroup.pointGroupIds.findIndex(id => id === pointGroupId)
+          superGroup.pointGroupIds.splice(pointIndex, 1)
+          superGroups.splice(index, 1, superGroup)
+          set({ superGroups })
+        },
         superGroups: [],
         setSuperGroups: superGroups => set({ superGroups }),
         addSuperGroup: superGroup => set({ superGroups: [...get().superGroups, superGroup] }),

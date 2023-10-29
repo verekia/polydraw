@@ -1,6 +1,6 @@
-import { Box, Flex, Icon, IconButton, Spacer } from '@chakra-ui/react'
+import { Box, Flex, Icon, IconButton, Spacer, Tooltip } from '@chakra-ui/react'
 
-import { DownArrowIcon, EditIcon, UpArrowIcon } from '#/lib/icons'
+import { DownArrowIcon, EditIcon, RemoveListIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 
 import type { RawPointGroup } from '#/lib/types'
@@ -11,6 +11,7 @@ const InlinePointGroup = ({ id, name, superGroupId }: RawPointGroup & { superGro
   const moveDownPointGroupInSuperGroup = useStore(s => s.moveDownPointGroupInSuperGroup)
   const moveUpPointGroupInSuperGroup = useStore(s => s.moveUpPointGroupInSuperGroup)
   const setModalShown = useStore(s => s.setModalShown)
+  const removePointGroupFromSuperGroup = useStore(s => s.removePointGroupFromSuperGroup)
 
   return (
     <Flex
@@ -57,6 +58,24 @@ const InlinePointGroup = ({ id, name, superGroupId }: RawPointGroup & { superGro
           moveUpPointGroupInSuperGroup(superGroupId, id)
         }}
       />
+      <Tooltip
+        label={
+          <>
+            Remove <b>{name ?? ''}</b> from super group
+          </>
+        }
+      >
+        <IconButton
+          icon={<Icon as={RemoveListIcon} />}
+          aria-label="Remove from super group"
+          variant="ghost"
+          size="sm"
+          onClick={e => {
+            e.stopPropagation()
+            removePointGroupFromSuperGroup(superGroupId, id)
+          }}
+        />
+      </Tooltip>
     </Flex>
   )
 }

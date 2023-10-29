@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Icon, IconButton, Spacer, Stack } from '@chakra-ui/react'
+import { Box, Flex, HStack, Icon, IconButton, Spacer, Stack, Tooltip } from '@chakra-ui/react'
 
 import InlinePoint from '#/components/InlinePoint'
 import { AddListIcon, DownArrowIcon, EditIcon, UpArrowIcon } from '#/lib/icons'
@@ -89,19 +89,33 @@ const PanePointGroup = ({ id, name, color, pointIds }: RawPointGroup) => {
                 moveUpPointGroup(id)
               }}
             />
-            <IconButton
-              icon={<Icon as={AddListIcon} />}
-              isDisabled={!selectedSuperGroup}
-              aria-label="Add to selected super group"
-              variant="ghost"
-              size="sm"
-              onClick={e => {
-                e.stopPropagation()
-                if (selectedSuperGroup) {
-                  addPointGroupToSuperGroup(selectedSuperGroup.id, id)
-                }
-              }}
-            />
+            <Tooltip
+              label={
+                <>
+                  {selectedSuperGroup ? (
+                    <>
+                      Add to <b>{selectedSuperGroup?.name ?? ''}</b> super group
+                    </>
+                  ) : (
+                    'Select a super group to add this point group to.'
+                  )}
+                </>
+              }
+            >
+              <IconButton
+                icon={<Icon as={AddListIcon} />}
+                isDisabled={!selectedSuperGroup}
+                aria-label="Add to selected super group"
+                variant="ghost"
+                size="sm"
+                onClick={e => {
+                  e.stopPropagation()
+                  if (selectedSuperGroup) {
+                    addPointGroupToSuperGroup(selectedSuperGroup.id, id)
+                  }
+                }}
+              />
+            </Tooltip>
           </HStack>
         )}
       </Flex>
