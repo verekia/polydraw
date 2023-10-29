@@ -11,12 +11,10 @@ import { useStore } from '#/lib/store'
 const IndexPage = () => {
   const points = useStore(s => s.points)
   const selectedPointId = useStore(s => s.selectedPointId)
-  const selectedPolygonId = useStore(s => s.selectedPolygonId)
-  const selectedPolygonGroupId = useStore(s => s.selectedPolygonGroupId)
+  const selectedSuperGroupId = useStore(s => s.selectedSuperGroupId)
   const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
-  const setSelectedPolygonId = useStore(s => s.setSelectedPolygonId)
-  const setSelectedPolygonGroupId = useStore(s => s.setSelectedPolygonGroupId)
+  const setSelectedSuperGroupId = useStore(s => s.setSelectedSuperGroupId)
   const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
   const removePoint = useStore(s => s.removePoint)
 
@@ -27,10 +25,8 @@ const IndexPage = () => {
           setSelectedPointId()
         } else if (selectedPointGroupId) {
           setSelectedPointGroupId()
-        } else if (selectedPolygonId) {
-          setSelectedPolygonId()
-        } else if (selectedPolygonGroupId) {
-          setSelectedPolygonGroupId()
+        } else if (selectedSuperGroupId) {
+          setSelectedSuperGroupId()
         }
       }
 
@@ -50,11 +46,9 @@ const IndexPage = () => {
     }
   }, [
     selectedPointId,
-    selectedPolygonGroupId,
-    selectedPolygonId,
+    selectedSuperGroupId,
     setSelectedPointId,
-    setSelectedPolygonGroupId,
-    setSelectedPolygonId,
+    setSelectedSuperGroupId,
     removePoint,
     points,
     setSelectedPointGroupId,
