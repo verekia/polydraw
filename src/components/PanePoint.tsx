@@ -20,9 +20,17 @@ const PanePoint = ({ id, name, x, y }: RawPoint) => {
   const polygons = useStore(s => s.polygons)
   const addPointToPointGroup = useStore(s => s.addPointToPointGroup)
   const addPointToPolygon = useStore(s => s.addPointToPolygon)
+  const showSinglePoints = useStore(s => s.showSinglePoints)
 
   const selectedPointGroup = pointGroups.find(pg => pg.id === selectedPointGroupId)
   const selectedPolygon = polygons.find(p => p.id === selectedPolygonId)
+
+  const isInAnyPointGroupOrPolygon =
+    pointGroups.some(pg => pg.pointIds.includes(id)) || polygons.some(p => p.pointIds.includes(id))
+
+  if (showSinglePoints && isInAnyPointGroupOrPolygon) {
+    return null
+  }
 
   return (
     <Flex

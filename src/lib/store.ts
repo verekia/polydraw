@@ -66,6 +66,8 @@ interface Store {
   setBackgroundImageSrc: (src?: string) => void
   modalShown?: 'point' | 'point-group' | 'polygon' | 'polygon-group'
   setModalShown: (modalShown?: 'point' | 'point-group' | 'polygon' | 'polygon-group') => void
+  showSinglePoints: boolean
+  setShowSinglePoints: (showSinglePoints: boolean) => void
 }
 
 export const useStore = create<Store>()(
@@ -234,6 +236,8 @@ export const useStore = create<Store>()(
         setBackgroundImageSrc: src => set({ backgroundImageSrc: src }),
         modalShown: undefined,
         setModalShown: modalShown => set({ modalShown }),
+        showSinglePoints: true,
+        setShowSinglePoints: showSinglePoints => set({ showSinglePoints }),
       }),
       {
         name: 'polydraw',

@@ -2,6 +2,7 @@ import {
   Box,
   BoxProps,
   Button,
+  Checkbox,
   Divider,
   Flex,
   FormControl,
@@ -57,6 +58,8 @@ const Pane = (boxProps: BoxProps) => {
   const setPolygonGroups = useStore(s => s.setPolygonGroups)
   const setPointGroups = useStore(s => s.setPointGroups)
   const addPolygon = useStore(s => s.addPolygon)
+  const showSinglePoints = useStore(s => s.showSinglePoints)
+  const setShowSinglePoints = useStore(s => s.setShowSinglePoints)
   const pointsWithTruncatedDecimals = points.map(p => ({
     ...p,
     x: truncateDecimals(p.x, decimals),
@@ -202,6 +205,16 @@ const Pane = (boxProps: BoxProps) => {
               </Box>
             </Tooltip>
           </Heading>
+          {points.length > 0 && (
+            <Box mb={2}>
+              <Checkbox
+                isChecked={showSinglePoints}
+                onChange={e => setShowSinglePoints(e.target.checked)}
+              >
+                Hide points that are in a point group or polygon
+              </Checkbox>
+            </Box>
+          )}
           <Stack>
             {points.map(p => (
               <PanePoint key={p.id} {...p} />
@@ -224,7 +237,14 @@ const Pane = (boxProps: BoxProps) => {
                   <br />
                   <br />
                   If a point group is{' '}
-                  <Box as="b" border="1px solid red" display="inline-block" px="3px" rounded="md">
+                  <Box
+                    as="b"
+                    shadow="inset 0 0 0 2px white, 0 0 0 1px black"
+                    px="4px"
+                    py="1px"
+                    display="inline-block"
+                    rounded="md"
+                  >
                     selected
                   </Box>
                   , new <b>points</b> will be automatically added to it.
@@ -270,7 +290,14 @@ const Pane = (boxProps: BoxProps) => {
                   <br />
                   <br />
                   If a polygon is{' '}
-                  <Box as="b" border="1px solid red" display="inline-block" px="3px" rounded="md">
+                  <Box
+                    as="b"
+                    shadow="inset 0 0 0 2px white, 0 0 0 1px black"
+                    px="4px"
+                    py="1px"
+                    display="inline-block"
+                    rounded="md"
+                  >
                     selected
                   </Box>
                   , new <b>points</b> will be automatically added to it.
@@ -316,7 +343,14 @@ const Pane = (boxProps: BoxProps) => {
                   <br />
                   <br />
                   If a polygon group is{' '}
-                  <Box as="b" border="1px solid red" display="inline-block" px="3px" rounded="md">
+                  <Box
+                    as="b"
+                    shadow="inset 0 0 0 2px white, 0 0 0 1px black"
+                    px="4px"
+                    py="1px"
+                    display="inline-block"
+                    rounded="md"
+                  >
                     selected
                   </Box>
                   , new <b>polygons</b> will be automatically added to it.
