@@ -36,8 +36,8 @@ const Canvas = (boxProps: BoxProps) => {
           setSelectedPointId(id)
         }
       }}
-      w={scale.width * zoom}
-      h={scale.height * zoom}
+      w={`${scale.width * zoom}px`}
+      h={`${scale.height * zoom}px`}
       bg={`url(${backgroundImageSrc})`}
       bgSize="contain"
       bgRepeat="no-repeat"

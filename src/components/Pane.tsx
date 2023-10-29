@@ -2,6 +2,7 @@ import {
   Box,
   BoxProps,
   Button,
+  Divider,
   Flex,
   FormControl,
   FormLabel,
@@ -9,6 +10,11 @@ import {
   Icon,
   Input,
   ListItem,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   SimpleGrid,
   Stack,
   Tooltip,
@@ -95,7 +101,7 @@ const Pane = (boxProps: BoxProps) => {
 
   return (
     <Box bg="#262626" p={5} {...boxProps}>
-      <Flex alignItems="center" mb={8} justifyContent="center" direction="column" gap={2}>
+      <Flex alignItems="center" mb={5} justifyContent="center" direction="column" gap={2}>
         <Heading as="h1" textAlign="center" size="xl">
           <Box as="span" color="#f44">
             poly
@@ -109,45 +115,75 @@ const Pane = (boxProps: BoxProps) => {
       <Flex mb={5} gap={5}>
         <FormControl>
           <FormLabel>Width</FormLabel>
-          <Input
-            type="number"
+          <NumberInput
+            min={1}
             value={scale.width}
-            onChange={e => setScale({ ...scale, width: Number(e.target.value) })}
-          />
+            onChange={e => setScale({ ...scale, width: Number(e) })}
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
         </FormControl>
         <FormControl>
           <FormLabel>Height</FormLabel>
-          <Input
-            type="number"
+          <NumberInput
+            min={1}
             value={scale.height}
-            onChange={e => setScale({ ...scale, height: Number(e.target.value) })}
-          />
+            onChange={e => setScale({ ...scale, height: Number(e) })}
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
         </FormControl>
         <FormControl>
           <FormLabel>Zoom</FormLabel>
-          <Input type="number" value={zoom} onChange={e => setZoom(Number(e.target.value))} />
+          <NumberInput value={zoom} onChange={e => setZoom(Number(e))}>
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
         </FormControl>
         <FormControl>
           <FormLabel>Max decimals</FormLabel>
-          <Input
-            type="number"
-            min={0}
-            max={5}
-            value={decimals}
-            onChange={e => setDecimals(Number(e.target.value))}
-          />
+          <NumberInput min={0} max={5} value={decimals} onChange={e => setDecimals(Number(e))}>
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
         </FormControl>
       </Flex>
+      <Box mb={4}>
+        <Box as="span" textDecor="underline">
+          First
+        </Box>
+        , set your desired <b>Width</b> and <b>Height</b> and{' '}
+        <Box as="span" textDecor="underline">
+          do not change it later
+        </Box>
+        .<br />
+        Then, adjust the <b>Zoom</b> to work comfortably.
+      </Box>
       <Flex gap={5}>
-        <FormControl mb={10}>
+        <FormControl>
           <FormLabel>Background image</FormLabel>
           <Input type="file" onChange={handleImageUpload} p={1} />
         </FormControl>
-        <FormControl mb={10}>
+        <FormControl>
           <FormLabel>Import JSON</FormLabel>
           <Input type="file" onChange={handleJSONImport} p={1} />
         </FormControl>
       </Flex>
+      <Divider my={8} />
       <SimpleGrid gap={5} columns={3}>
         <Box>
           <Heading as="h2" size="md" mb={5}>
@@ -335,14 +371,6 @@ const Pane = (boxProps: BoxProps) => {
           Instructions
         </Heading>
         <UnorderedList mt={5}>
-          <ListItem>
-            <Box as="b" textDecor="underline">
-              FIRST
-            </Box>
-            , set the <b>Width</b> and <b>Height</b> you want for your desired output. Changing it
-            later on will mess up your coordinates. Then, adjust the <b>Zoom</b> to work
-            comfortably.
-          </ListItem>
           <ListItem>
             For a <b>single shape</b>, you can simply click on the canvas to create points.
           </ListItem>
