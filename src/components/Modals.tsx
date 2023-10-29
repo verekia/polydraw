@@ -1,11 +1,12 @@
+import PointGroupModal from '#/components/modals/PointGroupModal'
 import PointModal from '#/components/modals/PointModal'
-
-import PointGroupModal from './modals/PointGroupModal'
+import SuperGroupModal from '#/components/modals/SuperGroupModal'
 
 const Modals = () => (
   <>
     <PointModal />
     <PointGroupModal />
+    <SuperGroupModal />
   </>
 )
 

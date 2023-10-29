@@ -18,4 +18,9 @@ export type RawPointGroup = {
   color?: string
   pointIds: PointId[]
 }
-export type RawSuperGroup = { id: SuperGroupId; name?: string; pointGroupIds: PointGroupId[] }
+export type RawSuperGroup = {
+  id: SuperGroupId
+  name?: string
+  color?: string
+  pointGroupIds: PointGroupId[]
+}

@@ -39,6 +39,7 @@ interface Store {
   setPointGroups: (pointGroups: RawPointGroup[]) => void
   addPointGroup: (pointGroup: RawPointGroup) => void
   updatePointGroup: (id: PointGroupId, pointGroup: Partial<RawPointGroup>) => void
+  addPointGroupToSuperGroup: (superGroupId: SuperGroupId, pointGroupId: PointGroupId) => void
   removePointGroup: (id: PointGroupId) => void
   moveDownPointGroup: (id: PointGroupId) => void
   moveUpPointGroup: (id: PointGroupId) => void
@@ -46,9 +47,13 @@ interface Store {
   selectedPointGroupId?: PointGroupId
   setSelectedPointGroupId: (id?: PointGroupId) => void
 
+  moveDownPointGroupInSuperGroup: (superGroupId: SuperGroupId, pointGroupId: PointGroupId) => void
+  moveUpPointGroupInSuperGroup: (superGroupId: SuperGroupId, pointGroupId: PointGroupId) => void
+
   superGroups: RawSuperGroup[]
   setSuperGroups: (superGroups: RawSuperGroup[]) => void
   addSuperGroup: (superGroup: RawSuperGroup) => void
+  updateSuperGroup: (id: SuperGroupId, superGroup: Partial<RawSuperGroup>) => void
   removeSuperGroup: (id: SuperGroupId) => void
   moveDownSuperGroup: (id: SuperGroupId) => void
   moveUpSuperGroup: (id: SuperGroupId) => void
@@ -64,6 +69,8 @@ interface Store {
   setModalShown: (modalShown?: 'point' | 'point-group' | 'super-group') => void
   showSinglePoints: boolean
   setShowSinglePoints: (showSinglePoints: boolean) => void
+  showSinglePointGroups: boolean
+  setShowSinglePointGroups: (showSinglePointGroups: boolean) => void
 }
 
 export const useStore = create<Store>()(
@@ -158,6 +165,14 @@ export const useStore = create<Store>()(
           set({
             pointGroups: get().pointGroups.map(p => (p.id === id ? { ...p, ...pointGroup } : p)),
           }),
+        addPointGroupToSuperGroup: (superGroupId, pointGroupId) =>
+          set({
+            superGroups: get().superGroups.map(sg =>
+              sg.id === superGroupId
+                ? { ...sg, pointGroupIds: [...sg.pointGroupIds, pointGroupId] }
+                : sg,
+            ),
+          }),
         removePointGroup: id =>
           set({
             pointGroups: get().pointGroups.filter(p => p.id !== id),
@@ -179,9 +194,36 @@ export const useStore = create<Store>()(
         },
         clearPointGroups: () => set({ pointGroups: [], selectedPointGroupId: undefined }),
 
+        moveDownPointGroupInSuperGroup: (superGroupId, pointGroupId) => {
+          const superGroups = [...get().superGroups]
+          const index = superGroups.findIndex(p => p.id === superGroupId)
+          const superGroup = superGroups[index]
+          const pointIndex = superGroup.pointGroupIds.findIndex(id => id === pointGroupId)
+          const point = superGroup.pointGroupIds.splice(pointIndex, 1)[0]
+          superGroup.pointGroupIds.splice(pointIndex + 1, 0, point)
+          superGroups.splice(index, 1, superGroup)
+          set({ superGroups })
+        },
+        moveUpPointGroupInSuperGroup: (superGroupId, pointGroupId) => {
+          const superGroups = [...get().superGroups]
+          const index = superGroups.findIndex(p => p.id === superGroupId)
+          const superGroup = superGroups[index]
+          const pointIndex = superGroup.pointGroupIds.findIndex(id => id === pointGroupId)
+          const point = superGroup.pointGroupIds.splice(pointIndex, 1)[0]
+          superGroup.pointGroupIds.splice(pointIndex - 1, 0, point)
+          superGroups.splice(index, 1, superGroup)
+          set({ superGroups })
+        },
+
         superGroups: [],
         setSuperGroups: superGroups => set({ superGroups }),
         addSuperGroup: superGroup => set({ superGroups: [...get().superGroups, superGroup] }),
+        updateSuperGroup: (id, superGroup) =>
+          set({
+            superGroups: get().superGroups.map(sg =>
+              sg.id === id ? { ...sg, ...superGroup } : sg,
+            ),
+          }),
         removeSuperGroup: id =>
           set({
             superGroups: get().superGroups.filter(sg => sg.id !== id),
@@ -204,8 +246,7 @@ export const useStore = create<Store>()(
         clearSuperGroups: () => set({ superGroups: [], selectedSuperGroupId: undefined }),
 
         selectedSuperGroupId: undefined,
-        setSelectedSuperGroupId: (id?: SuperGroupId) =>
-          set({ selectedSuperGroupId: id, selectedPointGroupId: undefined }),
+        setSelectedSuperGroupId: (id?: SuperGroupId) => set({ selectedSuperGroupId: id }),
         selectedPointGroupId: undefined,
         setSelectedPointGroupId: (id?: SuperGroupId) => set({ selectedPointGroupId: id }),
 
@@ -215,8 +256,11 @@ export const useStore = create<Store>()(
         setBackgroundImageSrc: src => set({ backgroundImageSrc: src }),
         modalShown: undefined,
         setModalShown: modalShown => set({ modalShown }),
+
         showSinglePoints: true,
         setShowSinglePoints: showSinglePoints => set({ showSinglePoints }),
+        showSinglePointGroups: true,
+        setShowSinglePointGroups: showSinglePointGroups => set({ showSinglePointGroups }),
       }),
       {
         name: 'polydraw',

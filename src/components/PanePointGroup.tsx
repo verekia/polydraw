@@ -1,7 +1,7 @@
 import { Box, Flex, HStack, Icon, IconButton, Spacer, Stack } from '@chakra-ui/react'
 
 import InlinePoint from '#/components/InlinePoint'
-import { DeleteIcon, DownArrowIcon, EditIcon, UpArrowIcon } from '#/lib/icons'
+import { AddListIcon, DownArrowIcon, EditIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 
 import type { RawPointGroup } from '#/lib/types'
@@ -11,10 +11,21 @@ const PanePointGroup = ({ id, name, color, pointIds }: RawPointGroup) => {
   const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
   const moveDownPointGroup = useStore(s => s.moveDownPointGroup)
   const moveUpPointGroup = useStore(s => s.moveUpPointGroup)
-  const removePointGroup = useStore(s => s.removePointGroup)
+  const selectedSuperGroupId = useStore(s => s.selectedSuperGroupId)
   const setModalShown = useStore(s => s.setModalShown)
+  const superGroups = useStore(s => s.superGroups)
+  const addPointGroupToSuperGroup = useStore(s => s.addPointGroupToSuperGroup)
   const points = useStore(s => s.points)
+  const showSinglePointGroups = useStore(s => s.showSinglePointGroups)
   const isSelected = selectedPointGroupId === id
+
+  const selectedSuperGroup = superGroups.find(sg => sg.id === selectedSuperGroupId)
+
+  const isInAnySuperGroup = superGroups.some(sg => sg.pointGroupIds.includes(id))
+
+  if (showSinglePointGroups && isInAnySuperGroup) {
+    return null
+  }
 
   return (
     <Box
@@ -79,21 +90,15 @@ const PanePointGroup = ({ id, name, color, pointIds }: RawPointGroup) => {
               }}
             />
             <IconButton
-              icon={<Icon as={DeleteIcon} />}
-              aria-label="Delete polygon"
+              icon={<Icon as={AddListIcon} />}
+              isDisabled={!selectedSuperGroup}
+              aria-label="Add to selected super group"
               variant="ghost"
               size="sm"
               onClick={e => {
                 e.stopPropagation()
-                if (isSelected) {
-                  setSelectedPointGroupId()
-                }
-                if (
-                  confirm(
-                    'Are you sure you want to delete this point group? The points it references will not be deleted.',
-                  )
-                ) {
-                  removePointGroup(id)
+                if (selectedSuperGroup) {
+                  addPointGroupToSuperGroup(selectedSuperGroup.id, id)
                 }
               }}
             />

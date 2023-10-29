@@ -8,7 +8,6 @@ import {
   BoxProps,
   Button,
   Checkbox,
-  Divider,
   Flex,
   FormControl,
   FormLabel,
@@ -60,6 +59,8 @@ const Pane = (boxProps: BoxProps) => {
   const setPointGroups = useStore(s => s.setPointGroups)
   const showSinglePoints = useStore(s => s.showSinglePoints)
   const setShowSinglePoints = useStore(s => s.setShowSinglePoints)
+  const showSinglePointGroups = useStore(s => s.showSinglePointGroups)
+  const setShowSinglePointGroups = useStore(s => s.setShowSinglePointGroups)
   const pointsWithTruncatedDecimals = points.map(p => ({
     ...p,
     x: truncateDecimals(p.x, decimals),
@@ -227,16 +228,6 @@ const Pane = (boxProps: BoxProps) => {
               </Box>
             </Tooltip>
           </Heading>
-          {points.length > 0 && (
-            <Box mb={2}>
-              <Checkbox
-                isChecked={showSinglePoints}
-                onChange={e => setShowSinglePoints(e.target.checked)}
-              >
-                Hide points that are in a point group
-              </Checkbox>
-            </Box>
-          )}
           <Stack maxH="300px" overflowY="auto" p={1}>
             {points.map(p => (
               <PanePoint key={p.id} {...p} />
@@ -366,6 +357,26 @@ const Pane = (boxProps: BoxProps) => {
           </Stack>
         </Box>
       </SimpleGrid>
+      <Stack mt={5}>
+        <Box>
+          <Checkbox
+            colorScheme="red"
+            isChecked={showSinglePoints}
+            onChange={e => setShowSinglePoints(e.target.checked)}
+          >
+            Hide points that are in a point group
+          </Checkbox>
+        </Box>
+        <Box>
+          <Checkbox
+            colorScheme="red"
+            isChecked={showSinglePointGroups}
+            onChange={e => setShowSinglePointGroups(e.target.checked)}
+          >
+            Hide point groups that are in a super group
+          </Checkbox>
+        </Box>
+      </Stack>
       <Stack direction="row" my={10} gap={2}>
         <Button
           onClick={() => {
