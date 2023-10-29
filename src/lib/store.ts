@@ -122,7 +122,7 @@ export const useStore = create<Store>()(
           points.splice(index - 1, 0, point)
           set({ points })
         },
-        clearPoints: () => set({ points: [] }),
+        clearPoints: () => set({ points: [], selectedPointId: undefined }),
         pointGroups: [],
         setPointGroups: pointGroups => set({ pointGroups }),
         addPointGroup: pointGroup => set({ pointGroups: [...get().pointGroups, pointGroup] }),
@@ -145,7 +145,7 @@ export const useStore = create<Store>()(
           pointGroups.splice(index - 1, 0, pointGroup)
           set({ pointGroups })
         },
-        clearPointGroups: () => set({ pointGroups: [] }),
+        clearPointGroups: () => set({ pointGroups: [], selectedPointGroupId: undefined }),
         polygonGroups: [],
         setPolygonGroups: polygonGroups => set({ polygonGroups }),
         addPolygonGroup: polygonGroup =>
@@ -169,7 +169,7 @@ export const useStore = create<Store>()(
           polygonGroups.splice(index - 1, 0, polygonGroup)
           set({ polygonGroups })
         },
-        clearPolygonGroups: () => set({ polygonGroups: [] }),
+        clearPolygonGroups: () => set({ polygonGroups: [], selectedPolygonGroupId: undefined }),
         polygons: [],
         setPolygons: polygons => set({ polygons }),
         addPolygon: polygon => {
@@ -200,7 +200,7 @@ export const useStore = create<Store>()(
           polygons.splice(index - 1, 0, polygon)
           set({ polygons })
         },
-        clearPolygons: () => set({ polygons: [] }),
+        clearPolygons: () => set({ polygons: [], selectedPolygonId: undefined }),
         selectedPolygonId: undefined,
         setSelectedPolygonId: (id?: PolygonId) =>
           set({ selectedPolygonId: id, selectedPointGroupId: undefined }),

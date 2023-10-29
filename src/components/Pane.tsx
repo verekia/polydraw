@@ -38,7 +38,6 @@ const Pane = (boxProps: BoxProps) => {
   const pointGroups = useStore(s => s.pointGroups)
   const addPointGroup = useStore(s => s.addPointGroup)
   const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
-  const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const clearPoints = useStore(s => s.clearPoints)
   const clearPolygons = useStore(s => s.clearPolygons)
   const clearPolygonGroups = useStore(s => s.clearPolygonGroups)
@@ -47,6 +46,10 @@ const Pane = (boxProps: BoxProps) => {
   const addPolygonGroup = useStore(s => s.addPolygonGroup)
   const setSelectedPolygonGroupId = useStore(s => s.setSelectedPolygonGroupId)
   const setBackgroundImageSrc = useStore(s => s.setBackgroundImageSrc)
+  const setPoints = useStore(s => s.setPoints)
+  const setPolygons = useStore(s => s.setPolygons)
+  const setPolygonGroups = useStore(s => s.setPolygonGroups)
+  const setPointGroups = useStore(s => s.setPointGroups)
   const addPolygon = useStore(s => s.addPolygon)
   const pointsWithTruncatedDecimals = points.map(p => ({
     ...p,
@@ -70,6 +73,26 @@ const Pane = (boxProps: BoxProps) => {
     reader.readAsDataURL(file)
   }
 
+  const handleJSONImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) {
+      return
+    }
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      const data = JSON.parse(reader.result as string)
+      clearPoints()
+      clearPolygons()
+      clearPolygonGroups()
+      clearPointGroups()
+      setPoints(data.points)
+      setPolygons(data.polygons)
+      setPolygonGroups(data.polygonGroups)
+      setPointGroups(data.pointGroups)
+    }
+    reader.readAsText(file)
+  }
+
   return (
     <Box bg="#262626" p={5} {...boxProps}>
       <Flex alignItems="center" mb={8} justifyContent="center" direction="column" gap={2}>
@@ -83,7 +106,7 @@ const Pane = (boxProps: BoxProps) => {
           Draw Polygons, Export Coordinates
         </Heading>
       </Flex>
-      <Flex mb={5}>
+      <Flex mb={5} gap={5}>
         <FormControl>
           <FormLabel>Width</FormLabel>
           <Input
@@ -115,10 +138,16 @@ const Pane = (boxProps: BoxProps) => {
           />
         </FormControl>
       </Flex>
-      <FormControl mb={10}>
-        <FormLabel>Background image</FormLabel>
-        <Input type="file" onChange={handleImageUpload} />
-      </FormControl>
+      <Flex gap={5}>
+        <FormControl mb={10}>
+          <FormLabel>Background image</FormLabel>
+          <Input type="file" onChange={handleImageUpload} p={1} />
+        </FormControl>
+        <FormControl mb={10}>
+          <FormLabel>Import JSON</FormLabel>
+          <Input type="file" onChange={handleJSONImport} p={1} />
+        </FormControl>
+      </Flex>
       <SimpleGrid gap={5} columns={3}>
         <Box>
           <Heading as="h2" size="md" mb={5}>
@@ -288,10 +317,6 @@ const Pane = (boxProps: BoxProps) => {
               clearPolygons()
               clearPolygonGroups()
               clearPointGroups()
-              setSelectedPointGroupId()
-              setSelectedPolygonGroupId()
-              setSelectedPolygonId()
-              setSelectedPointId()
             }
           }}
         >
