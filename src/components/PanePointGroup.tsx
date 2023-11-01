@@ -23,7 +23,7 @@ const PanePointGroup = ({ id, name, color, pointIds }: RawPointGroup) => {
 
   const isInAnySuperGroup = superGroups.some(sg => sg.pointGroupIds.includes(id))
 
-  if (showSinglePointGroups && isInAnySuperGroup) {
+  if (showSinglePointGroups && isInAnySuperGroup && !isSelected) {
     return null
   }
 

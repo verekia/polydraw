@@ -7,7 +7,6 @@ import {
   Box,
   BoxProps,
   Button,
-  Checkbox,
   Flex,
   FormControl,
   FormLabel,
@@ -23,6 +22,7 @@ import {
   NumberInputStepper,
   SimpleGrid,
   Stack,
+  Switch,
   Tooltip,
   UnorderedList,
 } from '@chakra-ui/react'
@@ -101,7 +101,7 @@ const Pane = (boxProps: BoxProps) => {
   }
 
   return (
-    <Box bg="#262626" p={5} {...boxProps}>
+    <Box bg="#262626" p={5} userSelect="none" {...boxProps}>
       <Flex alignItems="center" mb={5} justifyContent="center" direction="column" gap={2}>
         <Heading as="h1" textAlign="center" size="xl">
           <Image
@@ -358,24 +358,28 @@ const Pane = (boxProps: BoxProps) => {
         </Box>
       </SimpleGrid>
       <Stack mt={5}>
-        <Box>
-          <Checkbox
+        <FormControl display="flex" alignItems="center" gap={2}>
+          <Switch
+            id="single-points"
             colorScheme="red"
             isChecked={showSinglePoints}
             onChange={e => setShowSinglePoints(e.target.checked)}
-          >
+          />
+          <FormLabel htmlFor="single-points" mb={0} cursor="pointer">
             Hide points that are in a point group
-          </Checkbox>
-        </Box>
-        <Box>
-          <Checkbox
+          </FormLabel>
+        </FormControl>
+        <FormControl display="flex" alignItems="center" gap={2}>
+          <Switch
+            id="single-point-groups"
             colorScheme="red"
             isChecked={showSinglePointGroups}
             onChange={e => setShowSinglePointGroups(e.target.checked)}
-          >
+          />
+          <FormLabel htmlFor="single-point-groups" mb={0} cursor="pointer">
             Hide point groups that are in a super group
-          </Checkbox>
-        </Box>
+          </FormLabel>
+        </FormControl>
       </Stack>
       <Stack direction="row" my={10} gap={2}>
         <Button

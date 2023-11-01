@@ -18,6 +18,7 @@ const Point = ({ id, x, y, color }: RawPoint) => {
   const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
   const pointGroups = useStore(s => s.pointGroups)
   const superGroups = useStore(s => s.superGroups)
+  const mode = useStore(s => s.mode)
 
   const selectedAndBelongedToPointGroup = pointGroups.find(
     p => p.id === selectedPointGroupId && p.pointIds.includes(id),
@@ -36,20 +37,26 @@ const Point = ({ id, x, y, color }: RawPoint) => {
       transform="translate(-50%, 50%)"
       rounded="999px"
       boxSize="24px"
-      cursor={isSelected ? 'move' : 'pointer'}
+      cursor={mode === 'select' ? (isSelected ? 'move' : 'pointer') : undefined}
       onPointerDown={e => {
+        if (mode === 'add-point') {
+          return
+        }
         e.stopPropagation()
         if (isSelected) {
           setIsDragging(true)
         }
         setSelectedPointId(id)
       }}
-      shadow={isSelected ? '0 0 0 2px white, 0 0 0 4px black' : undefined}
-      _hover={{ bg: 'rgba(255, 255, 255, 0.4)' }}
+      shadow={mode === 'select' && isSelected ? '0 0 0 2px white, 0 0 0 4px black' : undefined}
+      _hover={{ bg: mode === 'select' ? 'rgba(255, 255, 255, 0.4)' : undefined }}
       onClick={e => {
-        e.stopPropagation()
+        mode === 'select' && e.stopPropagation()
       }}
       onPointerMove={e => {
+        if (mode === 'add-point') {
+          return
+        }
         e.stopPropagation()
 
         if (isDragging && e.buttons === 1) {
@@ -60,6 +67,9 @@ const Point = ({ id, x, y, color }: RawPoint) => {
         }
       }}
       onPointerUp={e => {
+        if (mode === 'add-point') {
+          return
+        }
         e.stopPropagation()
         setIsDragging(false)
       }}

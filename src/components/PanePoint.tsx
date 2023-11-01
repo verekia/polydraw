@@ -23,7 +23,7 @@ const PanePoint = ({ id, name, x, y, color }: RawPoint) => {
 
   const isInAnyPointGroupOrPolygon = pointGroups.some(pg => pg.pointIds.includes(id))
 
-  if (showSinglePoints && isInAnyPointGroupOrPolygon) {
+  if (showSinglePoints && isInAnyPointGroupOrPolygon && !isSelected) {
     return null
   }
 

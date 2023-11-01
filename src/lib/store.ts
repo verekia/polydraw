@@ -63,8 +63,8 @@ interface Store {
   selectedSuperGroupId?: SuperGroupId
   setSelectedSuperGroupId: (id?: SuperGroupId) => void
 
-  mode?: 'add-point'
-  setMode: (mode?: 'add-point') => void
+  mode?: 'add-point' | 'select'
+  setMode: (mode?: 'add-point' | 'select') => void
   backgroundImageSrc?: string
   setBackgroundImageSrc: (src?: string) => void
   modalShown?: 'point' | 'point-group' | 'super-group'
@@ -269,7 +269,7 @@ export const useStore = create<Store>()(
         selectedPointGroupId: undefined,
         setSelectedPointGroupId: (id?: SuperGroupId) => set({ selectedPointGroupId: id }),
 
-        mode: 'add-point',
+        mode: 'select',
         setMode: mode => set({ mode }),
         backgroundImageSrc: undefined,
         setBackgroundImageSrc: src => set({ backgroundImageSrc: src }),
