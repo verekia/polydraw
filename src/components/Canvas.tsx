@@ -10,14 +10,17 @@ const Canvas = (boxProps: BoxProps) => {
   const scale = useStore(s => s.scale)
   const points = useStore(s => s.points)
   const addPoint = useStore(s => s.addPoint)
-  const isDragging = useStore(s => s.isDragging)
+  const pointDraggedId = useStore(s => s.pointDraggedId)
+  const setPointDraggedId = useStore(s => s.setPointDraggedId)
   const backgroundImageSrc = useStore(s => s.backgroundImageSrc)
+  const updatePoint = useStore(s => s.updatePoint)
   const pointGroups = useStore(s => s.pointGroups)
   const superGroups = useStore(s => s.superGroups)
   const resolvedPointGroups = pointGroups.map(pg => ({
     ...pg,
     points: pg.pointIds.map(id => points.find(p => p.id === id)!),
   }))
+  const pointDragged = points.find(p => p.id === pointDraggedId)
 
   return (
     <Box
@@ -30,14 +33,28 @@ const Canvas = (boxProps: BoxProps) => {
       onClick={e => {
         e.stopPropagation()
 
-        if (isDragging) {
+        setPointDraggedId()
+
+        if (pointDraggedId) {
           return
         }
+
         const rect = e.currentTarget.getBoundingClientRect()
         const x = e.clientX - rect.left
         const y = rect.height - (e.clientY - rect.top)
         addPoint({ id: createId(), x: x / zoom, y: y / zoom })
       }}
+      onPointerMove={e => {
+        e.stopPropagation()
+
+        if (pointDragged && e.buttons === 1) {
+          updatePoint(pointDragged.id, {
+            x: pointDragged.x + e.movementX / zoom,
+            y: pointDragged.y - e.movementY / zoom,
+          })
+        }
+      }}
+      onPointerUp={() => setPointDraggedId()}
       w={`${scale.width * zoom}px`}
       h={`${scale.height * zoom}px`}
       bg={`url(${backgroundImageSrc})`}

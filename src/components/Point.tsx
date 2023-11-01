@@ -1,19 +1,15 @@
 import { Box } from '@chakra-ui/react'
 
 import { useStore } from '#/lib/store'
-import { truncateDecimals } from '#/lib/util'
 
 import type { RawPoint } from '#/lib/types'
 
 const Point = ({ id, x, y, color }: RawPoint) => {
   const scale = useStore(s => s.scale)
   const zoom = useStore(s => s.zoom)
-  const decimals = useStore(s => s.decimals)
   const selectedPointId = useStore(s => s.selectedPointId)
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
-  const updatePoint = useStore(s => s.updatePoint)
-  const isDragging = useStore(s => s.isDragging)
-  const setIsDragging = useStore(s => s.setIsDragging)
+  const setPointDraggedId = useStore(s => s.setPointDraggedId)
   const isSelected = selectedPointId === id
   const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
   const pointGroups = useStore(s => s.pointGroups)
@@ -44,7 +40,7 @@ const Point = ({ id, x, y, color }: RawPoint) => {
         }
         e.stopPropagation()
         if (isSelected) {
-          setIsDragging(true)
+          setPointDraggedId(id)
         }
         setSelectedPointId(id)
       }}
@@ -52,26 +48,6 @@ const Point = ({ id, x, y, color }: RawPoint) => {
       _hover={{ bg: mode === 'select' ? 'rgba(255, 255, 255, 0.4)' : undefined }}
       onClick={e => {
         mode === 'select' && e.stopPropagation()
-      }}
-      onPointerMove={e => {
-        if (mode === 'add-point') {
-          return
-        }
-        e.stopPropagation()
-
-        if (isDragging && e.buttons === 1) {
-          updatePoint(id, {
-            x: truncateDecimals(x + e.movementX / zoom, decimals),
-            y: truncateDecimals(y - e.movementY / zoom, decimals),
-          })
-        }
-      }}
-      onPointerUp={e => {
-        if (mode === 'add-point') {
-          return
-        }
-        e.stopPropagation()
-        setIsDragging(false)
       }}
     >
       <Box

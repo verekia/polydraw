@@ -17,8 +17,8 @@ export interface Store {
   setScale: ({ width, height }: { width: number; height: number }) => void
   decimals: number
   setDecimals: (decimals: number) => void
-  isDragging: boolean
-  setIsDragging: (isDragging: boolean) => void
+  pointDraggedId?: PointId
+  setPointDraggedId: (id?: PointId) => void
 
   points: RawPoint[]
   setPoints: (points: RawPoint[]) => void
@@ -80,7 +80,7 @@ export const defaultStateValues = {
   scale: { width: 100, height: 100 },
   decimals: 2,
   selectedPointId: undefined,
-  isDragging: false,
+  pointDraggedId: undefined,
   points: [],
   pointGroups: [],
   superGroups: [],
@@ -103,7 +103,7 @@ export const useStore = create<Store>()(
           set({ scale: { width, height } }),
         setDecimals: decimals => set({ decimals }),
         setSelectedPointId: (id?: PointId) => set({ selectedPointId: id }),
-        setIsDragging: isDragging => set({ isDragging }),
+        setPointDraggedId: (id?: PointId) => set({ pointDraggedId: id }),
         setPoints: points => set({ points }),
         addPoint: point => {
           const currentlySelectedPointId = get().selectedPointId

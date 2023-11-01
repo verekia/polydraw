@@ -2,6 +2,7 @@ import { Box, Flex, Icon, IconButton, Spacer, Tooltip } from '@chakra-ui/react'
 
 import { DownArrowIcon, EditIcon, RemoveListIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
+import { truncateDecimals } from '#/lib/util'
 
 import type { RawPoint } from '#/lib/types'
 
@@ -12,6 +13,7 @@ const InlinePoint = ({ id, name, x, y, pointGroupId }: RawPoint & { pointGroupId
   const moveUpPointInPointGroup = useStore(s => s.moveUpPointInPointGroup)
   const setModalShown = useStore(s => s.setModalShown)
   const removePointFromPointGroup = useStore(s => s.removePointFromPointGroup)
+  const decimals = useStore(s => s.decimals)
   const isSelected = selectedPointId === id
 
   return (
@@ -28,7 +30,7 @@ const InlinePoint = ({ id, name, x, y, pointGroupId }: RawPoint & { pointGroupId
         alignItems="center"
         _hover={{ bg: '#444' }}
       >
-        <Box>{name ?? `${x}, ${y}`}</Box>
+        <Box>{name ?? `${truncateDecimals(x, decimals)}, ${truncateDecimals(y, decimals)}`}</Box>
         <Flex>
           <Spacer />
           <IconButton
