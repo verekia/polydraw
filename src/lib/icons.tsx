@@ -72,3 +72,27 @@ export const AddIcon = (props: SVGProps<SVGSVGElement>) => (
     <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
   </svg>
 )
+
+// MdDownload
+export const DownloadIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg fill="currentColor" strokeWidth="0" viewBox="0 0 24 24" {...defaultProps} {...props}>
+    <path fill="none" d="M0 0h24v24H0z" />
+    <path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z" />
+  </svg>
+)
+
+// MdContentCopy
+export const CopyIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg fill="currentColor" strokeWidth="0" viewBox="0 0 24 24" {...defaultProps} {...props}>
+    <path fill="none" d="M0 0h24v24H0z" />
+    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+  </svg>
+)
+
+// MdOutlineCheck
+export const CheckIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg fill="currentColor" strokeWidth="0" viewBox="0 0 24 24" {...defaultProps} {...props}>
+    <path fill="none" d="M0 0h24v24H0V0z" />
+    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+  </svg>
+)

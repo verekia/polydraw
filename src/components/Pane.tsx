@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import {
   Accordion,
   AccordionButton,
@@ -23,6 +25,7 @@ import {
   NumberInputField,
   NumberInputStepper,
   SimpleGrid,
+  Spacer,
   Stack,
   Switch,
   Tooltip,
@@ -34,7 +37,7 @@ import fileDownload from 'js-file-download'
 import PanePoint from '#/components/PanePoint'
 import PanePointGroup from '#/components/PanePointGroup'
 import PaneSuperGroup from '#/components/PaneSuperGroup'
-import { AddIcon, DeleteIcon, HelpIcon } from '#/lib/icons'
+import { AddIcon, CheckIcon, CopyIcon, DeleteIcon, DownloadIcon, HelpIcon } from '#/lib/icons'
 import { createId } from '#/lib/nanoid'
 import { defaultStateValues, useStore } from '#/lib/store'
 import { truncateDecimals } from '#/lib/util'
@@ -60,6 +63,7 @@ const Pane = (boxProps: BoxProps) => {
   const setShowSinglePointGroups = useStore(s => s.setShowSinglePointGroups)
   const backgroundImageSrc = useStore(s => s.backgroundImageSrc)
   const toast = useToast()
+  const [isCopied, setIsCopied] = useState(false)
   const pointsWithTruncatedDecimals = points.map(p => ({
     ...p,
     x: truncateDecimals(p.x, decimals),
@@ -69,8 +73,8 @@ const Pane = (boxProps: BoxProps) => {
 
   const exportContent = {
     points: pointsWithTruncatedDecimals,
-    pointGroups,
-    superGroups,
+    pointGroups: pointGroups.map(({ color, isPolygon, ...pg }) => pg),
+    superGroups: superGroups.map(({ id, color, ...sg }) => sg),
   }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,7 +97,12 @@ const Pane = (boxProps: BoxProps) => {
       const data = JSON.parse(reader.result as string)
       useStore.setState({ ...data, backgroundImageSrc: undefined })
       e.target.value = ''
-      toast({ status: 'success', title: 'Project successfully imported!' })
+      toast({
+        status: 'success',
+        title: 'Project successfully imported!',
+        description: "Don't forget to save a new version when you're done.",
+        duration: 7000,
+      })
     }
     reader.readAsText(file)
   }
@@ -393,31 +402,67 @@ const Pane = (boxProps: BoxProps) => {
           </FormLabel>
         </FormControl>
       </Stack>
-      <Stack direction="row" my={10} gap={2}>
-        <Button
-          onClick={() => {
-            if (
-              confirm(
-                'Are you sure you want to reset EVERYTHING? Your points, groups, and workspace settings will be lost.',
-              )
-            ) {
-              useStore.setState(defaultStateValues)
-            }
-          }}
-        >
-          Reset all
-        </Button>
-        <Button onClick={() => fileDownload(JSON.stringify(projectData), 'project.polydraw')}>
-          Download Project
-        </Button>
-        <Button onClick={() => fileDownload(JSON.stringify(exportContent), 'polydraw.json')}>
-          Download JSON
-        </Button>
-        <Button onClick={() => navigator.clipboard.writeText(JSON.stringify(exportContent))}>
-          Copy JSON
-        </Button>
-        <Button onClick={() => navigator.clipboard.writeText('TODO')}>Copy join logic</Button>
-      </Stack>
+      <Box my={5}>
+        <Stack direction="row" gap={2} mb={3}>
+          <Button
+            size="lg"
+            bg="#f6f6f6"
+            color="#333"
+            _hover={{ bg: '#fff' }}
+            _active={{ bg: '#fff' }}
+            leftIcon={<Icon as={DownloadIcon} boxSize={5} />}
+            onClick={() => fileDownload(JSON.stringify(projectData), 'project.polydraw')}
+          >
+            Save Project
+          </Button>
+          <Button
+            size="lg"
+            leftIcon={<Icon as={DownloadIcon} boxSize={5} />}
+            onClick={() => fileDownload(JSON.stringify(exportContent), 'polydraw.json')}
+          >
+            Download JSON
+          </Button>
+          <Button
+            size="lg"
+            leftIcon={<Icon as={isCopied ? CheckIcon : CopyIcon} boxSize={5} />}
+            onClick={() => {
+              navigator.clipboard.writeText(JSON.stringify(exportContent))
+              setIsCopied(true)
+              setTimeout(() => setIsCopied(false), 2000)
+            }}
+          >
+            Copy JSON
+          </Button>
+        </Stack>
+        <Flex mt={5} gap={3}>
+          <Box>
+            The exported data is normalized. You will need to resolve points and point groups based
+            on their IDs in your application code.{' '}
+            <Link href="https://github.com/verekia/polydraw-support" isExternal fontWeight="bold">
+              Learn how
+            </Link>
+            .
+          </Box>
+          <Spacer />
+          <Button
+            flexShrink={0}
+            leftIcon={<Icon as={DeleteIcon} />}
+            variant="ghost"
+            colorScheme="red"
+            onClick={() => {
+              if (
+                confirm(
+                  'Are you sure you want to reset EVERYTHING? Your points, groups, and workspace settings will be lost.',
+                )
+              ) {
+                useStore.setState(defaultStateValues)
+              }
+            }}
+          >
+            Reset all
+          </Button>
+        </Flex>
+      </Box>
       <Accordion allowToggle>
         <AccordionItem>
           <AccordionButton>

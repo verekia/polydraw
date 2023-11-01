@@ -144,8 +144,16 @@ export const useStore = create<Store>()(
           }),
         updatePoint: (id, point) =>
           set({ points: get().points.map(p => (p.id === id ? { ...p, ...point } : p)) }),
-        removePoint: id =>
-          set({ points: get().points.filter(p => p.id !== id), selectedPointId: undefined }),
+        removePoint: id => {
+          set({
+            points: get().points.filter(p => p.id !== id),
+            selectedPointId: undefined,
+            pointGroups: get().pointGroups.map(p => ({
+              ...p,
+              pointIds: p.pointIds.filter(pointId => pointId !== id),
+            })),
+          })
+        },
         moveDownPoint: id => {
           const points = [...get().points]
           const index = points.findIndex(p => p.id === id)

@@ -38,7 +38,7 @@ const PanePointGroup = ({ id, name, color, pointIds }: RawPointGroup) => {
       userSelect="none"
       bg="#333"
     >
-      <Box>
+      <Box fontWeight="semibold">
         {color && (
           <Box
             as="span"

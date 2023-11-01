@@ -11,7 +11,6 @@ const PaneSuperGroup = ({ id, name, color, pointGroupIds }: RawSuperGroup) => {
   const setSelectedSuperGroupId = useStore(s => s.setSelectedSuperGroupId)
   const moveDownSuperGroup = useStore(s => s.moveDownSuperGroup)
   const moveUpSuperGroup = useStore(s => s.moveUpSuperGroup)
-  const removeSuperGroup = useStore(s => s.removeSuperGroup)
   const pointGroups = useStore(s => s.pointGroups)
   const setModalShown = useStore(s => s.setModalShown)
   const isSelected = selectedSuperGroupId === id
@@ -27,7 +26,7 @@ const PaneSuperGroup = ({ id, name, color, pointGroupIds }: RawSuperGroup) => {
       userSelect="none"
       bg="#333"
     >
-      <Box>
+      <Box fontWeight="semibold">
         {color && (
           <Box
             as="span"

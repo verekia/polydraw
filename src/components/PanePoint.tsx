@@ -40,7 +40,7 @@ const PanePoint = ({ id, name, x, y, color }: RawPoint) => {
         bg="#333"
         direction="column"
       >
-        <Box>
+        <Box fontWeight="semibold">
           {color && (
             <Box
               as="span"

@@ -12,12 +12,13 @@ const InlinePointGroup = ({ id, name, superGroupId }: RawPointGroup & { superGro
   const moveUpPointGroupInSuperGroup = useStore(s => s.moveUpPointGroupInSuperGroup)
   const setModalShown = useStore(s => s.setModalShown)
   const removePointGroupFromSuperGroup = useStore(s => s.removePointGroupFromSuperGroup)
+  const isSelected = selectedPointGroupId === id
 
   return (
-    <Flex
+    <Box
       onClick={e => {
         e.stopPropagation()
-        setSelectedPointGroupId(id)
+        setSelectedPointGroupId(isSelected ? undefined : id)
       }}
       cursor="pointer"
       shadow={selectedPointGroupId === id ? '0 0 0 2px white' : undefined}
@@ -27,56 +28,58 @@ const InlinePointGroup = ({ id, name, superGroupId }: RawPointGroup & { superGro
       _hover={{ bg: '#444' }}
     >
       <Box>{name ?? id}</Box>
-      <Spacer />
-      <IconButton
-        icon={<Icon as={EditIcon} />}
-        aria-label="Edit"
-        variant="ghost"
-        size="sm"
-        onClick={e => {
-          e.stopPropagation()
-          setModalShown('point-group')
-        }}
-      />
-      <IconButton
-        icon={<Icon as={DownArrowIcon} />}
-        aria-label="Move point group down in super group"
-        variant="ghost"
-        size="sm"
-        onClick={e => {
-          e.stopPropagation()
-          moveDownPointGroupInSuperGroup(superGroupId, id)
-        }}
-      />
-      <IconButton
-        icon={<Icon as={UpArrowIcon} />}
-        aria-label="Move point group up in super group"
-        variant="ghost"
-        size="sm"
-        onClick={e => {
-          e.stopPropagation()
-          moveUpPointGroupInSuperGroup(superGroupId, id)
-        }}
-      />
-      <Tooltip
-        label={
-          <>
-            Remove <b>{name ?? ''}</b> from super group
-          </>
-        }
-      >
+      <Flex>
+        <Spacer />
         <IconButton
-          icon={<Icon as={RemoveListIcon} />}
-          aria-label="Remove from super group"
+          icon={<Icon as={EditIcon} />}
+          aria-label="Edit"
           variant="ghost"
           size="sm"
           onClick={e => {
             e.stopPropagation()
-            removePointGroupFromSuperGroup(superGroupId, id)
+            setModalShown('point-group')
           }}
         />
-      </Tooltip>
-    </Flex>
+        <IconButton
+          icon={<Icon as={DownArrowIcon} />}
+          aria-label="Move point group down in super group"
+          variant="ghost"
+          size="sm"
+          onClick={e => {
+            e.stopPropagation()
+            moveDownPointGroupInSuperGroup(superGroupId, id)
+          }}
+        />
+        <IconButton
+          icon={<Icon as={UpArrowIcon} />}
+          aria-label="Move point group up in super group"
+          variant="ghost"
+          size="sm"
+          onClick={e => {
+            e.stopPropagation()
+            moveUpPointGroupInSuperGroup(superGroupId, id)
+          }}
+        />
+        <Tooltip
+          label={
+            <>
+              Remove <b>{name ?? ''}</b> from super group
+            </>
+          }
+        >
+          <IconButton
+            icon={<Icon as={RemoveListIcon} />}
+            aria-label="Remove from super group"
+            variant="ghost"
+            size="sm"
+            onClick={e => {
+              e.stopPropagation()
+              removePointGroupFromSuperGroup(superGroupId, id)
+            }}
+          />
+        </Tooltip>
+      </Flex>
+    </Box>
   )
 }
 
