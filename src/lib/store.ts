@@ -316,7 +316,18 @@ export const useStore = create<Store>()(
         skipHydration: true,
         partialize: state =>
           Object.fromEntries(
-            Object.entries(state).filter(([key]) => !['backgroundImageSrc'].includes(key)),
+            Object.entries(state).filter(
+              ([key]) =>
+                ![
+                  'backgroundImageSrc',
+                  'pointDraggedId',
+                  'modalShown',
+                  'selectedSuperGroupId',
+                  'selectedPointGroupId',
+                  'selectedPointId',
+                  'mode',
+                ].includes(key),
+            ),
           ),
       },
     ),

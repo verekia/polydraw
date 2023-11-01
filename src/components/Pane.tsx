@@ -69,7 +69,18 @@ const Pane = (boxProps: BoxProps) => {
     x: truncateDecimals(p.x, decimals),
     y: truncateDecimals(p.y, decimals),
   }))
-  const { backgroundImageSrc: remove, ...projectData } = useStore.getState()
+
+  const {
+    // These are to be removed from the project file, make sure they match the ones in store..ts
+    backgroundImageSrc: remove,
+    pointDraggedId,
+    modalShown,
+    selectedSuperGroupId,
+    selectedPointGroupId,
+    selectedPointId,
+    mode,
+    ...projectData
+  } = useStore.getState()
 
   const exportContent = {
     points: pointsWithTruncatedDecimals,
