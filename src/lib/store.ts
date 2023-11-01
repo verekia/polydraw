@@ -10,7 +10,7 @@ import type {
   SuperGroupId,
 } from '#/lib/types'
 
-interface Store {
+export interface Store {
   zoom: number
   setZoom: (zoom: number) => void
   scale: { width: number; height: number }
@@ -75,22 +75,35 @@ interface Store {
   setShowSinglePointGroups: (showSinglePointGroups: boolean) => void
 }
 
+export const defaultStateValues = {
+  zoom: 5,
+  scale: { width: 100, height: 100 },
+  decimals: 2,
+  selectedPointId: undefined,
+  isDragging: false,
+  points: [],
+  pointGroups: [],
+  superGroups: [],
+  selectedSuperGroupId: undefined,
+  selectedPointGroupId: undefined,
+  mode: 'select' as 'select' | 'add-point',
+  backgroundImageSrc: undefined,
+  modalShown: undefined,
+  showSinglePoints: true,
+  showSinglePointGroups: true,
+}
+
 export const useStore = create<Store>()(
   devtools(
     persist(
       (set, get) => ({
-        zoom: 5,
+        ...defaultStateValues,
         setZoom: zoom => set({ zoom }),
-        scale: { width: 100, height: 100 },
         setScale: ({ width, height }: { width: number; height: number }) =>
           set({ scale: { width, height } }),
-        decimals: 2,
         setDecimals: decimals => set({ decimals }),
-        selectedPointId: undefined,
         setSelectedPointId: (id?: PointId) => set({ selectedPointId: id }),
-        isDragging: false,
         setIsDragging: isDragging => set({ isDragging }),
-        points: [],
         setPoints: points => set({ points }),
         addPoint: point => {
           const currentlySelectedPointId = get().selectedPointId
@@ -177,7 +190,6 @@ export const useStore = create<Store>()(
           pointGroups.splice(index, 1, pointGroup)
           set({ pointGroups })
         },
-        pointGroups: [],
         setPointGroups: pointGroups => set({ pointGroups }),
         addPointGroup: pointGroup => {
           set({ pointGroups: [...get().pointGroups, pointGroup] })
@@ -253,7 +265,6 @@ export const useStore = create<Store>()(
           superGroups.splice(index, 1, superGroup)
           set({ superGroups })
         },
-        superGroups: [],
         setSuperGroups: superGroups => set({ superGroups }),
         addSuperGroup: superGroup => set({ superGroups: [...get().superGroups, superGroup] }),
         updateSuperGroup: (id, superGroup) =>
@@ -282,29 +293,22 @@ export const useStore = create<Store>()(
           set({ superGroups })
         },
         clearSuperGroups: () => set({ superGroups: [], selectedSuperGroupId: undefined }),
-
-        selectedSuperGroupId: undefined,
         setSelectedSuperGroupId: (id?: SuperGroupId) => set({ selectedSuperGroupId: id }),
-        selectedPointGroupId: undefined,
         setSelectedPointGroupId: (id?: SuperGroupId) => set({ selectedPointGroupId: id }),
 
-        mode: 'select',
         setMode: mode => set({ mode }),
-        backgroundImageSrc: undefined,
         setBackgroundImageSrc: src => set({ backgroundImageSrc: src }),
-        modalShown: undefined,
         setModalShown: modalShown => set({ modalShown }),
 
-        showSinglePoints: true,
         setShowSinglePoints: showSinglePoints => set({ showSinglePoints }),
-        showSinglePointGroups: true,
         setShowSinglePointGroups: showSinglePointGroups => set({ showSinglePointGroups }),
       }),
       {
         name: 'polydraw',
+        skipHydration: true,
         partialize: state =>
           Object.fromEntries(
-            Object.entries(state).filter(([key]) => ['_doesnt-exist'].includes(key)),
+            Object.entries(state).filter(([key]) => !['backgroundImageSrc'].includes(key)),
           ),
       },
     ),

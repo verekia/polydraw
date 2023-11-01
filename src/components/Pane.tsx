@@ -33,7 +33,7 @@ import PanePointGroup from '#/components/PanePointGroup'
 import PaneSuperGroup from '#/components/PaneSuperGroup'
 import { AddIcon, HelpIcon } from '#/lib/icons'
 import { createId } from '#/lib/nanoid'
-import { useStore } from '#/lib/store'
+import { defaultStateValues, useStore } from '#/lib/store'
 import { truncateDecimals } from '#/lib/util'
 
 const Pane = (boxProps: BoxProps) => {
@@ -384,10 +384,12 @@ const Pane = (boxProps: BoxProps) => {
       <Stack direction="row" my={10} gap={2}>
         <Button
           onClick={() => {
-            if (confirm('Are you sure you want to delete all points, polygons, and groups?')) {
-              clearPoints()
-              clearPointGroups()
-              clearSuperGroups()
+            if (
+              confirm(
+                'Are you sure you want to reset EVERYTHING? Your points, groups, and workspace settings will be lost.',
+              )
+            ) {
+              useStore.setState(defaultStateValues)
             }
           }}
         >

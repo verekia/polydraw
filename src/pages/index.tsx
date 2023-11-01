@@ -6,7 +6,16 @@ import Head from 'next/head'
 import Modals from '#/components/Modals'
 import Pane from '#/components/Pane'
 import Workspace from '#/components/Workspace'
-import { useStore } from '#/lib/store'
+import { Store, useStore } from '#/lib/store'
+
+let localStorageState: Store
+
+if (typeof window !== 'undefined') {
+  const stateStr = localStorage.getItem('polydraw')
+  if (stateStr) {
+    localStorageState = JSON.parse(stateStr).state
+  }
+}
 
 const IndexPage = () => {
   const points = useStore(s => s.points)
@@ -17,6 +26,12 @@ const IndexPage = () => {
   const setSelectedSuperGroupId = useStore(s => s.setSelectedSuperGroupId)
   const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
   const removePoint = useStore(s => s.removePoint)
+
+  useEffect(() => {
+    if (localStorageState) {
+      useStore.setState(localStorageState)
+    }
+  }, [])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
