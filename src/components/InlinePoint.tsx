@@ -12,65 +12,75 @@ const InlinePoint = ({ id, name, x, y, pointGroupId }: RawPoint & { pointGroupId
   const moveUpPointInPointGroup = useStore(s => s.moveUpPointInPointGroup)
   const setModalShown = useStore(s => s.setModalShown)
   const removePointFromPointGroup = useStore(s => s.removePointFromPointGroup)
+  const isSelected = selectedPointId === id
 
   return (
-    <Flex
-      onClick={e => {
-        e.stopPropagation()
-        setSelectedPointId(id)
-      }}
-      cursor="pointer"
-      shadow={selectedPointId === id ? '0 0 0 2px white' : undefined}
-      px={2}
-      rounded="md"
-      alignItems="center"
-      _hover={{ bg: '#444' }}
-    >
-      <Box>{name ?? `${x}, ${y}`}</Box>
-      <Spacer />
-      <IconButton
-        icon={<Icon as={EditIcon} />}
-        aria-label="Edit"
-        variant="ghost"
-        size="sm"
+    <Box>
+      <Box
         onClick={e => {
           e.stopPropagation()
-          setModalShown('point')
+          setSelectedPointId(isSelected ? undefined : id)
         }}
-      />
-      <IconButton
-        icon={<Icon as={DownArrowIcon} />}
-        aria-label="Move point down in group"
-        variant="ghost"
-        size="sm"
-        onClick={e => {
-          e.stopPropagation()
-          moveDownPointInPointGroup(pointGroupId, id)
-        }}
-      />
-      <IconButton
-        icon={<Icon as={UpArrowIcon} />}
-        aria-label="Move point up in group"
-        variant="ghost"
-        size="sm"
-        onClick={e => {
-          e.stopPropagation()
-          moveUpPointInPointGroup(pointGroupId, id)
-        }}
-      />
-      <Tooltip label={<>Remove point from point group</>}>
-        <IconButton
-          icon={<Icon as={RemoveListIcon} />}
-          aria-label="Remove from point group"
-          variant="ghost"
-          size="sm"
-          onClick={e => {
-            e.stopPropagation()
-            removePointFromPointGroup(pointGroupId, id)
-          }}
-        />
-      </Tooltip>
-    </Flex>
+        cursor="pointer"
+        shadow={isSelected ? '0 0 0 2px white' : undefined}
+        px={2}
+        rounded="md"
+        alignItems="center"
+        _hover={{ bg: '#444' }}
+      >
+        <Box>{name ?? `${x}, ${y}`}</Box>
+        <Flex>
+          <Spacer />
+          <IconButton
+            icon={<Icon as={EditIcon} />}
+            aria-label="Edit"
+            variant="ghost"
+            size="sm"
+            onClick={e => {
+              e.stopPropagation()
+              setModalShown('point')
+            }}
+          />
+          <IconButton
+            icon={<Icon as={DownArrowIcon} />}
+            aria-label="Move point down in group"
+            variant="ghost"
+            size="sm"
+            onClick={e => {
+              e.stopPropagation()
+              moveDownPointInPointGroup(pointGroupId, id)
+            }}
+          />
+          <IconButton
+            icon={<Icon as={UpArrowIcon} />}
+            aria-label="Move point up in group"
+            variant="ghost"
+            size="sm"
+            onClick={e => {
+              e.stopPropagation()
+              moveUpPointInPointGroup(pointGroupId, id)
+            }}
+          />
+          <Tooltip label={<>Remove point from point group</>}>
+            <IconButton
+              icon={<Icon as={RemoveListIcon} />}
+              aria-label="Remove from point group"
+              variant="ghost"
+              size="sm"
+              onClick={e => {
+                e.stopPropagation()
+                removePointFromPointGroup(pointGroupId, id)
+              }}
+            />
+          </Tooltip>
+        </Flex>
+      </Box>
+      {isSelected && (
+        <Box color="#f66" fontWeight="semibold" textAlign="center" mt={1}>
+          New points will be added here
+        </Box>
+      )}
+    </Box>
   )
 }
 

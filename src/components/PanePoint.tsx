@@ -28,97 +28,104 @@ const PanePoint = ({ id, name, x, y, color }: RawPoint) => {
   }
 
   return (
-    <Flex
-      shadow={isSelected ? '0 0 0 2px white' : undefined}
-      rounded="md"
-      onClick={() => setSelectedPointId(isSelected ? undefined : id)}
-      cursor="pointer"
-      px={3}
-      py={1}
-      userSelect="none"
-      bg="#333"
-      direction="column"
-    >
-      <Box>
-        {color && (
-          <Box
-            as="span"
-            display="inline-block"
-            verticalAlign="middle"
-            pos="relative"
-            border="1px solid white"
-            top="-1px"
-            mr={2}
-            boxSize={3}
-            onClick={() => setModalShown('point-group')}
-            bg={color}
-          />
-        )}
-        {name ?? `${truncateDecimals(x, decimals)}, ${truncateDecimals(y, decimals)}`}
-      </Box>
-      <Spacer />
-      {isSelected && (
-        <HStack spacing={0} justifyContent="right">
-          <IconButton
-            icon={<Icon as={EditIcon} />}
-            aria-label="Edit"
-            variant="ghost"
-            size="sm"
-            onClick={e => {
-              e.stopPropagation()
-              setModalShown('point')
-            }}
-          />
-          <IconButton
-            icon={<Icon as={DownArrowIcon} />}
-            aria-label="Move point down"
-            variant="ghost"
-            size="sm"
-            onClick={e => {
-              e.stopPropagation()
-              moveDownPoint(id)
-            }}
-          />
-          <IconButton
-            icon={<Icon as={UpArrowIcon} />}
-            aria-label="Move point up"
-            variant="ghost"
-            size="sm"
-            onClick={e => {
-              e.stopPropagation()
-              moveUpPoint(id)
-            }}
-          />
-          <Tooltip
-            label={
-              <>
-                {selectedPointGroup
-                  ? (
-                      <>
-                        Add to <b>{selectedPointGroup.name}</b> point group
-                      </>
-                    ) ?? 'selected point group'
-                  : 'Select a point group to add this point to.'}
-              </>
-            }
-          >
+    <Box>
+      <Flex
+        shadow={isSelected ? '0 0 0 2px white' : undefined}
+        rounded="md"
+        onClick={() => setSelectedPointId(isSelected ? undefined : id)}
+        cursor="pointer"
+        px={3}
+        py={1}
+        userSelect="none"
+        bg="#333"
+        direction="column"
+      >
+        <Box>
+          {color && (
+            <Box
+              as="span"
+              display="inline-block"
+              verticalAlign="middle"
+              pos="relative"
+              border="1px solid white"
+              top="-1px"
+              mr={2}
+              boxSize={3}
+              onClick={() => setModalShown('point-group')}
+              bg={color}
+            />
+          )}
+          {name ?? `${truncateDecimals(x, decimals)}, ${truncateDecimals(y, decimals)}`}
+        </Box>
+        <Spacer />
+        {isSelected && (
+          <HStack spacing={0} justifyContent="right">
             <IconButton
-              icon={<Icon as={AddListIcon} />}
-              isDisabled={!selectedPointGroup}
-              aria-label="Add to selected point group"
+              icon={<Icon as={EditIcon} />}
+              aria-label="Edit"
               variant="ghost"
               size="sm"
               onClick={e => {
                 e.stopPropagation()
-                if (selectedPointGroup) {
-                  addPointToPointGroup(selectedPointGroup.id, id)
-                }
+                setModalShown('point')
               }}
             />
-          </Tooltip>
-        </HStack>
+            <IconButton
+              icon={<Icon as={DownArrowIcon} />}
+              aria-label="Move point down"
+              variant="ghost"
+              size="sm"
+              onClick={e => {
+                e.stopPropagation()
+                moveDownPoint(id)
+              }}
+            />
+            <IconButton
+              icon={<Icon as={UpArrowIcon} />}
+              aria-label="Move point up"
+              variant="ghost"
+              size="sm"
+              onClick={e => {
+                e.stopPropagation()
+                moveUpPoint(id)
+              }}
+            />
+            <Tooltip
+              label={
+                <>
+                  {selectedPointGroup
+                    ? (
+                        <>
+                          Add to <b>{selectedPointGroup.name}</b> point group
+                        </>
+                      ) ?? 'selected point group'
+                    : 'Select a point group to add this point to.'}
+                </>
+              }
+            >
+              <IconButton
+                icon={<Icon as={AddListIcon} />}
+                isDisabled={!selectedPointGroup}
+                aria-label="Add to selected point group"
+                variant="ghost"
+                size="sm"
+                onClick={e => {
+                  e.stopPropagation()
+                  if (selectedPointGroup) {
+                    addPointToPointGroup(selectedPointGroup.id, id)
+                  }
+                }}
+              />
+            </Tooltip>
+          </HStack>
+        )}
+      </Flex>
+      {isSelected && (
+        <Box color="#f66" fontWeight="semibold" textAlign="center" mt={1}>
+          New points will be added here
+        </Box>
       )}
-    </Flex>
+    </Box>
   )
 }
 

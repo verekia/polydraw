@@ -93,16 +93,35 @@ export const useStore = create<Store>()(
         points: [],
         setPoints: points => set({ points }),
         addPoint: point => {
-          set({ points: [...get().points, point] })
-          if (get().selectedPointGroupId) {
-            set({
-              pointGroups: get().pointGroups.map(p =>
-                p.id === get().selectedPointGroupId
-                  ? { ...p, pointIds: [...p.pointIds, point.id] }
-                  : p,
-              ),
-            })
-          }
+          const currentlySelectedPointId = get().selectedPointId
+          const points = get().points
+          const currentlySelectedPoint = points.find(p => p.id === currentlySelectedPointId)
+
+          const newPoints =
+            currentlySelectedPoint && points.includes(currentlySelectedPoint)
+              ? [
+                  ...points.slice(0, points.indexOf(currentlySelectedPoint) + 1),
+                  point,
+                  ...points.slice(points.indexOf(currentlySelectedPoint) + 1),
+                ]
+              : [...points, point]
+
+          set({ points: newPoints, selectedPointId: point.id })
+
+          set({
+            pointGroups: get().pointGroups.map(p => {
+              const newPointIds =
+                currentlySelectedPointId && p.pointIds.includes(currentlySelectedPointId)
+                  ? [
+                      ...p.pointIds.slice(0, p.pointIds.indexOf(currentlySelectedPointId) + 1),
+                      point.id,
+                      ...p.pointIds.slice(p.pointIds.indexOf(currentlySelectedPointId) + 1),
+                    ]
+                  : [...p.pointIds, point.id]
+
+              return p.id === get().selectedPointGroupId ? { ...p, pointIds: newPointIds } : p
+            }),
+          })
         },
         addPointToPointGroup: (pointGroupId, pointId) =>
           set({

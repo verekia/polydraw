@@ -26,7 +26,14 @@ const Workspace = (centerProps: CenterProps) => {
   return (
     <Center h="full" pos="relative" userSelect="none" onClick={deselectCascade} {...centerProps}>
       <Canvas />
-      <Box pos="absolute" bottom={5} left="50%" transform="translateX(-50%)">
+      <Box
+        pos="absolute"
+        bottom={5}
+        left="50%"
+        transform="translateX(-50%)"
+        // To not deselect the current point on switch toggle
+        onClick={e => e.stopPropagation()}
+      >
         <FormControl display="flex" alignItems="center" gap={2}>
           <Switch
             id="mode"

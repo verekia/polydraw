@@ -11,7 +11,6 @@ const Canvas = (boxProps: BoxProps) => {
   const points = useStore(s => s.points)
   const addPoint = useStore(s => s.addPoint)
   const isDragging = useStore(s => s.isDragging)
-  const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const backgroundImageSrc = useStore(s => s.backgroundImageSrc)
   const pointGroups = useStore(s => s.pointGroups)
   const superGroups = useStore(s => s.superGroups)
@@ -37,9 +36,7 @@ const Canvas = (boxProps: BoxProps) => {
         const rect = e.currentTarget.getBoundingClientRect()
         const x = e.clientX - rect.left
         const y = rect.height - (e.clientY - rect.top)
-        const id = createId()
-        addPoint({ id, x: x / zoom, y: y / zoom })
-        setSelectedPointId(id)
+        addPoint({ id: createId(), x: x / zoom, y: y / zoom })
       }}
       w={`${scale.width * zoom}px`}
       h={`${scale.height * zoom}px`}

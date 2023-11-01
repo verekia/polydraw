@@ -48,7 +48,7 @@ const Point = ({ id, x, y, color }: RawPoint) => {
         }
         setSelectedPointId(id)
       }}
-      shadow={mode === 'select' && isSelected ? '0 0 0 2px white, 0 0 0 4px black' : undefined}
+      shadow={isSelected ? '0 0 0 2px white, 0 0 0 4px black' : undefined}
       _hover={{ bg: mode === 'select' ? 'rgba(255, 255, 255, 0.4)' : undefined }}
       onClick={e => {
         mode === 'select' && e.stopPropagation()

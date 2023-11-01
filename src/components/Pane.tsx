@@ -228,7 +228,7 @@ const Pane = (boxProps: BoxProps) => {
               </Box>
             </Tooltip>
           </Heading>
-          <Stack maxH="300px" overflowY="auto" p={1}>
+          <Stack maxH="400px" overflowY="auto" p={1}>
             {points.map(p => (
               <PanePoint key={p.id} {...p} />
             ))}
@@ -278,7 +278,7 @@ const Pane = (boxProps: BoxProps) => {
               </Box>
             </Tooltip>
           </Heading>
-          <Stack>
+          <Stack maxH="400px" overflowY="auto" p={1}>
             {pointGroups.map(p => (
               <PanePointGroup key={p.id} {...p} />
             ))}
@@ -334,7 +334,7 @@ const Pane = (boxProps: BoxProps) => {
               </Box>
             </Tooltip>
           </Heading>
-          <Stack>
+          <Stack maxH="400px" overflowY="auto" p={1}>
             {superGroups.map(sg => (
               <PaneSuperGroup key={sg.id} {...sg} />
             ))}
