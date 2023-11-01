@@ -30,7 +30,9 @@ const InlinePoint = ({ id, name, x, y, pointGroupId }: RawPoint & { pointGroupId
         alignItems="center"
         _hover={{ bg: '#444' }}
       >
-        <Box>{name ?? `${truncateDecimals(x, decimals)}, ${truncateDecimals(y, decimals)}`}</Box>
+        <Box sx={{ fontVariantNumeric: 'tabular-nums' }}>
+          {name ?? `${truncateDecimals(x, decimals)}, ${truncateDecimals(y, decimals)}`}
+        </Box>
         <Flex>
           <Spacer />
           <IconButton

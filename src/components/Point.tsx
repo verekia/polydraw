@@ -39,9 +39,7 @@ const Point = ({ id, x, y, color }: RawPoint) => {
           return
         }
         e.stopPropagation()
-        if (isSelected) {
-          setPointDraggedId(id)
-        }
+        setPointDraggedId(id)
         setSelectedPointId(id)
       }}
       shadow={isSelected ? '0 0 0 2px white, 0 0 0 4px black' : undefined}

@@ -40,7 +40,7 @@ const PanePoint = ({ id, name, x, y, color }: RawPoint) => {
         bg="#333"
         direction="column"
       >
-        <Box fontWeight="semibold">
+        <Box fontWeight="semibold" sx={{ fontVariantNumeric: 'tabular-nums' }}>
           {color && (
             <Box
               as="span"
