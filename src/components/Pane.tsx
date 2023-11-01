@@ -12,8 +12,10 @@ import {
   FormLabel,
   Heading,
   Icon,
+  IconButton,
   Image,
   Input,
+  Link,
   ListItem,
   NumberDecrementStepper,
   NumberIncrementStepper,
@@ -25,13 +27,14 @@ import {
   Switch,
   Tooltip,
   UnorderedList,
+  useToast,
 } from '@chakra-ui/react'
 import fileDownload from 'js-file-download'
 
 import PanePoint from '#/components/PanePoint'
 import PanePointGroup from '#/components/PanePointGroup'
 import PaneSuperGroup from '#/components/PaneSuperGroup'
-import { AddIcon, HelpIcon } from '#/lib/icons'
+import { AddIcon, DeleteIcon, HelpIcon } from '#/lib/icons'
 import { createId } from '#/lib/nanoid'
 import { defaultStateValues, useStore } from '#/lib/store'
 import { truncateDecimals } from '#/lib/util'
@@ -48,24 +51,22 @@ const Pane = (boxProps: BoxProps) => {
   const pointGroups = useStore(s => s.pointGroups)
   const addPointGroup = useStore(s => s.addPointGroup)
   const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
-  const clearPoints = useStore(s => s.clearPoints)
-  const clearSuperGroups = useStore(s => s.clearSuperGroups)
-  const clearPointGroups = useStore(s => s.clearPointGroups)
   const addSuperGroup = useStore(s => s.addSuperGroup)
   const setSelectedSuperGroupId = useStore(s => s.setSelectedSuperGroupId)
   const setBackgroundImageSrc = useStore(s => s.setBackgroundImageSrc)
-  const setPoints = useStore(s => s.setPoints)
-  const setSuperGroups = useStore(s => s.setSuperGroups)
-  const setPointGroups = useStore(s => s.setPointGroups)
   const showSinglePoints = useStore(s => s.showSinglePoints)
   const setShowSinglePoints = useStore(s => s.setShowSinglePoints)
   const showSinglePointGroups = useStore(s => s.showSinglePointGroups)
   const setShowSinglePointGroups = useStore(s => s.setShowSinglePointGroups)
+  const backgroundImageSrc = useStore(s => s.backgroundImageSrc)
+  const toast = useToast()
   const pointsWithTruncatedDecimals = points.map(p => ({
     ...p,
     x: truncateDecimals(p.x, decimals),
     y: truncateDecimals(p.y, decimals),
   }))
+  const { backgroundImageSrc: remove, ...projectData } = useStore.getState()
+
   const exportContent = {
     points: pointsWithTruncatedDecimals,
     pointGroups,
@@ -82,7 +83,7 @@ const Pane = (boxProps: BoxProps) => {
     reader.readAsDataURL(file)
   }
 
-  const handleJSONImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProjectImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) {
       return
@@ -90,12 +91,9 @@ const Pane = (boxProps: BoxProps) => {
     const reader = new FileReader()
     reader.onloadend = () => {
       const data = JSON.parse(reader.result as string)
-      clearPoints()
-      clearSuperGroups()
-      clearPointGroups()
-      setPoints(data.points)
-      setSuperGroups(data.polygonGroups)
-      setPointGroups(data.pointGroups)
+      useStore.setState({ ...data, backgroundImageSrc: undefined })
+      e.target.value = ''
+      toast({ status: 'success', title: 'Project successfully imported!' })
     }
     reader.readAsText(file)
   }
@@ -198,12 +196,26 @@ const Pane = (boxProps: BoxProps) => {
             </Box>
             <Flex gap={5}>
               <FormControl>
+                {backgroundImageSrc && (
+                  <Tooltip label="Remove background image">
+                    <IconButton
+                      ml={2}
+                      float="right"
+                      size="xs"
+                      variant="ghost"
+                      colorScheme="red"
+                      aria-label="Remove"
+                      onClick={() => setBackgroundImageSrc()}
+                      icon={<Icon as={DeleteIcon} boxSize={4} />}
+                    />
+                  </Tooltip>
+                )}
                 <FormLabel>Background image</FormLabel>
                 <Input type="file" onChange={handleImageUpload} p={1} />
               </FormControl>
               <FormControl>
                 <FormLabel>Load Existing Project</FormLabel>
-                <Input type="file" onChange={handleJSONImport} accept=".polydraw" p={1} />
+                <Input type="file" onChange={handleProjectImport} accept=".polydraw" p={1} />
               </FormControl>
             </Flex>
           </AccordionPanel>
@@ -395,6 +407,9 @@ const Pane = (boxProps: BoxProps) => {
         >
           Reset all
         </Button>
+        <Button onClick={() => fileDownload(JSON.stringify(projectData), 'project.polydraw')}>
+          Download Project
+        </Button>
         <Button onClick={() => fileDownload(JSON.stringify(exportContent), 'polydraw.json')}>
           Download JSON
         </Button>
@@ -445,6 +460,16 @@ const Pane = (boxProps: BoxProps) => {
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
+
+      <Box textAlign="center" mt={12} mb={6}>
+        <Link href="https://github.com/verekia/polydraw-support" isExternal>
+          Report issues or submit feedback
+        </Link>
+        <br />
+        <Link href="https://twitter.com/verekia" isExternal>
+          @verekia
+        </Link>
+      </Box>
     </Box>
   )
 }
