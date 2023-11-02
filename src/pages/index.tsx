@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 
-import { Flex } from '@chakra-ui/react'
 import Head from 'next/head'
 
 import Modals from '#/components/Modals'
@@ -72,10 +71,8 @@ const IndexPage = () => {
 
   return (
     <>
-      <Flex boxSize="full" justifyContent="center">
-        <Workspace flexGrow={1} />
-        <Pane h="full" w="full" maxW="700px" minW="200px" overflowY="scroll" />
-      </Flex>
+      <Workspace position="fixed" w="50%" />
+      <Pane pos="absolute" w="50%" right={0} />
       <Modals />
       <Head>
         <title>PolyDraw | Draw Polygons, Export Coordinates</title>

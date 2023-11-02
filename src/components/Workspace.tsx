@@ -1,9 +1,9 @@
-import { Box, Center, CenterProps, FormControl, FormLabel, Switch } from '@chakra-ui/react'
+import { Box, BoxProps, Flex, FormControl, FormLabel, Switch } from '@chakra-ui/react'
 
 import Canvas from '#/components/Canvas'
 import { useStore } from '#/lib/store'
 
-const Workspace = (centerProps: CenterProps) => {
+const Workspace = (boxProps: BoxProps) => {
   const setSelectedPointId = useStore(s => s.setSelectedPointId)
   const setSelectedSuperGroupId = useStore(s => s.setSelectedSuperGroupId)
   const selectedPointId = useStore(s => s.selectedPointId)
@@ -24,12 +24,24 @@ const Workspace = (centerProps: CenterProps) => {
   }
 
   return (
-    <Center h="full" pos="relative" userSelect="none" onClick={deselectCascade} {...centerProps}>
-      <Canvas />
+    <>
+      <Box pos="relative" overflow="auto" userSelect="none" h="full" {...boxProps}>
+        <Flex
+          overflow="auto"
+          minH="full"
+          alignItems="center"
+          justifyContent="center"
+          onClick={deselectCascade}
+        >
+          <Box overflow="auto" /* This fixes the canvas border stopping at the flexbox size */>
+            <Canvas />
+          </Box>
+        </Flex>
+      </Box>
       <Box
-        pos="absolute"
+        pos="fixed"
         bottom={5}
-        left="50%"
+        left="25%"
         transform="translateX(-50%)"
         // To not deselect the current point on switch toggle
         onClick={e => e.stopPropagation()}
@@ -46,7 +58,7 @@ const Workspace = (centerProps: CenterProps) => {
           </FormLabel>
         </FormControl>
       </Box>
-    </Center>
+    </>
   )
 }
 

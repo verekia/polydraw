@@ -26,7 +26,6 @@ const Canvas = (boxProps: BoxProps) => {
     <Box
       border="1px solid #666"
       rounded="md"
-      overflow="hidden"
       pos="relative"
       cursor="crosshair"
       userSelect="none"
