@@ -43,7 +43,12 @@ const SuperGroupModal = () => {
   }
 
   return (
-    <Drawer placement="right" onClose={onClose} isOpen={modalShown === 'super-group'}>
+    <Drawer
+      placement="right"
+      onClose={onClose}
+      isOpen={modalShown === 'super-group'}
+      preserveScrollBarGap
+    >
       <DrawerContent>
         <DrawerCloseButton />
         <DrawerHeader>Edit super group</DrawerHeader>

@@ -4,7 +4,7 @@ import { useStore } from '#/lib/store'
 
 import type { RawPoint } from '#/lib/types'
 
-const Point = ({ id, x, y, color }: RawPoint) => {
+const Point = ({ id, x, y, color, rotZ }: RawPoint) => {
   const scale = useStore(s => s.scale)
   const zoom = useStore(s => s.zoom)
   const selectedPointId = useStore(s => s.selectedPointId)
@@ -64,6 +64,18 @@ const Point = ({ id, x, y, color }: RawPoint) => {
         border="1px solid black"
         transform="translate(-50%, 50%)"
       />
+      {rotZ !== undefined && (
+        <Box
+          pos="absolute"
+          left="50%"
+          bottom="50%"
+          transform={`translate(-50%, 50%) rotate(-${rotZ}deg)`}
+          w="20px"
+          h="5px"
+        >
+          <Box pos="absolute" left="14px" bg="white" h="5px" w="10px" border="1px solid black" />
+        </Box>
+      )}
     </Box>
   )
 }

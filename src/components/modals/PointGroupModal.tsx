@@ -45,7 +45,12 @@ const PointGroupModal = () => {
   }
 
   return (
-    <Drawer placement="right" onClose={onClose} isOpen={modalShown === 'point-group'}>
+    <Drawer
+      placement="right"
+      onClose={onClose}
+      isOpen={modalShown === 'point-group'}
+      preserveScrollBarGap
+    >
       <DrawerContent>
         <DrawerCloseButton />
         <DrawerHeader>Edit point group</DrawerHeader>

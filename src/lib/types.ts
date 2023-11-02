@@ -11,6 +11,7 @@ export type RawPoint = {
   z?: number
   rotZ?: number
 }
+
 export type RawPointGroup = {
   id: PointGroupId
   isPolygon: boolean
@@ -18,6 +19,7 @@ export type RawPointGroup = {
   color?: string
   pointIds: PointId[]
 }
+
 export type RawSuperGroup = {
   id: SuperGroupId
   name?: string

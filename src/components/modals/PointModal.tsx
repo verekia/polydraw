@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
+  Box,
   Button,
   Drawer,
   DrawerBody,
@@ -12,12 +13,18 @@ import {
   FormLabel,
   Icon,
   Input,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   Spacer,
   Stack,
 } from '@chakra-ui/react'
 
 import { DeleteIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
+import { truncateDecimals } from '#/lib/util'
 
 const PointModal = () => {
   const modalShown = useStore(s => s.modalShown)
@@ -25,9 +32,38 @@ const PointModal = () => {
   const selectedPointId = useStore(s => s.selectedPointId)
   const points = useStore(s => s.points)
   const point = points.find(p => p.id === selectedPointId)
+  const [xStringValue, setXStringValue] = useState('')
+  const [yStringValue, setYStringValue] = useState('')
+  const [zStringValue, setZStringValue] = useState('')
+  const [rotZStringValue, setRotZStringValue] = useState('')
   const updatePoint = useStore(s => s.updatePoint)
   const removePoint = useStore(s => s.removePoint)
+  const decimals = useStore(s => s.decimals)
   const onClose = () => setModalShown()
+
+  useEffect(() => {
+    if (point?.x !== undefined) {
+      setXStringValue(String(truncateDecimals(point.x, decimals)))
+    }
+  }, [point?.x, decimals])
+
+  useEffect(() => {
+    if (point?.y !== undefined) {
+      setYStringValue(String(truncateDecimals(point.y, decimals)))
+    }
+  }, [point?.y, decimals])
+
+  useEffect(() => {
+    if (point?.z !== undefined) {
+      setZStringValue(String(truncateDecimals(point.z, decimals)))
+    }
+  }, [point?.z, decimals])
+
+  useEffect(() => {
+    if (point?.rotZ !== undefined) {
+      setRotZStringValue(String(truncateDecimals(point.rotZ, decimals)))
+    }
+  }, [point?.rotZ, decimals])
 
   useEffect(() => {
     if (!point) {
@@ -40,7 +76,12 @@ const PointModal = () => {
   }
 
   return (
-    <Drawer placement="right" onClose={onClose} isOpen={modalShown === 'point'}>
+    <Drawer
+      placement="right"
+      onClose={onClose}
+      isOpen={modalShown === 'point'}
+      preserveScrollBarGap
+    >
       <DrawerContent>
         <DrawerCloseButton />
         <DrawerHeader>Edit point</DrawerHeader>
@@ -57,19 +98,98 @@ const PointModal = () => {
             </FormControl>
             <FormControl>
               <FormLabel>X</FormLabel>
-              <Input
-                type="number"
-                value={point.x}
-                onChange={e => updatePoint(point.id, { x: Number(e.target.value) })}
-              />
+              <NumberInput
+                value={xStringValue}
+                onChange={val => {
+                  if (val === '') {
+                    updatePoint(point.id, { x: undefined })
+                    setXStringValue('')
+                    return
+                  }
+                  setXStringValue(val)
+                  updatePoint(point.id, { x: Number(val) })
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
             </FormControl>
             <FormControl>
               <FormLabel>Y</FormLabel>
-              <Input
-                type="number"
-                value={point.y}
-                onChange={e => updatePoint(point.id, { y: Number(e.target.value) })}
-              />
+              <NumberInput
+                value={yStringValue}
+                onChange={val => {
+                  if (val === '') {
+                    updatePoint(point.id, { y: undefined })
+                    setYStringValue('')
+                    return
+                  }
+                  setYStringValue(val)
+                  updatePoint(point.id, { y: Number(val) })
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </FormControl>
+            <FormControl>
+              <FormLabel>
+                Z
+                <Box as="span" fontWeight="normal" color="#aaa" ml={2}>
+                  (not represented)
+                </Box>
+              </FormLabel>
+              <NumberInput
+                value={zStringValue}
+                onChange={val => {
+                  if (val === '') {
+                    updatePoint(point.id, { z: undefined })
+                    setZStringValue('')
+                    return
+                  }
+                  setZStringValue(val)
+                  updatePoint(point.id, { z: Number(val) })
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </FormControl>
+            <FormControl>
+              <FormLabel>
+                Z rotation
+                <Box as="span" fontWeight="normal" color="#aaa" ml={2}>
+                  (degrees)
+                </Box>
+              </FormLabel>
+              <NumberInput
+                value={rotZStringValue}
+                onChange={val => {
+                  if (val === '') {
+                    updatePoint(point.id, { rotZ: undefined })
+                    // setIsRotZInputMounted(false)
+                    setRotZStringValue('')
+                    return
+                  }
+                  setRotZStringValue(val)
+                  updatePoint(point.id, { rotZ: Number(val) })
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
             </FormControl>
             <FormControl>
               <FormLabel>Color</FormLabel>
