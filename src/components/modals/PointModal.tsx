@@ -44,26 +44,34 @@ const PointModal = () => {
   useEffect(() => {
     if (point?.x !== undefined) {
       setXStringValue(String(truncateDecimals(point.x, decimals)))
+    } else {
+      setXStringValue('')
     }
-  }, [point?.x, decimals])
+  }, [point, point?.x, decimals])
 
   useEffect(() => {
     if (point?.y !== undefined) {
       setYStringValue(String(truncateDecimals(point.y, decimals)))
+    } else {
+      setYStringValue('')
     }
-  }, [point?.y, decimals])
+  }, [point, point?.y, decimals])
 
   useEffect(() => {
     if (point?.z !== undefined) {
       setZStringValue(String(truncateDecimals(point.z, decimals)))
+    } else {
+      setZStringValue('')
     }
-  }, [point?.z, decimals])
+  }, [point, point?.z, decimals])
 
   useEffect(() => {
     if (point?.rotZ !== undefined) {
       setRotZStringValue(String(truncateDecimals(point.rotZ, decimals)))
+    } else {
+      setRotZStringValue('')
     }
-  }, [point?.rotZ, decimals])
+  }, [point, point?.rotZ, decimals])
 
   useEffect(() => {
     if (!point) {
