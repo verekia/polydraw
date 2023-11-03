@@ -227,11 +227,18 @@ export const useStore = create<Store>()(
                 : sg,
             ),
           }),
-        removePointGroup: id =>
+        removePointGroup: id => {
           set({
             pointGroups: get().pointGroups.filter(p => p.id !== id),
             selectedPointGroupId: undefined,
-          }),
+          })
+          set({
+            superGroups: get().superGroups.map(sg => ({
+              ...sg,
+              pointGroupIds: sg.pointGroupIds.filter(pointGroupId => pointGroupId !== id),
+            })),
+          })
+        },
         moveDownPointGroup: id => {
           const pointGroups = [...get().pointGroups]
           const index = pointGroups.findIndex(p => p.id === id)
