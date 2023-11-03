@@ -1,17 +1,30 @@
 import { Box, Flex, Icon, IconButton, Spacer, Tooltip } from '@chakra-ui/react'
 
-import { DownArrowIcon, EditIcon, RemoveListIcon, UpArrowIcon } from '#/lib/icons'
+import {
+  DownArrowIcon,
+  EditIcon,
+  HiddenIcon,
+  RemoveListIcon,
+  UpArrowIcon,
+  VisibleIcon,
+} from '#/lib/icons'
 import { useStore } from '#/lib/store'
 
 import type { RawPointGroup } from '#/lib/types'
 
-const InlinePointGroup = ({ id, name, superGroupId }: RawPointGroup & { superGroupId: string }) => {
+const InlinePointGroup = ({
+  id,
+  name,
+  superGroupId,
+  visible,
+}: RawPointGroup & { superGroupId: string }) => {
   const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
   const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
   const moveDownPointGroupInSuperGroup = useStore(s => s.moveDownPointGroupInSuperGroup)
   const moveUpPointGroupInSuperGroup = useStore(s => s.moveUpPointGroupInSuperGroup)
   const setModalShown = useStore(s => s.setModalShown)
   const removePointGroupFromSuperGroup = useStore(s => s.removePointGroupFromSuperGroup)
+  const updatePointGroup = useStore(s => s.updatePointGroup)
   const isSelected = selectedPointGroupId === id
 
   return (
@@ -25,9 +38,25 @@ const InlinePointGroup = ({ id, name, superGroupId }: RawPointGroup & { superGro
       px={2}
       rounded="md"
       alignItems="center"
-      _hover={{ bg: '#444' }}
+      _hover={{ bg: '#444', '& .visibility-inline': { opacity: 1 } }}
+      sx={{ '& .visibility-inline': { opacity: visible === false ? 1 : 0 } }}
     >
-      <Box>{name ?? id}</Box>
+      <Flex>
+        <Box>{name ?? id}</Box>
+        <Spacer />
+        <IconButton
+          className="visibility-inline"
+          icon={<Icon as={visible === false ? HiddenIcon : VisibleIcon} boxSize={4} />}
+          aria-label="Toggle visibility"
+          variant="ghost"
+          size="xs"
+          colorScheme={visible === false ? 'red' : undefined}
+          onClick={e => {
+            e.stopPropagation()
+            updatePointGroup(id, { visible: visible === false ? undefined : false })
+          }}
+        />
+      </Flex>
       <Flex>
         <Spacer />
         <IconButton

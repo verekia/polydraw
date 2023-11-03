@@ -1,18 +1,19 @@
 import { Box, Flex, HStack, Icon, IconButton, Spacer, Stack } from '@chakra-ui/react'
 
 import InlinePointGroup from '#/components/InlinePointGroup'
-import { DownArrowIcon, EditIcon, UpArrowIcon } from '#/lib/icons'
+import { DownArrowIcon, EditIcon, HiddenIcon, UpArrowIcon, VisibleIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 
 import type { RawSuperGroup } from '#/lib/types'
 
-const PaneSuperGroup = ({ id, name, color, pointGroupIds }: RawSuperGroup) => {
+const PaneSuperGroup = ({ id, name, color, pointGroupIds, visible }: RawSuperGroup) => {
   const selectedSuperGroupId = useStore(s => s.selectedSuperGroupId)
   const setSelectedSuperGroupId = useStore(s => s.setSelectedSuperGroupId)
   const moveDownSuperGroup = useStore(s => s.moveDownSuperGroup)
   const moveUpSuperGroup = useStore(s => s.moveUpSuperGroup)
   const pointGroups = useStore(s => s.pointGroups)
   const setModalShown = useStore(s => s.setModalShown)
+  const updateSuperGroup = useStore(s => s.updateSuperGroup)
   const isSelected = selectedSuperGroupId === id
 
   return (
@@ -25,8 +26,10 @@ const PaneSuperGroup = ({ id, name, color, pointGroupIds }: RawSuperGroup) => {
       cursor="pointer"
       userSelect="none"
       bg="#333"
+      _hover={{ '& .visibility': { opacity: 1 } }}
+      sx={{ '& .visibility': { opacity: visible === false ? 1 : 0 } }}
     >
-      <Box fontWeight="semibold">
+      <Flex fontWeight="semibold">
         {color && (
           <Box
             as="span"
@@ -42,7 +45,20 @@ const PaneSuperGroup = ({ id, name, color, pointGroupIds }: RawSuperGroup) => {
           />
         )}
         {name ?? `ID: ${id}`}
-      </Box>
+        <Spacer />
+        <IconButton
+          className="visibility"
+          icon={<Icon as={visible === false ? HiddenIcon : VisibleIcon} boxSize={4} />}
+          aria-label="Toggle visibility"
+          variant="ghost"
+          size="xs"
+          colorScheme={visible === false ? 'red' : undefined}
+          onClick={e => {
+            e.stopPropagation()
+            updateSuperGroup(id, { visible: visible === false ? undefined : false })
+          }}
+        />
+      </Flex>
       <Flex>
         <Spacer />
         {isSelected && (

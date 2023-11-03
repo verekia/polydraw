@@ -4,6 +4,4 @@
 
   - Normalized with IDs or pre-joined with duplicate points
 
-- hide/show toggle for all entities
-
-- dragging too fast breaks
+- number inputs still behave weird sometimes, cannot type point

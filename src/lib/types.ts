@@ -18,6 +18,7 @@ export type RawPointGroup = {
   name?: string
   color?: string
   pointIds: PointId[]
+  visible?: boolean
 }
 
 export type RawSuperGroup = {
@@ -25,4 +26,5 @@ export type RawSuperGroup = {
   name?: string
   color?: string
   pointGroupIds: PointGroupId[]
+  visible?: boolean
 }

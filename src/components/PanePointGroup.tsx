@@ -1,12 +1,19 @@
 import { Box, Flex, HStack, Icon, IconButton, Spacer, Stack, Tooltip } from '@chakra-ui/react'
 
 import InlinePoint from '#/components/InlinePoint'
-import { AddListIcon, DownArrowIcon, EditIcon, UpArrowIcon } from '#/lib/icons'
+import {
+  AddListIcon,
+  DownArrowIcon,
+  EditIcon,
+  HiddenIcon,
+  UpArrowIcon,
+  VisibleIcon,
+} from '#/lib/icons'
 import { useStore } from '#/lib/store'
 
 import type { RawPointGroup } from '#/lib/types'
 
-const PanePointGroup = ({ id, name, color, pointIds }: RawPointGroup) => {
+const PanePointGroup = ({ id, name, color, pointIds, visible }: RawPointGroup) => {
   const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
   const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
   const moveDownPointGroup = useStore(s => s.moveDownPointGroup)
@@ -16,6 +23,7 @@ const PanePointGroup = ({ id, name, color, pointIds }: RawPointGroup) => {
   const superGroups = useStore(s => s.superGroups)
   const addPointGroupToSuperGroup = useStore(s => s.addPointGroupToSuperGroup)
   const points = useStore(s => s.points)
+  const updatePointGroup = useStore(s => s.updatePointGroup)
   const showSinglePointGroups = useStore(s => s.showSinglePointGroups)
   const isSelected = selectedPointGroupId === id
 
@@ -37,8 +45,10 @@ const PanePointGroup = ({ id, name, color, pointIds }: RawPointGroup) => {
       py={2}
       userSelect="none"
       bg="#333"
+      _hover={{ '& .visibility': { opacity: 1 } }}
+      sx={{ '& .visibility': { opacity: visible === false ? 1 : 0 } }}
     >
-      <Box fontWeight="semibold">
+      <Flex fontWeight="semibold">
         {color && (
           <Box
             as="span"
@@ -54,7 +64,20 @@ const PanePointGroup = ({ id, name, color, pointIds }: RawPointGroup) => {
           />
         )}
         {name ?? `ID: ${id}`}
-      </Box>
+        <Spacer />
+        <IconButton
+          className="visibility"
+          icon={<Icon as={visible === false ? HiddenIcon : VisibleIcon} boxSize={4} />}
+          aria-label="Toggle visibility"
+          variant="ghost"
+          size="xs"
+          colorScheme={visible === false ? 'red' : undefined}
+          onClick={e => {
+            e.stopPropagation()
+            updatePointGroup(id, { visible: visible === false ? undefined : false })
+          }}
+        />
+      </Flex>
       <Flex>
         <Spacer />
         {isSelected && (

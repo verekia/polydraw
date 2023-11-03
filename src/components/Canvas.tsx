@@ -56,20 +56,32 @@ const Canvas = (boxProps: BoxProps) => {
       onPointerUp={() => setPointDraggedId()}
       w={`${scale.width * zoom}px`}
       h={`${scale.height * zoom}px`}
-      bg={`url(${backgroundImageSrc})`}
+      bg={backgroundImageSrc ? `url(${backgroundImageSrc})` : undefined}
       bgSize="contain"
       bgRepeat="no-repeat"
       bgPosition="center"
       {...boxProps}
     >
-      {points.map(p => (
-        <Point key={p.id} {...p} />
-      ))}
+      {points
+        .filter(p => {
+          const firstFoundPointGroup = pointGroups.find(pg => pg.pointIds.includes(p.id))
+          const firstFoundSuperGroup = superGroups.find(sg =>
+            sg.pointGroupIds.includes(firstFoundPointGroup?.id ?? 'ughh'),
+          )
+          if (firstFoundPointGroup?.visible === false || firstFoundSuperGroup?.visible === false) {
+            return false
+          }
+
+          return true
+        })
+        .map(p => (
+          <Point key={p.id} {...p} />
+        ))}
       <Box as="svg" boxSize="full">
         {resolvedPointGroups.map(pg => {
           const firstFoundSuperGroup = superGroups.find(sg => sg.pointGroupIds.includes(pg.id))
 
-          if (!pg.isPolygon) {
+          if (!pg.isPolygon || pg.visible === false || firstFoundSuperGroup?.visible === false) {
             return null
           }
 
