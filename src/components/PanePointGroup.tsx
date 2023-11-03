@@ -48,16 +48,10 @@ const PanePointGroup = ({ id, name, color, pointIds, visible }: RawPointGroup) =
       _hover={{ '& .visibility': { opacity: 1 } }}
       sx={{ '& .visibility': { opacity: visible === false ? 1 : 0 } }}
     >
-      <Flex fontWeight="semibold">
+      <Flex fontWeight="semibold" alignItems="center" gap={2}>
         {color && (
           <Box
-            as="span"
-            display="inline-block"
-            verticalAlign="middle"
-            pos="relative"
             border="1px solid white"
-            top="-1px"
-            mr={2}
             boxSize={3}
             onClick={() => setModalShown('point-group')}
             bg={color}

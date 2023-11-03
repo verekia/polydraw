@@ -1,6 +1,6 @@
 import { Box, Flex, Icon, IconButton, Spacer, Tooltip } from '@chakra-ui/react'
 
-import { DownArrowIcon, EditIcon, RemoveListIcon, UpArrowIcon } from '#/lib/icons'
+import { DownArrowIcon, EditIcon, InsertIcon, RemoveListIcon, UpArrowIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 import { truncateDecimals } from '#/lib/util'
 
@@ -14,7 +14,28 @@ const InlinePoint = ({ id, name, x, y, pointGroupId }: RawPoint & { pointGroupId
   const setModalShown = useStore(s => s.setModalShown)
   const removePointFromPointGroup = useStore(s => s.removePointFromPointGroup)
   const decimals = useStore(s => s.decimals)
+  const pointGroups = useStore(s => s.pointGroups)
+  const subdivide = useStore(s => s.subdivide)
   const isSelected = selectedPointId === id
+  const pointGroup = pointGroups.find(pg => pg.id === pointGroupId)
+
+  const handleSubdivide = () => {
+    if (!pointGroup) {
+      return
+    }
+    const indexInPointGroup = pointGroup.pointIds.indexOf(id)
+    const isLastInPointGroupPointIds = pointGroup.pointIds[pointGroup.pointIds.length - 1] === id
+    subdivide(
+      id,
+      isLastInPointGroupPointIds
+        ? pointGroup.pointIds[0]
+        : pointGroup.pointIds[indexInPointGroup + 1],
+    )
+  }
+
+  if (!pointGroup) {
+    return null
+  }
 
   return (
     <Box>
@@ -82,6 +103,24 @@ const InlinePoint = ({ id, name, x, y, pointGroupId }: RawPoint & { pointGroupId
       {isSelected && (
         <Box color="#f66" fontWeight="semibold" textAlign="center" mt={1}>
           New points will be added here
+          {pointGroup.pointIds.length > 1 && (
+            <Tooltip
+              label={
+                <>
+                  <b>Subdivide</b>: Adds a new point between this point and the point below on ALL
+                  point groups that have these 2 points connected.
+                </>
+              }
+            >
+              <IconButton
+                ml={1}
+                size="xs"
+                aria-label="Subdivide"
+                icon={<Icon as={InsertIcon} />}
+                onClick={handleSubdivide}
+              />
+            </Tooltip>
+          )}
         </Box>
       )}
     </Box>

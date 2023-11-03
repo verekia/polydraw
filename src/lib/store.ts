@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
+import { createId } from '#/lib/nanoid'
+
 import type {
   PointGroupId,
   PointId,
@@ -73,6 +75,8 @@ export interface Store {
   setShowSinglePoints: (showSinglePoints: boolean) => void
   showSinglePointGroups: boolean
   setShowSinglePointGroups: (showSinglePointGroups: boolean) => void
+
+  subdivide: (pointAId: PointId, pointBId: PointId) => void
 }
 
 export const defaultStateValues = {
@@ -310,6 +314,49 @@ export const useStore = create<Store>()(
 
         setShowSinglePoints: showSinglePoints => set({ showSinglePoints }),
         setShowSinglePointGroups: showSinglePointGroups => set({ showSinglePointGroups }),
+
+        subdivide: (pointAId: PointId, pointBId: PointId) => {
+          const pointA = get().points.find(p => p.id === pointAId)
+          const pointB = get().points.find(p => p.id === pointBId)
+
+          if (!pointA || !pointB) {
+            return
+          }
+
+          const midPoint: RawPoint = {
+            id: createId(),
+            x: (pointA.x + pointB.x) / 2,
+            y: (pointA.y + pointB.y) / 2,
+          }
+
+          const pointGroups = get().pointGroups.map(pg => {
+            const aIndex = pg.pointIds.indexOf(pointA.id)
+            const bIndex = pg.pointIds.indexOf(pointB.id)
+
+            // Written by ChatGPT
+            if (aIndex !== -1 && bIndex !== -1) {
+              // Determine the correct index to insert the new point
+              let insertIndex
+              if (aIndex < bIndex || (aIndex === pg.pointIds.length - 1 && bIndex === 0)) {
+                insertIndex = (aIndex + 1) % pg.pointIds.length
+              } else if (bIndex < aIndex || (bIndex === pg.pointIds.length - 1 && aIndex === 0)) {
+                insertIndex = (bIndex + 1) % pg.pointIds.length
+              } else {
+                // This case handles when aIndex and bIndex are the same, which is an unexpected scenario.
+                // You can decide how to handle this case based on your application's needs.
+                insertIndex = aIndex + 1
+              }
+
+              // Create a copy of pointIds and insert the new point's ID
+              const newPointIds = [...pg.pointIds]
+              newPointIds.splice(insertIndex, 0, midPoint.id)
+              return { ...pg, pointIds: newPointIds }
+            }
+            return pg
+          })
+
+          set({ pointGroups, points: [...get().points, midPoint], selectedPointId: midPoint.id })
+        },
       }),
       {
         name: 'polydraw',
