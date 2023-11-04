@@ -340,6 +340,14 @@ export const useStore = create<Store>()(
             const aIndex = pg.pointIds.indexOf(pointA.id)
             const bIndex = pg.pointIds.indexOf(pointB.id)
 
+            const isAdjacent =
+              aIndex === (bIndex + 1) % pg.pointIds.length ||
+              bIndex === (aIndex + 1) % pg.pointIds.length
+
+            if (!isAdjacent) {
+              return pg
+            }
+
             // Written by ChatGPT
             if (aIndex !== -1 && bIndex !== -1) {
               // Determine the correct index to insert the new point
