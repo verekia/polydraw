@@ -348,24 +348,25 @@ export const useStore = create<Store>()(
               return pg
             }
 
-            // Written by ChatGPT
             if (aIndex !== -1 && bIndex !== -1) {
-              // Determine the correct index to insert the new point
               let insertIndex
-              if (aIndex < bIndex || (aIndex === pg.pointIds.length - 1 && bIndex === 0)) {
-                insertIndex = (aIndex + 1) % pg.pointIds.length
-              } else if (bIndex < aIndex || (bIndex === pg.pointIds.length - 1 && aIndex === 0)) {
-                insertIndex = (bIndex + 1) % pg.pointIds.length
+
+              // Wrapped around case
+              if (
+                (aIndex === 0 && bIndex === pg.pointIds.length - 1) ||
+                (bIndex === 0 && aIndex === pg.pointIds.length - 1)
+              ) {
+                insertIndex = pg.pointIds.length
               } else {
-                // This case handles when aIndex and bIndex are the same, which is an unexpected scenario.
-                // You can decide how to handle this case based on your application's needs.
-                insertIndex = aIndex + 1
+                // Normal case: insert after the smaller index
+                insertIndex = Math.min(aIndex, bIndex) + 1
               }
 
-              // Create a copy of pointIds and insert the new point's ID
               const newPointIds = [...pg.pointIds]
               newPointIds.splice(insertIndex, 0, midPoint.id)
               return { ...pg, pointIds: newPointIds }
+            } else {
+              console.error(`${pointA.id} and ${pointB.id} are not in the same point group`)
             }
             return pg
           })
