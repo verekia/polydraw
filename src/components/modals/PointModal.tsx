@@ -9,6 +9,7 @@ import {
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
+  Flex,
   FormControl,
   FormLabel,
   Icon,
@@ -20,11 +21,12 @@ import {
   NumberInputStepper,
   Spacer,
   Stack,
+  Textarea,
 } from '@chakra-ui/react'
 
 import { DeleteIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
-import { truncateDecimals } from '#/lib/util'
+import { isJSON, truncateDecimals } from '#/lib/util'
 
 const PointModal = () => {
   const modalShown = useStore(s => s.modalShown)
@@ -40,6 +42,12 @@ const PointModal = () => {
   const removePoint = useStore(s => s.removePoint)
   const decimals = useStore(s => s.decimals)
   const onClose = () => setModalShown()
+  const [customDataStr, setCustomDataStr] = useState('')
+
+  const isValidJson = isJSON(customDataStr)
+  const hasChanged = isValidJson
+    ? JSON.stringify(point?.data) !== JSON.stringify(JSON.parse(customDataStr))
+    : false
 
   useEffect(() => {
     if (point?.x !== undefined) {
@@ -72,6 +80,14 @@ const PointModal = () => {
       setRotZStringValue('')
     }
   }, [point, point?.rotZ, decimals])
+
+  useEffect(() => {
+    if (point?.data !== undefined) {
+      setCustomDataStr(JSON.stringify(point.data, null, 2))
+    } else {
+      setCustomDataStr('')
+    }
+  }, [point, point?.data])
 
   useEffect(() => {
     if (!point) {
@@ -147,6 +163,19 @@ const PointModal = () => {
               </NumberInput>
             </FormControl>
             <FormControl>
+              <FormLabel>Color</FormLabel>
+              <Input
+                type="text"
+                value={point.color}
+                onChange={e => updatePoint(point.id, { color: e.target.value || undefined })}
+              />
+              <Input
+                type="color"
+                value={point.color ?? '#000000'}
+                onChange={e => updatePoint(point.id, { color: e.target.value || undefined })}
+              />
+            </FormControl>
+            <FormControl>
               <FormLabel>
                 Z
                 <Box as="span" fontWeight="normal" color="#aaa" ml={2}>
@@ -200,21 +229,50 @@ const PointModal = () => {
               </NumberInput>
             </FormControl>
             <FormControl>
-              <FormLabel>Color</FormLabel>
-              <Input
-                type="text"
-                value={point.color}
-                onChange={e => updatePoint(point.id, { color: e.target.value || undefined })}
+              <FormLabel>
+                Custom Data{' '}
+                <Box as="span" fontWeight="normal" color="#aaa" ml={2}>
+                  (use valid JSON)
+                </Box>
+              </FormLabel>
+              <Textarea
+                placeholder={`{
+  "foo": "bar"
+}`}
+                value={customDataStr}
+                minH="124px"
+                onChange={e => setCustomDataStr(e.target.value)}
               />
-              <Input
-                type="color"
-                value={point.color ?? '#000000'}
-                onChange={e => updatePoint(point.id, { color: e.target.value || undefined })}
-              />
+              <Flex>
+                <Spacer />
+                <Button
+                  mt={2}
+                  isDisabled={
+                    (customDataStr.length > 0 && (!isValidJson || !hasChanged)) ||
+                    (customDataStr === '' && !point.data)
+                  }
+                  onClick={() => {
+                    if (customDataStr === '') {
+                      updatePoint(point.id, { data: undefined })
+                      return
+                    }
+                    if (isValidJson && hasChanged && isJSON(customDataStr)) {
+                      updatePoint(point.id, { data: JSON.parse(customDataStr) })
+                    }
+                  }}
+                >
+                  {customDataStr === '' && point.data
+                    ? 'Save'
+                    : (isValidJson && !hasChanged) || (customDataStr === '' && !point.data)
+                    ? 'Saved, no change'
+                    : !isValidJson
+                    ? 'Invalid JSON'
+                    : 'Save'}
+                </Button>
+              </Flex>
             </FormControl>
           </Stack>
         </DrawerBody>
-
         <DrawerFooter>
           <Button
             colorScheme="red"

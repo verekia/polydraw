@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   Box,
@@ -9,6 +9,7 @@ import {
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
+  Flex,
   FormControl,
   FormLabel,
   Icon,
@@ -17,11 +18,13 @@ import {
   RadioGroup,
   Spacer,
   Stack,
+  Textarea,
 } from '@chakra-ui/react'
 
 import InlinePoint from '#/components/InlinePoint'
 import { DeleteIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
+import { isJSON } from '#/lib/util'
 
 const PointGroupModal = () => {
   const modalShown = useStore(s => s.modalShown)
@@ -33,6 +36,12 @@ const PointGroupModal = () => {
   const removePointGroup = useStore(s => s.removePointGroup)
   const points = useStore(s => s.points)
   const onClose = () => setModalShown()
+  const [customDataStr, setCustomDataStr] = useState('')
+
+  const isValidJson = isJSON(customDataStr)
+  const hasChanged = isValidJson
+    ? JSON.stringify(pointGroup?.data) !== JSON.stringify(JSON.parse(customDataStr))
+    : false
 
   useEffect(() => {
     if (!pointGroup) {
@@ -92,6 +101,49 @@ const PointGroupModal = () => {
                   updatePointGroup(pointGroup.id, { color: e.target.value || undefined })
                 }
               />
+            </FormControl>
+            <FormControl>
+              <FormLabel>
+                Custom Data{' '}
+                <Box as="span" fontWeight="normal" color="#aaa" ml={2}>
+                  (use valid JSON)
+                </Box>
+              </FormLabel>
+              <Textarea
+                placeholder={`{
+  "foo": "bar"
+}`}
+                value={customDataStr}
+                minH="124px"
+                onChange={e => setCustomDataStr(e.target.value)}
+              />
+              <Flex>
+                <Spacer />
+                <Button
+                  mt={2}
+                  isDisabled={
+                    (customDataStr.length > 0 && (!isValidJson || !hasChanged)) ||
+                    (customDataStr === '' && !pointGroup.data)
+                  }
+                  onClick={() => {
+                    if (customDataStr === '') {
+                      updatePointGroup(pointGroup.id, { data: undefined })
+                      return
+                    }
+                    if (isValidJson && hasChanged && isJSON(customDataStr)) {
+                      updatePointGroup(pointGroup.id, { data: JSON.parse(customDataStr) })
+                    }
+                  }}
+                >
+                  {customDataStr === '' && pointGroup.data
+                    ? 'Save'
+                    : (isValidJson && !hasChanged) || (customDataStr === '' && !pointGroup.data)
+                    ? 'Saved, no change'
+                    : !isValidJson
+                    ? 'Invalid JSON'
+                    : 'Save'}
+                </Button>
+              </Flex>
             </FormControl>
           </Stack>
           <Box mt={5}>

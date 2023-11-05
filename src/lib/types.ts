@@ -10,6 +10,7 @@ export type RawPoint = {
   y: number
   z?: number
   rotZ?: number
+  data?: Record<string, unknown>
 }
 
 export type RawPointGroup = {
@@ -19,6 +20,7 @@ export type RawPointGroup = {
   color?: string
   pointIds: PointId[]
   visible?: boolean
+  data?: Record<string, unknown>
 }
 
 export type RawSuperGroup = {
@@ -27,4 +29,5 @@ export type RawSuperGroup = {
   color?: string
   pointGroupIds: PointGroupId[]
   visible?: boolean
+  data?: Record<string, unknown>
 }
