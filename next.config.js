@@ -1,9 +1,6 @@
-const { withPlausibleProxy } = require('next-plausible')
+/**
+ * @type {import('next').NextConfig}
+ */
+const config1 = { output: 'export' }
 
-const config1 = {}
-
-const config2 = withPlausibleProxy({ scriptName: 'pl', customDomain: 'https://pl.v1v2.io' })(
-  config1,
-)
-
-module.exports = config2
+module.exports = config1
