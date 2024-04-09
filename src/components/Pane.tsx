@@ -449,7 +449,7 @@ const Pane = (boxProps: BoxProps) => {
           <Box>
             The exported data is normalized. You will need to resolve points and point groups based
             on their IDs in your application code.{' '}
-            <Link href="https://github.com/verekia/polydraw-support" isExternal fontWeight="bold">
+            <Link href="https://github.com/verekia/polydraw" isExternal fontWeight="bold">
               Learn how
             </Link>
             .
@@ -518,7 +518,7 @@ const Pane = (boxProps: BoxProps) => {
       </Accordion>
 
       <Box textAlign="center" mt={12} mb={6}>
-        <Link href="https://github.com/verekia/polydraw-support" isExternal>
+        <Link href="https://github.com/verekia/polydraw" isExternal>
           Report issues or submit feedback
         </Link>
         <br />
