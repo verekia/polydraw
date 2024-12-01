@@ -3,8 +3,9 @@
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "serve out",
+    "lint": "next lint",
+    "prepare": "husky"
   },
   "dependencies": {
     "@chakra-ui/next-js": "2.1.5",
@@ -13,11 +14,11 @@
     "@emotion/styled": "11.11.0",
     "@v1v2/react": "1.1.0",
     "eslint": "8.52.0",
-    "eslint-config-next": "14.0.0",
+    "eslint-config-next": "15.0.3",
     "framer-motion": "10.16.4",
     "js-file-download": "0.4.12",
     "nanoid": "5.0.2",
-    "next": "14.0.0",
+    "next": "15.0.3",
     "next-plausible": "3.11.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -28,7 +29,9 @@
     "@ianvs/prettier-plugin-sort-imports": "4.1.1",
     "@types/node": "20.8.9",
     "@types/react": "18.2.33",
+    "husky": "9.1.7",
     "prettier": "3.0.3",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "serve": "14.2.4"
   }
 }
