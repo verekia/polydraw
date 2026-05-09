@@ -151,11 +151,7 @@ const Pane = (boxProps: BoxProps) => {
             <Flex mb={5} gap={5}>
               <FormControl>
                 <FormLabel>Width</FormLabel>
-                <NumberInput
-                  min={1}
-                  value={scale.width}
-                  onChange={e => setScale({ ...scale, width: Number(e) })}
-                >
+                <NumberInput min={1} value={scale.width} onChange={e => setScale({ ...scale, width: Number(e) })}>
                   <NumberInputField />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
@@ -165,11 +161,7 @@ const Pane = (boxProps: BoxProps) => {
               </FormControl>
               <FormControl>
                 <FormLabel>Height</FormLabel>
-                <NumberInput
-                  min={1}
-                  value={scale.height}
-                  onChange={e => setScale({ ...scale, height: Number(e) })}
-                >
+                <NumberInput min={1} value={scale.height} onChange={e => setScale({ ...scale, height: Number(e) })}>
                   <NumberInputField />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
@@ -189,12 +181,7 @@ const Pane = (boxProps: BoxProps) => {
               </FormControl>
               <FormControl>
                 <FormLabel>Max decimals</FormLabel>
-                <NumberInput
-                  min={0}
-                  max={5}
-                  value={decimals}
-                  onChange={e => setDecimals(Number(e))}
-                >
+                <NumberInput min={0} max={5} value={decimals} onChange={e => setDecimals(Number(e))}>
                   <NumberInputField />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
@@ -250,8 +237,7 @@ const Pane = (boxProps: BoxProps) => {
             <Tooltip
               label={
                 <>
-                  <b>Points</b> are defined by a position and can optionally be attached to point
-                  groups.
+                  <b>Points</b> are defined by a position and can optionally be attached to point groups.
                 </>
               }
             >
@@ -281,8 +267,8 @@ const Pane = (boxProps: BoxProps) => {
             <Tooltip
               label={
                 <>
-                  Use <b>Point Groups</b> to define polygons or sets of points that are related to
-                  each other but do not defining a shape.
+                  Use <b>Point Groups</b> to define polygons or sets of points that are related to each other but do not
+                  defining a shape.
                   <br />
                   <br />
                   <b>Polygon Example</b>: A forest shape.
@@ -338,12 +324,10 @@ const Pane = (boxProps: BoxProps) => {
             <Tooltip
               label={
                 <>
-                  Use <b>Super Groups</b> to define a set of point groups that are related to each
-                  other.
+                  Use <b>Super Groups</b> to define a set of point groups that are related to each other.
                   <br />
                   <br />
-                  <b>Example</b>: Multiple forest polygons that are colored in green for
-                  visualization purposes.
+                  <b>Example</b>: Multiple forest polygons that are colored in green for visualization purposes.
                   <br />
                   <br />
                   If a super group is{' '}
@@ -447,8 +431,8 @@ const Pane = (boxProps: BoxProps) => {
         </Stack>
         <Flex mt={5} gap={3}>
           <Box>
-            The exported data is normalized. You will need to resolve points and point groups based
-            on their IDs in your application code.{' '}
+            The exported data is normalized. You will need to resolve points and point groups based on their IDs in your
+            application code.{' '}
             <Link href="https://github.com/verekia/polydraw" isExternal fontWeight="bold">
               Learn how
             </Link>
@@ -496,18 +480,18 @@ const Pane = (boxProps: BoxProps) => {
             </UnorderedList>
             <UnorderedList mt={5}>
               <ListItem>
-                If points order matters for your app, you can <b>move points up and down</b> in the
-                list using the arrow buttons.
+                If points order matters for your app, you can <b>move points up and down</b> in the list using the arrow
+                buttons.
               </ListItem>
               <ListItem>
-                If you need to organize your points as <b>point groups</b> (or polygons), create the
-                point group first, then newly created points will be automatically added to it.
+                If you need to organize your points as <b>point groups</b> (or polygons), create the point group first,
+                then newly created points will be automatically added to it.
               </ListItem>
             </UnorderedList>
             <UnorderedList mt={5}>
               <ListItem>
-                Press <b>Esc</b> or <b>click outside of the canvas</b> to deselect points, point
-                groups, and super groups.
+                Press <b>Esc</b> or <b>click outside of the canvas</b> to deselect points, point groups, and super
+                groups.
               </ListItem>
               <ListItem>
                 <b>Cmd/Ctrl</b> + <b>Backspace</b> to delete the currently selected point.

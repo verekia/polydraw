@@ -3,14 +3,7 @@ import { devtools, persist } from 'zustand/middleware'
 
 import { createId } from '#/lib/nanoid'
 
-import type {
-  PointGroupId,
-  PointId,
-  RawPoint,
-  RawPointGroup,
-  RawSuperGroup,
-  SuperGroupId,
-} from '#/lib/types'
+import type { PointGroupId, PointId, RawPoint, RawPointGroup, RawSuperGroup, SuperGroupId } from '#/lib/types'
 
 export interface Store {
   zoom: number
@@ -103,8 +96,7 @@ export const useStore = create<Store>()(
       (set, get) => ({
         ...defaultStateValues,
         setZoom: zoom => set({ zoom }),
-        setScale: ({ width, height }: { width: number; height: number }) =>
-          set({ scale: { width, height } }),
+        setScale: ({ width, height }: { width: number; height: number }) => set({ scale: { width, height } }),
         setDecimals: decimals => set({ decimals }),
         setSelectedPointId: (id?: PointId) => set({ selectedPointId: id }),
         setPointDraggedId: (id?: PointId) => set({ pointDraggedId: id }),
@@ -146,8 +138,7 @@ export const useStore = create<Store>()(
               p.id === pointGroupId ? { ...p, pointIds: [...p.pointIds, pointId] } : p,
             ),
           }),
-        updatePoint: (id, point) =>
-          set({ points: get().points.map(p => (p.id === id ? { ...p, ...point } : p)) }),
+        updatePoint: (id, point) => set({ points: get().points.map(p => (p.id === id ? { ...p, ...point } : p)) }),
         removePoint: id => {
           set({
             points: get().points.filter(p => p.id !== id),
@@ -222,9 +213,7 @@ export const useStore = create<Store>()(
         addPointGroupToSuperGroup: (superGroupId, pointGroupId) =>
           set({
             superGroups: get().superGroups.map(sg =>
-              sg.id === superGroupId
-                ? { ...sg, pointGroupIds: [...sg.pointGroupIds, pointGroupId] }
-                : sg,
+              sg.id === superGroupId ? { ...sg, pointGroupIds: [...sg.pointGroupIds, pointGroupId] } : sg,
             ),
           }),
         removePointGroup: id => {
@@ -288,9 +277,7 @@ export const useStore = create<Store>()(
         addSuperGroup: superGroup => set({ superGroups: [...get().superGroups, superGroup] }),
         updateSuperGroup: (id, superGroup) =>
           set({
-            superGroups: get().superGroups.map(sg =>
-              sg.id === id ? { ...sg, ...superGroup } : sg,
-            ),
+            superGroups: get().superGroups.map(sg => (sg.id === id ? { ...sg, ...superGroup } : sg)),
           }),
         removeSuperGroup: id =>
           set({
@@ -341,8 +328,7 @@ export const useStore = create<Store>()(
             const bIndex = pg.pointIds.indexOf(pointB.id)
 
             const isAdjacent =
-              aIndex === (bIndex + 1) % pg.pointIds.length ||
-              bIndex === (aIndex + 1) % pg.pointIds.length
+              aIndex === (bIndex + 1) % pg.pointIds.length || bIndex === (aIndex + 1) % pg.pointIds.length
 
             if (!isAdjacent) {
               return pg

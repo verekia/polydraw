@@ -4,7 +4,7 @@ const idToPoint = new Map(rawData.points.map(({ id, ...point }) => [id, point]))
 const idToPointGroup = new Map(
   rawData.pointGroups.map(({ id, pointIds, ...pointGroup }) => [
     id,
-    { ...pointGroup, points: pointIds.map(id => idToPoint.get(id)!) },
+    { ...pointGroup, points: pointIds.map(pointId => idToPoint.get(pointId)!) },
   ]),
 )
 
@@ -12,7 +12,7 @@ const resolvedData = {
   points: Array.from(idToPoint.values()),
   pointGroups: rawData.pointGroups.map(({ id, pointIds, ...pointGroup }) => ({
     ...pointGroup,
-    points: pointIds.map(id => idToPoint.get(id)!),
+    points: pointIds.map(pointId => idToPoint.get(pointId)!),
   })),
   superGroups: rawData.superGroups.map(({ pointGroupIds, ...superGroup }) => ({
     ...superGroup,

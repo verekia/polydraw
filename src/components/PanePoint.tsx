@@ -94,11 +94,11 @@ const PanePoint = ({ id, name, x, y, color }: RawPoint) => {
               label={
                 <>
                   {selectedPointGroup
-                    ? (
+                    ? ((
                         <>
                           Add to <b>{selectedPointGroup.name}</b> point group
                         </>
-                      ) ?? 'selected point group'
+                      ) ?? 'selected point group')
                     : 'Select a point group to add this point to.'}
                 </>
               }
