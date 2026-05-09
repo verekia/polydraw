@@ -1,14 +1,7 @@
 import { Box, Flex, HStack, Icon, IconButton, Spacer, Stack, Tooltip } from '@chakra-ui/react'
 
 import InlinePoint from '#/components/InlinePoint'
-import {
-  AddListIcon,
-  DownArrowIcon,
-  EditIcon,
-  HiddenIcon,
-  UpArrowIcon,
-  VisibleIcon,
-} from '#/lib/icons'
+import { AddListIcon, DownArrowIcon, EditIcon, HiddenIcon, UpArrowIcon, VisibleIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 
 import type { RawPointGroup } from '#/lib/types'
@@ -49,14 +42,7 @@ const PanePointGroup = ({ id, name, color, pointIds, visible }: RawPointGroup) =
       sx={{ '& .visibility': { opacity: visible === false ? 1 : 0 } }}
     >
       <Flex fontWeight="semibold" alignItems="center" gap={2}>
-        {color && (
-          <Box
-            border="1px solid white"
-            boxSize={3}
-            onClick={() => setModalShown('point-group')}
-            bg={color}
-          />
-        )}
+        {color && <Box border="1px solid white" boxSize={3} onClick={() => setModalShown('point-group')} bg={color} />}
         {name ?? `ID: ${id}`}
         <Spacer />
         <IconButton

@@ -30,14 +30,7 @@ const PaneSuperGroup = ({ id, name, color, pointGroupIds, visible }: RawSuperGro
       sx={{ '& .visibility': { opacity: visible === false ? 1 : 0 } }}
     >
       <Flex fontWeight="semibold" gap={2} alignItems="center">
-        {color && (
-          <Box
-            border="1px solid white"
-            boxSize={3}
-            onClick={() => setModalShown('super-group')}
-            bg={color}
-          />
-        )}
+        {color && <Box border="1px solid white" boxSize={3} onClick={() => setModalShown('super-group')} bg={color} />}
         {name ?? `ID: ${id}`}
         <Spacer />
         <IconButton

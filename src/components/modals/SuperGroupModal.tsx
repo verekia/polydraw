@@ -53,12 +53,7 @@ const SuperGroupModal = () => {
   }
 
   return (
-    <Drawer
-      placement="right"
-      onClose={onClose}
-      isOpen={modalShown === 'super-group'}
-      preserveScrollBarGap
-    >
+    <Drawer placement="right" onClose={onClose} isOpen={modalShown === 'super-group'} preserveScrollBarGap>
       <DrawerContent>
         <DrawerCloseButton />
         <DrawerHeader>Edit super group</DrawerHeader>
@@ -70,9 +65,7 @@ const SuperGroupModal = () => {
               <Input
                 type="text"
                 value={superGroup.name}
-                onChange={e =>
-                  updateSuperGroup(superGroup.id, { name: e.target.value || undefined })
-                }
+                onChange={e => updateSuperGroup(superGroup.id, { name: e.target.value || undefined })}
               />
             </FormControl>
             <FormControl>
@@ -80,16 +73,12 @@ const SuperGroupModal = () => {
               <Input
                 type="text"
                 value={superGroup.color}
-                onChange={e =>
-                  updateSuperGroup(superGroup.id, { color: e.target.value || undefined })
-                }
+                onChange={e => updateSuperGroup(superGroup.id, { color: e.target.value || undefined })}
               />
               <Input
                 type="color"
                 value={superGroup.color ?? '#000000'}
-                onChange={e =>
-                  updateSuperGroup(superGroup.id, { color: e.target.value || undefined })
-                }
+                onChange={e => updateSuperGroup(superGroup.id, { color: e.target.value || undefined })}
               />
             </FormControl>
             <FormControl>
@@ -128,10 +117,10 @@ const SuperGroupModal = () => {
                   {customDataStr === '' && superGroup.data
                     ? 'Save'
                     : (isValidJson && !hasChanged) || (customDataStr === '' && !superGroup.data)
-                    ? 'Saved, no change'
-                    : !isValidJson
-                    ? 'Invalid JSON'
-                    : 'Save'}
+                      ? 'Saved, no change'
+                      : !isValidJson
+                        ? 'Invalid JSON'
+                        : 'Save'}
                 </Button>
               </Flex>
             </FormControl>
@@ -144,9 +133,7 @@ const SuperGroupModal = () => {
                 if (!foundPointGroup) {
                   return null
                 }
-                return (
-                  <InlinePointGroup key={pid} {...foundPointGroup} superGroupId={superGroup.id} />
-                )
+                return <InlinePointGroup key={pid} {...foundPointGroup} superGroupId={superGroup.id} />
               })}
             </Stack>
           </Box>

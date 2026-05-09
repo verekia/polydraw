@@ -45,9 +45,7 @@ const PointModal = () => {
   const [customDataStr, setCustomDataStr] = useState('')
 
   const isValidJson = isJSON(customDataStr)
-  const hasChanged = isValidJson
-    ? JSON.stringify(point?.data) !== JSON.stringify(JSON.parse(customDataStr))
-    : false
+  const hasChanged = isValidJson ? JSON.stringify(point?.data) !== JSON.stringify(JSON.parse(customDataStr)) : false
 
   useEffect(() => {
     if (point?.x !== undefined) {
@@ -100,12 +98,7 @@ const PointModal = () => {
   }
 
   return (
-    <Drawer
-      placement="right"
-      onClose={onClose}
-      isOpen={modalShown === 'point'}
-      preserveScrollBarGap
-    >
+    <Drawer placement="right" onClose={onClose} isOpen={modalShown === 'point'} preserveScrollBarGap>
       <DrawerContent>
         <DrawerCloseButton />
         <DrawerHeader>Edit point</DrawerHeader>
@@ -248,8 +241,7 @@ const PointModal = () => {
                 <Button
                   mt={2}
                   isDisabled={
-                    (customDataStr.length > 0 && (!isValidJson || !hasChanged)) ||
-                    (customDataStr === '' && !point.data)
+                    (customDataStr.length > 0 && (!isValidJson || !hasChanged)) || (customDataStr === '' && !point.data)
                   }
                   onClick={() => {
                     if (customDataStr === '') {
@@ -264,10 +256,10 @@ const PointModal = () => {
                   {customDataStr === '' && point.data
                     ? 'Save'
                     : (isValidJson && !hasChanged) || (customDataStr === '' && !point.data)
-                    ? 'Saved, no change'
-                    : !isValidJson
-                    ? 'Invalid JSON'
-                    : 'Save'}
+                      ? 'Saved, no change'
+                      : !isValidJson
+                        ? 'Invalid JSON'
+                        : 'Save'}
                 </Button>
               </Flex>
             </FormControl>
@@ -278,9 +270,7 @@ const PointModal = () => {
             colorScheme="red"
             variant="ghost"
             leftIcon={<Icon as={DeleteIcon} />}
-            onClick={() =>
-              confirm('Are you sure you want to delete this point?') && removePoint(point.id)
-            }
+            onClick={() => confirm('Are you sure you want to delete this point?') && removePoint(point.id)}
           >
             Delete
           </Button>

@@ -26,13 +26,7 @@ const Workspace = (boxProps: BoxProps) => {
   return (
     <>
       <Box pos="relative" overflow="auto" userSelect="none" h="full" {...boxProps}>
-        <Flex
-          overflow="auto"
-          minH="full"
-          alignItems="center"
-          justifyContent="center"
-          onClick={deselectCascade}
-        >
+        <Flex overflow="auto" minH="full" alignItems="center" justifyContent="center" onClick={deselectCascade}>
           <Box overflow="auto" /* This fixes the canvas border stopping at the flexbox size */>
             <Canvas />
           </Box>

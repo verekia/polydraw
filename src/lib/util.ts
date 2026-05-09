@@ -7,7 +7,7 @@ export const isJSON = (str: string) => {
   try {
     const obj = JSON.parse(str)
     return !!obj && typeof obj === 'object'
-  } catch (e) {
+  } catch {
     return false
   }
 }

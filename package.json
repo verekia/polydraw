@@ -1,10 +1,16 @@
 {
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "portless polydraw next dev --turbo",
     "build": "next build",
     "start": "serve out",
-    "lint": "next lint",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "typecheck": "tsc --noEmit",
+    "warden": "warden",
+    "all": "bun run format:check && bun run lint && bun run typecheck && bun run warden",
     "prepare": "husky"
   },
   "dependencies": {
@@ -13,8 +19,6 @@
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
     "@v1v2/react": "1.1.0",
-    "eslint": "8.52.0",
-    "eslint-config-next": "15.0.3",
     "framer-motion": "10.16.4",
     "js-file-download": "0.4.12",
     "nanoid": "5.0.2",
@@ -26,12 +30,15 @@
     "zustand": "4.4.4"
   },
   "devDependencies": {
-    "@ianvs/prettier-plugin-sort-imports": "4.1.1",
     "@types/node": "20.8.9",
     "@types/react": "18.2.33",
+    "@verekia/warden": "0.0.3",
+    "babel-plugin-react-compiler": "1.0.0",
     "husky": "9.1.7",
-    "prettier": "3.0.3",
-    "typescript": "5.2.2",
-    "serve": "14.2.4"
+    "oxfmt": "0.48.0",
+    "oxlint": "1.63.0",
+    "portless": "0.13.0",
+    "serve": "14.2.4",
+    "typescript": "5.2.2"
   }
 }

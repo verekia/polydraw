@@ -1,23 +1,11 @@
 import { Box, Flex, Icon, IconButton, Spacer, Tooltip } from '@chakra-ui/react'
 
-import {
-  DownArrowIcon,
-  EditIcon,
-  HiddenIcon,
-  RemoveListIcon,
-  UpArrowIcon,
-  VisibleIcon,
-} from '#/lib/icons'
+import { DownArrowIcon, EditIcon, HiddenIcon, RemoveListIcon, UpArrowIcon, VisibleIcon } from '#/lib/icons'
 import { useStore } from '#/lib/store'
 
 import type { RawPointGroup } from '#/lib/types'
 
-const InlinePointGroup = ({
-  id,
-  name,
-  superGroupId,
-  visible,
-}: RawPointGroup & { superGroupId: string }) => {
+const InlinePointGroup = ({ id, name, superGroupId, visible }: RawPointGroup & { superGroupId: string }) => {
   const selectedPointGroupId = useStore(s => s.selectedPointGroupId)
   const setSelectedPointGroupId = useStore(s => s.setSelectedPointGroupId)
   const moveDownPointGroupInSuperGroup = useStore(s => s.moveDownPointGroupInSuperGroup)

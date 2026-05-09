@@ -25,12 +25,7 @@ const InlinePoint = ({ id, name, x, y, pointGroupId }: RawPoint & { pointGroupId
     }
     const indexInPointGroup = pointGroup.pointIds.indexOf(id)
     const isLastInPointGroupPointIds = pointGroup.pointIds[pointGroup.pointIds.length - 1] === id
-    subdivide(
-      id,
-      isLastInPointGroupPointIds
-        ? pointGroup.pointIds[0]
-        : pointGroup.pointIds[indexInPointGroup + 1],
-    )
+    subdivide(id, isLastInPointGroupPointIds ? pointGroup.pointIds[0] : pointGroup.pointIds[indexInPointGroup + 1])
   }
 
   if (!pointGroup) {
@@ -107,8 +102,8 @@ const InlinePoint = ({ id, name, x, y, pointGroupId }: RawPoint & { pointGroupId
             <Tooltip
               label={
                 <>
-                  <b>Subdivide</b>: Adds a new point between this point and the point below on ALL
-                  point groups that have these 2 points connected.
+                  <b>Subdivide</b>: Adds a new point between this point and the point below on ALL point groups that
+                  have these 2 points connected.
                 </>
               }
             >

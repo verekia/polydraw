@@ -54,12 +54,7 @@ const PointGroupModal = () => {
   }
 
   return (
-    <Drawer
-      placement="right"
-      onClose={onClose}
-      isOpen={modalShown === 'point-group'}
-      preserveScrollBarGap
-    >
+    <Drawer placement="right" onClose={onClose} isOpen={modalShown === 'point-group'} preserveScrollBarGap>
       <DrawerContent>
         <DrawerCloseButton />
         <DrawerHeader>Edit point group</DrawerHeader>
@@ -80,9 +75,7 @@ const PointGroupModal = () => {
               <Input
                 type="text"
                 value={pointGroup.name}
-                onChange={e =>
-                  updatePointGroup(pointGroup.id, { name: e.target.value || undefined })
-                }
+                onChange={e => updatePointGroup(pointGroup.id, { name: e.target.value || undefined })}
               />
             </FormControl>
             <FormControl>
@@ -90,16 +83,12 @@ const PointGroupModal = () => {
               <Input
                 type="text"
                 value={pointGroup.color}
-                onChange={e =>
-                  updatePointGroup(pointGroup.id, { color: e.target.value || undefined })
-                }
+                onChange={e => updatePointGroup(pointGroup.id, { color: e.target.value || undefined })}
               />
               <Input
                 type="color"
                 value={pointGroup.color ?? '#000000'}
-                onChange={e =>
-                  updatePointGroup(pointGroup.id, { color: e.target.value || undefined })
-                }
+                onChange={e => updatePointGroup(pointGroup.id, { color: e.target.value || undefined })}
               />
             </FormControl>
             <FormControl>
@@ -138,10 +127,10 @@ const PointGroupModal = () => {
                   {customDataStr === '' && pointGroup.data
                     ? 'Save'
                     : (isValidJson && !hasChanged) || (customDataStr === '' && !pointGroup.data)
-                    ? 'Saved, no change'
-                    : !isValidJson
-                    ? 'Invalid JSON'
-                    : 'Save'}
+                      ? 'Saved, no change'
+                      : !isValidJson
+                        ? 'Invalid JSON'
+                        : 'Save'}
                 </Button>
               </Flex>
             </FormControl>
