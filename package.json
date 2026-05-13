@@ -31,15 +31,15 @@
     "zustand": "4.4.4"
   },
   "devDependencies": {
-    "@types/node": "20.8.9",
+    "@types/node": "25.7.0",
     "@types/react": "19.2.14",
-    "@verekia/warden": "0.0.3",
+    "@verekia/warden": "0.0.4",
     "babel-plugin-react-compiler": "1.0.0",
     "husky": "9.1.7",
     "oxfmt": "0.48.0",
     "oxlint": "1.63.0",
     "portless": "0.13.0",
     "serve": "14.2.4",
-    "typescript": "5.2.2"
+    "typescript": "6.0.3"
   }
 }

@@ -14,7 +14,7 @@ const Polygon = ({ id, points, color }: { id: string; points: RawPoint[]; color:
   return (
     <Box
       as="polygon"
-      onClick={e => {
+      onClick={(e: React.MouseEvent<SVGPolygonElement>) => {
         if (mode === 'select') {
           e.stopPropagation()
           setSelectedPointGroupId(isSelected ? undefined : id)

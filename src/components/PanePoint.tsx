@@ -93,13 +93,13 @@ const PanePoint = ({ id, name, x, y, color }: RawPoint) => {
             <Tooltip
               label={
                 <>
-                  {selectedPointGroup
-                    ? ((
-                        <>
-                          Add to <b>{selectedPointGroup.name}</b> point group
-                        </>
-                      ) ?? 'selected point group')
-                    : 'Select a point group to add this point to.'}
+                  {selectedPointGroup ? (
+                    <>
+                      Add to <b>{selectedPointGroup.name}</b> point group
+                    </>
+                  ) : (
+                    'Select a point group to add this point to.'
+                  )}
                 </>
               }
             >
