@@ -5,11 +5,11 @@
     "build": "next build",
     "start": "serve out",
     "postinstall": "next typegen",
-    "format": "oxfmt .",
-    "format:check": "oxfmt --check .",
+    "format": "bun fmt",
+    "format:check": "bun fmt --check",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "bun check",
     "warden": "warden",
     "all": "bun run format:check && bun run lint && bun run typecheck && bun run warden",
     "prepare": "husky"
@@ -33,13 +33,16 @@
   "devDependencies": {
     "@types/node": "25.7.0",
     "@types/react": "19.2.14",
-    "@verekia/warden": "0.0.4",
+    "@verekia/warden": "0.0.6",
     "babel-plugin-react-compiler": "1.0.0",
     "husky": "9.1.7",
-    "oxfmt": "0.48.0",
     "oxlint": "1.63.0",
     "portless": "0.13.0",
     "serve": "14.2.4",
     "typescript": "6.0.3"
-  }
+  },
+  "engines": {
+    "bun": "1.4.4"
+  },
+  "packageManager": "bun@1.4.4"
 }
