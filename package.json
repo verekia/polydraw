@@ -23,23 +23,23 @@
     "framer-motion": "10.16.4",
     "js-file-download": "0.4.12",
     "nanoid": "5.0.2",
-    "next": "16.2.6",
+    "next": "16.4.6",
     "next-plausible": "3.11.3",
-    "react": "19.2.6",
-    "react-dom": "19.2.6",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "react-use": "17.4.0",
     "zustand": "4.4.4"
   },
   "devDependencies": {
     "@types/node": "25.7.0",
-    "@types/react": "19.2.14",
+    "@types/react": "19.3.0",
     "@verekia/warden": "0.0.6",
     "babel-plugin-react-compiler": "1.0.0",
     "husky": "9.1.7",
     "oxlint": "1.63.0",
     "portless": "0.13.0",
     "serve": "14.2.4",
-    "typescript": "6.0.3"
+    "typescript": "7.0.2"
   },
   "engines": {
     "bun": "1.4.4"
